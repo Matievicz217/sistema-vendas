@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Área da Funcionária | Sistema de Vendas</title>
+
+    <link rel="stylesheet" href="../css/output.css">
+</head>
+
+<body class="min-h-screen bg-gray-950 text-white">
+
+    <!-- CABEÇALHO -->
+
+    <header class="border-b border-gray-800 bg-gray-900">
+
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+
+            <div>
+                <h1 class="text-xl font-bold">
+                    Sistema de Vendas
+                </h1>
+
+                <p class="text-sm text-gray-400">
+                    Área da funcionária
+                </p>
+            </div>
+
+            <button id="btnSair" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition">
+                Sair
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTEÚDO -->
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+
+
+        <!-- SAUDAÇÃO -->
+
+        <div class="mb-8">
+
+            <h2 id="nomeUsuario" class="text-3xl font-bold">
+                Olá!
+            </h2>
+
+            <p class="text-gray-400 mt-2">
+                Preencha os dados das suas vendas de hoje.
+            </p>
+
+        </div>
+
+
+        <!-- FORMULÁRIO -->
+
+        <div class="max-w-xl bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+
+            <form id="formRegistro">
+
+
+                <!-- DATA -->
+
+                <div class="mb-5">
+
+                    <label for="data" class="block text-sm font-medium text-gray-300 mb-2">
+
+                        Data
+
+                    </label>
+
+                    <input type="date" id="data" name="data" required
+                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+
+                </div>
+
+
+                <!-- META -->
+
+                <div class="mb-5">
+
+                    <label for="metaDiaria" class="block text-sm font-medium text-gray-300 mb-2">
+
+                        Meta diária
+
+                    </label>
+
+                    <input type="number" id="metaDiaria" name="metaDiaria" min="0" step="0.01" placeholder="Ex: 500"
+                        required
+                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+
+                </div>
+
+
+                <!-- REALIZADA -->
+
+                <div class="mb-5">
+
+                    <label for="realizada" class="block text-sm font-medium text-gray-300 mb-2">
+
+                        Valor realizado
+
+                    </label>
+
+                    <input type="number" id="realizada" name="realizada" min="0" step="0.01" placeholder="Ex: 420"
+                        required
+                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+
+                </div>
+
+
+                <!-- VENDAS -->
+
+                <div class="mb-6">
+
+                    <label for="numeroVendas" class="block text-sm font-medium text-gray-300 mb-2">
+
+                        Número de vendas
+
+                    </label>
+
+                    <input type="number" id="numeroVendas" name="numeroVendas" min="0" step="1" placeholder="Ex: 12"
+                        required
+                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+
+                </div>
+
+
+                <!-- BOTÃO -->
+
+                <button type="submit"
+                    class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
+
+                    Salvar registro
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- HISTÓRICO -->
+
+        <div class="mt-10">
+
+            <h2 class="text-2xl font-bold mb-5">
+                Histórico de vendas
+            </h2>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-left">
+
+                        <thead class="bg-gray-800">
+
+                            <tr>
+
+                                <th class="px-6 py-4 text-sm text-gray-300">
+                                    Data
+                                </th>
+
+                                <th class="px-6 py-4 text-sm text-gray-300">
+                                    Meta
+                                </th>
+
+                                <th class="px-6 py-4 text-sm text-gray-300">
+                                    Realizada
+                                </th>
+
+                                <th class="px-6 py-4 text-sm text-gray-300">
+                                    Vendas
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="listaRegistros">
+
+                            <tr>
+
+                                <td colspan="4" class="px-6 py-6 text-center text-gray-500">
+
+                                    Carregando registros...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="./funcionaria.js"></script>
+
+</body>
+
+</html>

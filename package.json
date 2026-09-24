@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3"
+  }
+}
