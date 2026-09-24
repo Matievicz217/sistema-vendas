@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "bcrypt": "^6.0.0",
