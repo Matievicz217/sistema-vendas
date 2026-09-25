@@ -41,6 +41,7 @@ formCadastro.addEventListener('submit', async (event) => {
         alert(dados.mensagem);
 
         formCadastro.reset();
+        window.location.href = '/login/login.html';
 
     } catch (erro) {
         console.error(erro);
