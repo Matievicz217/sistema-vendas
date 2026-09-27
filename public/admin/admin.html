@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel Administrativo | Sistema de Vendas</title>
+
+    <link rel="stylesheet" href="../css/output.css">
+</head>
+
+<body class="min-h-screen bg-gray-950 text-white">
+
+    <!-- CABEÇALHO -->
+
+    <header class="border-b border-gray-800 bg-gray-900">
+
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+
+            <div>
+                <h1 class="text-xl font-bold">
+                    Sistema de Vendas
+                </h1>
+
+                <p class="text-sm text-gray-400 mt-1">
+                    Painel administrativo
+                </p>
+            </div>
+
+            <div class="flex items-center gap-4">
+
+                <span
+                    id="nomeAdmin"
+                    class="text-sm text-gray-300"
+                >
+                    Administrador
+                </span>
+
+                <button
+                    type="button"
+                    id="btnSair"
+                    class="px-5 py-2.5 bg-red-600 hover:bg-red-700 rounded-lg font-medium cursor-pointer transition"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTEÚDO -->
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- TÍTULO -->
+
+        <div class="mb-10">
+
+            <h2 class="text-3xl font-bold">
+                Visão geral
+            </h2>
+
+            <p class="text-gray-400 mt-2">
+                Acompanhe o desempenho da equipe.
+            </p>
+
+        </div>
+
+
+        <!-- CARDS -->
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+                <p class="text-sm text-gray-400">
+                    Funcionárias
+                </p>
+
+                <p
+                    id="totalFuncionarias"
+                    class="text-3xl font-bold mt-3"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+                <p class="text-sm text-gray-400">
+                    Vendas hoje
+                </p>
+
+                <p
+                    id="totalVendas"
+                    class="text-3xl font-bold mt-3"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+                <p class="text-sm text-gray-400">
+                    Valor vendido hoje
+                </p>
+
+                <p
+                    id="valorVendido"
+                    class="text-3xl font-bold mt-3"
+                >
+                    R$ 0,00
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- FUNCIONÁRIAS -->
+
+        <section>
+
+            <div class="mb-6">
+
+                <h3 class="text-xl font-bold">
+                    Desempenho das funcionárias
+                </h3>
+
+                <p class="text-sm text-gray-400 mt-2">
+                    Consulte os resultados registrados pela equipe.
+                </p>
+
+            </div>
+
+
+            <div
+                id="listaFuncionarias"
+                class="space-y-4"
+            >
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center text-gray-400">
+                    Nenhum dado carregado.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="./admin.js"></script>
+
+</body>
+
+</html>
