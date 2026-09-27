@@ -6,6 +6,8 @@ const session = require("express-session");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log("SERVER NOVO CARREGADO");
+
 
 // ========================================
 // MIDDLEWARES
@@ -36,6 +38,36 @@ app.get("/", (req, res) => {
         __dirname + "/public/login/login.html"
     );
 });
+
+// ========================================
+// VERIFICAR ADMIN
+// ========================================
+
+function verificarAdmin(req, res, next) {
+
+    // Verifica se existe usuário logado
+    if (!req.session.usuarioId) {
+
+        return res.status(401).json({
+            sucesso: false,
+            mensagem: "Usuário não está logado."
+        });
+
+    }
+
+    // Verifica se o usuário é administrador
+    if (req.session.tipo !== 'admin') {
+
+        return res.status(403).json({
+            sucesso: false,
+            mensagem: "Acesso não autorizado."
+        });
+
+    }
+
+    // É admin, pode continuar
+    next();
+}
 
 
 // ========================================
@@ -565,6 +597,108 @@ app.get("/api/registros", (req, res) => {
 
 });
 
+// ========================================
+// ADMIN - BUSCAR FUNCIONÁRIAS
+// ========================================
+
+app.get("/api/admin/funcionarias", verificarAdmin, (req, res) => {
+
+    try {
+
+        const funcionarias = db
+            .prepare(`
+                SELECT
+                    id,
+                    nome,
+                    email
+                FROM usuarios
+                WHERE tipo = 'funcionaria'
+                ORDER BY nome ASC
+            `)
+            .all();
+
+        res.json({
+            sucesso: true,
+            total: funcionarias.length,
+            funcionarias: funcionarias
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao buscar funcionárias."
+        });
+
+    }
+
+});
+
+// ========================================
+// ADMIN - BUSCAR TODOS OS REGISTROS
+// ========================================
+
+app.get("/api/admin/registros", verificarAdmin, (req, res) => {
+
+    try {
+
+        const registros = db
+            .prepare(`
+                SELECT
+                    registros.id,
+                    registros.data,
+
+                    registros.meta_diaria,
+                    registros.realizada,
+                    registros.numero_vendas,
+
+                    registros.quantidade_mensagens,
+                    registros.retornos,
+                    registros.vendas_mensagens,
+
+                    registros.quantidade_audios,
+                    registros.retornos_audio,
+                    registros.vendas_audio,
+
+                    registros.prospeccao,
+                    registros.clientes_novos,
+
+                    usuarios.id AS usuario_id,
+                    usuarios.nome AS nome_funcionaria,
+                    usuarios.email AS email_funcionaria
+
+                FROM registros
+
+                INNER JOIN usuarios
+                    ON registros.usuario_id = usuarios.id
+
+                WHERE usuarios.tipo = 'funcionaria'
+
+                ORDER BY registros.data DESC
+            `)
+            .all();
+
+
+        res.json({
+            sucesso: true,
+            registros: registros
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao buscar registros."
+        });
+
+    }
+
+});
+
 
 // ========================================
 // LOGOUT
@@ -598,6 +732,12 @@ app.post("/api/logout", (req, res) => {
 // ========================================
 // INICIAR SERVIDOR
 // ========================================
+console.log(
+    app.router.stack
+        .filter(item => item.route)
+        .map(item => item.route.path)
+);
+
 
 app.listen(PORT, "0.0.0.0", () => {
 

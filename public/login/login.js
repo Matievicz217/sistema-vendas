@@ -1,47 +1,43 @@
-const formLogin = document.querySelector('#formLogin');
+const formLogin = document.querySelector("#formLogin");
 
-formLogin.addEventListener('submit', async (event) => {
+formLogin.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-    event.preventDefault();
+  const email = document.querySelector("#email").value.trim();
+  const senha = document.querySelector("#senha").value;
 
-    const email = document.querySelector('#email').value.trim();
-    const senha = document.querySelector('#senha').value;
+  try {
+    const resposta = await fetch("/api/login", {
+      method: "POST",
 
-    try {
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-        const resposta = await fetch('/api/login', {
-            method: 'POST',
+      body: JSON.stringify({
+        email,
+        senha,
+      }),
+    });
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+    const dados = await resposta.json();
 
-            body: JSON.stringify({
-                email,
-                senha
-            })
-        });
+    if (!resposta.ok) {
+      alert(dados.mensagem);
 
-        const dados = await resposta.json();
-
-        if (!resposta.ok) {
-
-            alert(dados.mensagem);
-
-            return;
-        }
-
-        console.log('Login realizado:', dados.usuario);
-
-        // REDIRECIONAMENTO
-        window.location.href = '/funcionaria/funcionaria.html';
-
-    } catch (erro) {
-
-        console.error(erro);
-
-        alert('Não foi possível conectar ao servidor.');
-
+      return;
     }
 
+    console.log("Login realizado:", dados.usuario);
+
+    if (dados.usuario.tipo === "admin") {
+      window.location.href = "/admin/admin.html";
+    } else {
+      window.location.href = "/funcionaria/funcionaria.html";
+    }
+  } catch (erro) {
+    console.error(erro);
+
+    alert("Não foi possível conectar ao servidor.");
+  }
 });
