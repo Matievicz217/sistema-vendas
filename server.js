@@ -32,11 +32,9 @@ app.use(express.static("public"));
 // ========================================
 
 app.get("/", (req, res) => {
-
     res.sendFile(
         __dirname + "/public/login/login.html"
     );
-
 });
 
 
@@ -48,22 +46,16 @@ app.post("/api/cadastro", async (req, res) => {
 
     const { nome, email, senha } = req.body;
 
-
-    // Verificação básica
-
     if (!nome || !email || !senha) {
-
         return res.status(400).json({
             sucesso: false,
             mensagem: "Preencha todos os campos."
         });
-
     }
-
 
     try {
 
-        // Verifica se o e-mail já existe
+        // VERIFICA SE O E-MAIL JÁ EXISTE
 
         const usuarioExistente = db
             .prepare(`
@@ -73,18 +65,15 @@ app.post("/api/cadastro", async (req, res) => {
             `)
             .get(email);
 
-
         if (usuarioExistente) {
-
             return res.status(400).json({
                 sucesso: false,
                 mensagem: "Este e-mail já está cadastrado."
             });
-
         }
 
 
-        // Cria o hash da senha
+        // CRIA O HASH DA SENHA
 
         const senhaHash = await bcrypt.hash(
             senha,
@@ -92,7 +81,7 @@ app.post("/api/cadastro", async (req, res) => {
         );
 
 
-        // Insere usuário
+        // INSERE USUÁRIO
 
         const inserirUsuario = db.prepare(`
             INSERT INTO usuarios (
@@ -103,7 +92,6 @@ app.post("/api/cadastro", async (req, res) => {
             VALUES (?, ?, ?)
         `);
 
-
         inserirUsuario.run(
             nome,
             email,
@@ -112,27 +100,18 @@ app.post("/api/cadastro", async (req, res) => {
 
 
         res.json({
-
             sucesso: true,
-
             mensagem: "Usuário cadastrado com sucesso!"
-
         });
-
 
     } catch (erro) {
 
         console.error(erro);
 
-
         res.status(500).json({
-
             sucesso: false,
-
             mensagem: "Erro ao cadastrar usuário."
-
         });
-
     }
 
 });
@@ -146,25 +125,16 @@ app.post("/api/login", async (req, res) => {
 
     const { email, senha } = req.body;
 
-
-    // Verificação básica
-
     if (!email || !senha) {
-
         return res.status(400).json({
-
             sucesso: false,
-
             mensagem: "Preencha o e-mail e a senha."
-
         });
-
     }
-
 
     try {
 
-        // Procura o usuário pelo e-mail
+        // PROCURA USUÁRIO
 
         const usuario = db
             .prepare(`
@@ -175,22 +145,15 @@ app.post("/api/login", async (req, res) => {
             .get(email);
 
 
-        // Usuário não encontrado
-
         if (!usuario) {
-
             return res.status(401).json({
-
                 sucesso: false,
-
                 mensagem: "E-mail ou senha incorretos."
-
             });
-
         }
 
 
-        // Compara a senha
+        // COMPARA SENHA
 
         const senhaCorreta = await bcrypt.compare(
             senha,
@@ -199,61 +162,39 @@ app.post("/api/login", async (req, res) => {
 
 
         if (!senhaCorreta) {
-
             return res.status(401).json({
-
                 sucesso: false,
-
                 mensagem: "E-mail ou senha incorretos."
-
             });
-
         }
 
 
-        // Cria sessão
+        // CRIA SESSÃO
 
         req.session.usuarioId = usuario.id;
-
         req.session.tipo = usuario.tipo;
 
 
-        // Resposta
-
         res.json({
-
             sucesso: true,
-
             mensagem: "Login realizado com sucesso!",
 
             usuario: {
-
                 id: usuario.id,
-
                 nome: usuario.nome,
-
                 email: usuario.email,
-
                 tipo: usuario.tipo
-
             }
-
         });
-
 
     } catch (erro) {
 
         console.error(erro);
 
-
         res.status(500).json({
-
             sucesso: false,
-
             mensagem: "Erro ao realizar login."
-
         });
-
     }
 
 });
@@ -265,21 +206,12 @@ app.post("/api/login", async (req, res) => {
 
 app.get("/api/me", (req, res) => {
 
-
-    // Verifica sessão
-
     if (!req.session.usuarioId) {
-
         return res.status(401).json({
-
             logado: false,
-
             mensagem: "Usuário não está logado."
-
         });
-
     }
-
 
     try {
 
@@ -297,167 +229,262 @@ app.get("/api/me", (req, res) => {
 
 
         if (!usuario) {
-
             return res.status(404).json({
-
                 logado: false,
-
                 mensagem: "Usuário não encontrado."
-
             });
-
         }
 
 
         res.json({
-
             logado: true,
 
             usuario: {
-
                 id: usuario.id,
-
                 nome: usuario.nome,
-
                 email: usuario.email,
-
                 tipo: usuario.tipo
-
             }
-
         });
-
 
     } catch (erro) {
 
         console.error(erro);
 
-
         res.status(500).json({
-
             logado: false,
-
             mensagem: "Erro ao verificar usuário."
-
         });
-
     }
 
 });
 
 
 // ========================================
-// CRIAR REGISTRO DIÁRIO
+// CRIAR / ATUALIZAR REGISTRO DIÁRIO
 // ========================================
 
 app.post("/api/registros", (req, res) => {
 
-
-    // Verifica se está logado
+    // VERIFICA LOGIN
 
     if (!req.session.usuarioId) {
-
         return res.status(401).json({
-
             sucesso: false,
-
             mensagem: "Usuário não está logado."
-
         });
-
     }
 
+
+    // RECEBE DADOS
 
     const {
         data,
         metaDiaria,
         realizada,
-        numeroVendas
+        numeroVendas,
+
+        quantidadeMensagens,
+        retornos,
+        vendasMensagens,
+
+        quantidadeAudios,
+        retornosAudio,
+        vendasAudio,
+
+        prospeccao,
+        clientesNovos
     } = req.body;
 
 
     // ========================================
-    // VALIDAÇÃO
+    // VALIDAÇÃO DOS CAMPOS
     // ========================================
 
     if (
         !data ||
         metaDiaria === undefined ||
         realizada === undefined ||
-        numeroVendas === undefined
+        numeroVendas === undefined ||
+        quantidadeMensagens === undefined ||
+        retornos === undefined ||
+        vendasMensagens === undefined ||
+        quantidadeAudios === undefined ||
+        retornosAudio === undefined ||
+        vendasAudio === undefined ||
+        prospeccao === undefined ||
+        clientesNovos === undefined
     ) {
 
         return res.status(400).json({
-
             sucesso: false,
-
             mensagem: "Preencha todos os campos."
-
         });
-
     }
 
 
-    // Verifica se os valores são números
+    // ========================================
+    // VALIDAÇÃO DOS NÚMEROS
+    // ========================================
 
-    if (
-        isNaN(metaDiaria) ||
-        isNaN(realizada) ||
-        isNaN(numeroVendas)
-    ) {
+    const valores = [
+        metaDiaria,
+        realizada,
+        numeroVendas,
+
+        quantidadeMensagens,
+        retornos,
+        vendasMensagens,
+
+        quantidadeAudios,
+        retornosAudio,
+        vendasAudio,
+
+        prospeccao,
+        clientesNovos
+    ];
+
+
+    if (valores.some(valor => isNaN(valor))) {
 
         return res.status(400).json({
-
             sucesso: false,
-
             mensagem: "Os valores precisam ser números."
-
         });
-
     }
 
 
     try {
 
-        // Insere o registro
+        // ========================================
+        // VERIFICA SE JÁ EXISTE REGISTRO NA DATA
+        // ========================================
+
+        const registroExistente = db
+            .prepare(`
+                SELECT id
+                FROM registros
+                WHERE usuario_id = ?
+                AND data = ?
+            `)
+            .get(
+                req.session.usuarioId,
+                data
+            );
+
+
+        // ========================================
+        // SE EXISTE → ATUALIZA
+        // ========================================
+
+        if (registroExistente) {
+
+            const atualizarRegistro = db.prepare(`
+                UPDATE registros
+                SET
+                    meta_diaria = ?,
+                    realizada = ?,
+                    numero_vendas = ?,
+
+                    quantidade_mensagens = ?,
+                    retornos = ?,
+                    vendas_mensagens = ?,
+
+                    quantidade_audios = ?,
+                    retornos_audio = ?,
+                    vendas_audio = ?,
+
+                    prospeccao = ?,
+                    clientes_novos = ?
+
+                WHERE id = ?
+            `);
+
+
+            atualizarRegistro.run(
+                Number(metaDiaria),
+                Number(realizada),
+                Number(numeroVendas),
+
+                Number(quantidadeMensagens),
+                Number(retornos),
+                Number(vendasMensagens),
+
+                Number(quantidadeAudios),
+                Number(retornosAudio),
+                Number(vendasAudio),
+
+                Number(prospeccao),
+                Number(clientesNovos),
+
+                registroExistente.id
+            );
+
+
+            return res.json({
+                sucesso: true,
+                mensagem: "Registro atualizado com sucesso!",
+                registroId: registroExistente.id,
+                atualizado: true
+            });
+        }
+
+
+        // ========================================
+        // SE NÃO EXISTE → CRIA
+        // ========================================
 
         const inserirRegistro = db.prepare(`
             INSERT INTO registros (
                 usuario_id,
                 data,
+
                 meta_diaria,
                 realizada,
-                numero_vendas
+                numero_vendas,
+
+                quantidade_mensagens,
+                retornos,
+                vendas_mensagens,
+
+                quantidade_audios,
+                retornos_audio,
+                vendas_audio,
+
+                prospeccao,
+                clientes_novos
             )
-            VALUES (?, ?, ?, ?, ?)
+
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
 
         const resultado = inserirRegistro.run(
-
             req.session.usuarioId,
-
             data,
 
             Number(metaDiaria),
-
             Number(realizada),
+            Number(numeroVendas),
 
-            Number(numeroVendas)
+            Number(quantidadeMensagens),
+            Number(retornos),
+            Number(vendasMensagens),
 
+            Number(quantidadeAudios),
+            Number(retornosAudio),
+            Number(vendasAudio),
+
+            Number(prospeccao),
+            Number(clientesNovos)
         );
 
 
-        // Resposta
-
         res.json({
-
             sucesso: true,
-
             mensagem: "Registro salvo com sucesso!",
-
-            registroId: resultado.lastInsertRowid
-
+            registroId: resultado.lastInsertRowid,
+            atualizado: false
         });
 
 
@@ -465,15 +492,10 @@ app.post("/api/registros", (req, res) => {
 
         console.error(erro);
 
-
         res.status(500).json({
-
             sucesso: false,
-
             mensagem: "Erro ao salvar registro."
-
         });
-
     }
 
 });
@@ -485,48 +507,49 @@ app.post("/api/registros", (req, res) => {
 
 app.get("/api/registros", (req, res) => {
 
-
-    // Verifica se está logado
-
     if (!req.session.usuarioId) {
-
         return res.status(401).json({
-
             sucesso: false,
-
             mensagem: "Usuário não está logado."
-
         });
-
     }
 
 
     try {
-
-        // Busca somente os registros
-        // da funcionária logada
 
         const registros = db
             .prepare(`
                 SELECT
                     id,
                     data,
+
                     meta_diaria,
                     realizada,
-                    numero_vendas
+                    numero_vendas,
+
+                    quantidade_mensagens,
+                    retornos,
+                    vendas_mensagens,
+
+                    quantidade_audios,
+                    retornos_audio,
+                    vendas_audio,
+
+                    prospeccao,
+                    clientes_novos
+
                 FROM registros
+
                 WHERE usuario_id = ?
+
                 ORDER BY data DESC
             `)
             .all(req.session.usuarioId);
 
 
         res.json({
-
             sucesso: true,
-
             registros: registros
-
         });
 
 
@@ -534,15 +557,10 @@ app.get("/api/registros", (req, res) => {
 
         console.error(erro);
 
-
         res.status(500).json({
-
             sucesso: false,
-
             mensagem: "Erro ao buscar registros."
-
         });
-
     }
 
 });
@@ -554,32 +572,22 @@ app.get("/api/registros", (req, res) => {
 
 app.post("/api/logout", (req, res) => {
 
-
     req.session.destroy((erro) => {
-
 
         if (erro) {
 
             console.error(erro);
 
-
             return res.status(500).json({
-
                 sucesso: false,
-
                 mensagem: "Erro ao sair da conta."
-
             });
-
         }
 
 
         res.json({
-
             sucesso: true,
-
             mensagem: "Logout realizado com sucesso!"
-
         });
 
     });
@@ -591,7 +599,7 @@ app.post("/api/logout", (req, res) => {
 // INICIAR SERVIDOR
 // ========================================
 
-app.listen(PORT,"0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", () => {
 
     console.log(
         `Servidor rodando na porta ${PORT}`

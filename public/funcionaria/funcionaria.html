@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
 
     <title>Área da Funcionária | Sistema de Vendas</title>
 
@@ -15,198 +15,414 @@
 
     <!-- CABEÇALHO -->
 
-    <header class="border-b border-gray-800 bg-gray-900">
-
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header
+        class="sticky top-0 z-20 border-b border-gray-800 bg-gray-900/90 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
 
             <div>
                 <h1 class="text-xl font-bold">
                     Sistema de Vendas
                 </h1>
-
-                <p class="text-sm text-gray-400">
+                <p class="text-sm text-gray-400 mt-1">
                     Área da funcionária
                 </p>
             </div>
 
-            <button id="btnSair" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition">
+            <button type="button" id="btnSair"
+                class="px-5 py-2.5 bg-red-600 cursor-pointer  hover:bg-red-700 active:bg-red-800 rounded-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-900">
                 Sair
             </button>
 
         </div>
-
     </header>
 
 
-    <!-- CONTEÚDO -->
-
-    <main class="max-w-6xl mx-auto px-6 py-10">
-
+    <main class="max-w-6xl mx-auto px-6 py-12">
 
         <!-- SAUDAÇÃO -->
 
-        <div class="mb-8">
-
+        <div class="max-w-4xl mx-auto mb-10">
             <h2 id="nomeUsuario" class="text-3xl font-bold">
                 Olá!
             </h2>
 
-            <p class="text-gray-400 mt-2">
-                Preencha os dados das suas vendas de hoje.
+            <p class="text-gray-400 mt-3">
+                Preencha os indicadores das suas vendas diárias.
             </p>
+        </div>
 
+        <!-- FEEDBACK DE SALVAMENTO (usado pelo JS para mostrar sucesso/erro) -->
+        <div id="feedbackRegistro" role="status" aria-live="polite"
+            class="max-w-4xl mx-auto mb-6 hidden rounded-xl px-5 py-4 text-sm font-medium">
         </div>
 
 
         <!-- FORMULÁRIO -->
 
-        <div class="max-w-xl bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+        <div class="max-w-4xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-6 sm:p-8 md:p-12 shadow-xl">
 
-            <form id="formRegistro">
-
+            <form id="formRegistro" novalidate>
 
                 <!-- DATA -->
 
-                <div class="mb-5">
-
-                    <label for="data" class="block text-sm font-medium text-gray-300 mb-2">
-
-                        Data
-
+                <div class="mb-16">
+                    <label for="data" class="block text-sm font-medium text-gray-300 mb-3">
+                        Data do registro <span class="text-red-400" aria-hidden="true">*</span>
                     </label>
 
-                    <input type="date" id="data" name="data" required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-
+                    <input type="date" id="data" name="data" required aria-required="true"
+                        class="w-full sm:w-72 px-4 py-3 cursor-pointer bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                 </div>
 
 
-                <!-- META -->
+                <!-- RESULTADOS -->
 
-                <div class="mb-5">
+                <fieldset class="mb-24">
 
-                    <label for="metaDiaria" class="block text-sm font-medium text-gray-300 mb-2">
+                    <legend class="w-full text-center max-w-xl mx-auto mb-12">
+                        <span class="block text-2xl font-bold text-white">
+                            Resultados
+                        </span>
 
-                        Meta diária
+                        <span class="block text-sm text-gray-400 mt-3">
+                            Resultados das vendas do dia
+                        </span>
 
-                    </label>
+                        <span class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5"></span>
+                    </legend>
 
-                    <input type="number" id="metaDiaria" name="metaDiaria" min="0" step="0.01" placeholder="Ex: 500"
-                        required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+
+                        <div>
+                            <label for="metaDiaria" class="block text-sm font-medium text-gray-300 mb-3">
+                                Meta diária (R$) <span class="text-red-400" aria-hidden="true">*</span>
+                            </label>
+
+                            <div class="relative">
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-gray-500 text-sm">R$</span>
+                                <input type="number" id="metaDiaria" name="metaDiaria" min="0" step="0.01"
+                                    inputmode="decimal" placeholder="500,00" required aria-required="true"
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="realizada" class="block text-sm font-medium text-gray-300 mb-3">
+                                Valor realizado (R$) <span class="text-red-400" aria-hidden="true">*</span>
+                            </label>
+
+                            <div class="relative">
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-gray-500 text-sm">R$</span>
+                                <input type="number" id="realizada" name="realizada" min="0" step="0.01"
+                                    inputmode="decimal" placeholder="420,00" required aria-required="true"
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="numeroVendas" class="block text-sm font-medium text-gray-300 mb-3">
+                                Número de vendas <span class="text-red-400" aria-hidden="true">*</span>
+                            </label>
+
+                            <input type="number" id="numeroVendas" name="numeroVendas" min="0" step="1"
+                                inputmode="numeric" placeholder="12" required aria-required="true"
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                    </div>
+                </fieldset>
+
+
+                <!-- MENSAGENS -->
+
+                <fieldset class="mb-24">
+
+                    <legend class="w-full text-center max-w-xl mx-auto mb-12">
+                        <span class="block text-2xl font-bold text-white">
+                            Mensagens
+                        </span>
+
+                        <span class="block text-sm text-gray-400 mt-3">
+                            Indicadores de contatos realizados por mensagens
+                        </span>
+
+                        <span class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5"></span>
+                    </legend>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+
+                        <div>
+                            <label for="quantidadeMensagens" class="block text-sm font-medium text-gray-300 mb-3">
+                                Quantidade de mensagens
+                            </label>
+
+                            <input type="number" id="quantidadeMensagens" name="quantidadeMensagens" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="retornos" class="block text-sm font-medium text-gray-300 mb-3">
+                                Retornos de mensagens
+                            </label>
+
+                            <input type="number" id="retornos" name="retornos" min="0" step="1" inputmode="numeric"
+                                value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="vendasMensagens" class="block text-sm font-medium text-gray-300 mb-3">
+                                Vendas por mensagens
+                            </label>
+
+                            <input type="number" id="vendasMensagens" name="vendasMensagens" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                    </div>
+                </fieldset>
+
+
+                <!-- ÁUDIOS -->
+
+                <fieldset class="mb-24">
+
+                    <legend class="w-full text-center max-w-xl mx-auto mb-12">
+                        <span class="block text-2xl font-bold text-white">
+                            Áudios
+                        </span>
+
+                        <span class="block text-sm text-gray-400 mt-3">
+                            Indicadores de contatos realizados por áudio
+                        </span>
+
+                        <span class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5"></span>
+                    </legend>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+
+                        <div>
+                            <label for="quantidadeAudios" class="block text-sm font-medium text-gray-300 mb-3">
+                                Quantidade de áudios
+                            </label>
+
+                            <input type="number" id="quantidadeAudios" name="quantidadeAudios" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="retornosAudio" class="block text-sm font-medium text-gray-300 mb-3">
+                                Retornos de áudio
+                            </label>
+
+                            <input type="number" id="retornosAudio" name="retornosAudio" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="vendasAudio" class="block text-sm font-medium text-gray-300 mb-3">
+                                Vendas por áudio
+                            </label>
+
+                            <input type="number" id="vendasAudio" name="vendasAudio" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                    </div>
+                </fieldset>
+
+
+                <!-- PROSPECÇÃO -->
+
+                <fieldset class="mb-16">
+
+                    <legend class="w-full text-center max-w-xl mx-auto mb-12">
+                        <span class="block text-2xl font-bold text-white">
+                            Prospecção
+                        </span>
+
+                        <span class="block text-sm text-gray-400 mt-3">
+                            Indicadores de prospecção e novos clientes
+                        </span>
+
+                        <span class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5"></span>
+                    </legend>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+
+                        <div>
+                            <label for="prospeccao" class="block text-sm font-medium text-gray-300 mb-3">
+                                Quantidade de prospecções
+                            </label>
+
+                            <input type="number" id="prospeccao" name="prospeccao" min="0" step="1" inputmode="numeric"
+                                value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="clientesNovos" class="block text-sm font-medium text-gray-300 mb-3">
+                                Clientes novos
+                            </label>
+
+                            <input type="number" id="clientesNovos" name="clientesNovos" min="0" step="1"
+                                inputmode="numeric" value="0" required
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        </div>
+
+                    </div>
+                </fieldset>
+
+
+                <!-- AÇÕES -->
+
+                <div class="flex flex-col sm:flex-row gap-4">
+
+                    <button type="submit" id="btnSalvar"
+                        class="flex-1 py-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer ">
+                        Salvar registro
+                    </button>
+
 
                 </div>
-
-
-                <!-- REALIZADA -->
-
-                <div class="mb-5">
-
-                    <label for="realizada" class="block text-sm font-medium text-gray-300 mb-2">
-
-                        Valor realizado
-
-                    </label>
-
-                    <input type="number" id="realizada" name="realizada" min="0" step="0.01" placeholder="Ex: 420"
-                        required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-
-                </div>
-
-
-                <!-- VENDAS -->
-
-                <div class="mb-6">
-
-                    <label for="numeroVendas" class="block text-sm font-medium text-gray-300 mb-2">
-
-                        Número de vendas
-
-                    </label>
-
-                    <input type="number" id="numeroVendas" name="numeroVendas" min="0" step="1" placeholder="Ex: 12"
-                        required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-
-                </div>
-
-
-                <!-- BOTÃO -->
-
-                <button type="submit"
-                    class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
-
-                    Salvar registro
-
-                </button>
 
             </form>
-
         </div>
+
 
         <!-- HISTÓRICO -->
 
-        <div class="mt-10">
+        <section class="max-w-5xl mx-auto mt-24">
 
-            <h2 class="text-2xl font-bold mb-5">
-                Histórico de vendas
-            </h2>
+            <div class="text-center mb-12">
 
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                <h2 class="text-3xl font-bold">
+                    Histórico de vendas
+                </h2>
 
-                <div class="overflow-x-auto">
-
-                    <table class="w-full text-left">
-
-                        <thead class="bg-gray-800">
-
-                            <tr>
-
-                                <th class="px-6 py-4 text-sm text-gray-300">
-                                    Data
-                                </th>
-
-                                <th class="px-6 py-4 text-sm text-gray-300">
-                                    Meta
-                                </th>
-
-                                <th class="px-6 py-4 text-sm text-gray-300">
-                                    Realizada
-                                </th>
-
-                                <th class="px-6 py-4 text-sm text-gray-300">
-                                    Vendas
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="listaRegistros">
-
-                            <tr>
-
-                                <td colspan="4" class="px-6 py-6 text-center text-gray-500">
-
-                                    Carregando registros...
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
+                <p class="text-gray-400 mt-4">
+                    Consulte seus registros e acompanhe todos os indicadores.
+                </p>
 
             </div>
 
-        </div>
+
+            <!-- GUIA DOS INDICADORES -->
+
+            <details class="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-10 mb-10 group">
+
+                <summary class="cursor-pointer list-none flex items-center justify-between select-none">
+                    <span>
+                        <span class="text-xl font-bold block">
+                            Indicadores acompanhados
+                        </span>
+                        <span class="text-sm text-gray-400 mt-1 block">
+                            O que cada coluna do seu histórico significa.
+                        </span>
+                    </span>
+                    <span class="text-gray-400 transition-transform group-open:rotate-180 shrink-0 ml-4"
+                        aria-hidden="true">
+                        ▾
+                    </span>
+                </summary>
+
+                <div class="mt-8 overflow-x-auto rounded-xl border border-gray-800">
+                    <table class="w-full border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-800/60 text-left text-gray-400">
+                                <th scope="col" class="px-5 py-3 font-medium w-40">Grupo</th>
+                                <th scope="col" class="px-5 py-3 font-medium w-56">Indicador</th>
+                                <th scope="col" class="px-5 py-3 font-medium">O que significa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800">
+                            <tr>
+                                <th scope="row" rowspan="3"
+                                    class="px-5 py-4 align-top font-semibold text-blue-400 bg-gray-900/40">Resultados
+                                </th>
+                                <td class="px-5 py-4 text-gray-200">Meta diária</td>
+                                <td class="px-5 py-4 text-gray-400">Valor que você pretende vender no dia.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Valor realizado</td>
+                                <td class="px-5 py-4 text-gray-400">Valor total vendido no dia.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Número de vendas</td>
+                                <td class="px-5 py-4 text-gray-400">Quantidade de vendas realizadas.</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" rowspan="3"
+                                    class="px-5 py-4 align-top font-semibold text-blue-400 bg-gray-900/40">Mensagens
+                                </th>
+                                <td class="px-5 py-4 text-gray-200">Quantidade de mensagens</td>
+                                <td class="px-5 py-4 text-gray-400">Total de mensagens enviadas.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Retornos</td>
+                                <td class="px-5 py-4 text-gray-400">Respostas recebidas por mensagens.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Vendas por mensagens</td>
+                                <td class="px-5 py-4 text-gray-400">Vendas realizadas por mensagens.</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" rowspan="3"
+                                    class="px-5 py-4 align-top font-semibold text-blue-400 bg-gray-900/40">Áudios</th>
+                                <td class="px-5 py-4 text-gray-200">Quantidade de áudios</td>
+                                <td class="px-5 py-4 text-gray-400">Total de áudios enviados.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Retornos de áudio</td>
+                                <td class="px-5 py-4 text-gray-400">Respostas recebidas por áudio.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Vendas por áudio</td>
+                                <td class="px-5 py-4 text-gray-400">Vendas realizadas por áudio.</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" rowspan="2"
+                                    class="px-5 py-4 align-top font-semibold text-blue-400 bg-gray-900/40">Prospecção
+                                </th>
+                                <td class="px-5 py-4 text-gray-200">Prospecções</td>
+                                <td class="px-5 py-4 text-gray-400">Quantidade de prospecções realizadas.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-4 text-gray-200">Clientes novos</td>
+                                <td class="px-5 py-4 text-gray-400">Quantidade de novos clientes.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+
+            <!-- REGISTROS SALVOS -->
+            
+
+            <h3 class="text-xl font-bold mb-6">
+                Registros anteriores
+            </h3>
+
+            <div id="listaRegistros" class="space-y-6">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center text-gray-400">
+                    Carregando registros...
+                </div>
+            </div>
+
+        </section>
 
     </main>
-
 
     <script src="./funcionaria.js"></script>
 

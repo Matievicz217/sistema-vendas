@@ -1,109 +1,170 @@
-console.log("1 - FUNCIONARIA.JS CARREGADO");
+// ========================================
+// ELEMENTOS DA PÁGINA
+// ========================================
+
+const formRegistro = document.querySelector('#formRegistro');
+const listaRegistros = document.querySelector('#listaRegistros');
+const nomeUsuario = document.querySelector('#nomeUsuario');
+const btnSalvar = document.querySelector('#btnSalvar');
+const btnSair = document.querySelector('#btnSair');
+const feedbackRegistro = document.querySelector('#feedbackRegistro');
+let registrosCarregados = [];
 
 
 // ========================================
-// VERIFICAR USUÁRIO LOGADO
+// VERIFICAR USUÁRIO
 // ========================================
 
 async function verificarUsuario() {
-
-    console.log("2 - verificando usuário");
-
     try {
-
         const resposta = await fetch('/api/me');
 
-        console.log(
-            "3 - resposta /api/me:",
-            resposta.status
-        );
-
-
         if (!resposta.ok) {
-
-            console.log("Usuário não está logado.");
-
             window.location.href = '../login/login.html';
-
             return;
-
         }
-
 
         const dados = await resposta.json();
 
-        console.log(
-            "4 - usuário recebido:",
-            dados
-        );
-
-
-        document.querySelector('#nomeUsuario').textContent =
-            `Olá, ${dados.usuario.nome}!`;
-
-
+        nomeUsuario.textContent = `Olá, ${dados.usuario.nome}!`;
     } catch (erro) {
-
-        console.error(
-            "ERRO em verificarUsuario:",
-            erro
-        );
-
+        console.error('Erro ao verificar usuário:', erro);
     }
-
 }
 
 
 // ========================================
-// COLOCAR DATA ATUAL
+// DATA ATUAL
 // ========================================
 
 function colocarDataAtual() {
-
-    console.log("5 - colocando data atual");
-
-    const campoData =
-        document.querySelector('#data');
-
+    const campoData = document.querySelector('#data');
 
     const hoje = new Date();
 
-    const ano =
-        hoje.getFullYear();
+    const ano = hoje.getFullYear();
 
-    const mes =
-        String(
-            hoje.getMonth() + 1
-        ).padStart(2, '0');
+    const mes = String(
+        hoje.getMonth() + 1
+    ).padStart(2, '0');
 
-    const dia =
-        String(
-            hoje.getDate()
-        ).padStart(2, '0');
+    const dia = String(
+        hoje.getDate()
+    ).padStart(2, '0');
 
-
-    campoData.value =
-        `${ano}-${mes}-${dia}`;
-
-
-    console.log(
-        "6 - data definida:",
-        campoData.value
-    );
-
+    campoData.value = `${ano}-${mes}-${dia}`;
 }
 
 
 // ========================================
-// BUSCAR REGISTROS
+// FORMATAR DATA
+// ========================================
+
+function formatarData(data) {
+    if (!data) {
+        return '-';
+    }
+
+    const [ano, mes, dia] = data.split('-');
+
+    return `${dia}/${mes}/${ano}`;
+}
+
+
+// ========================================
+// FORMATAR DINHEIRO
+// ========================================
+
+function formatarDinheiro(valor) {
+    return Number(valor || 0).toLocaleString(
+        'pt-BR',
+        {
+            style: 'currency',
+            currency: 'BRL'
+        }
+    );
+}
+
+
+// ========================================
+// CALCULAR PORCENTAGEM DA META
+// ========================================
+
+function calcularPorcentagem(meta, realizada) {
+    const metaNumero = Number(meta);
+    const realizadaNumero = Number(realizada);
+
+    if (metaNumero <= 0) {
+        return '0%';
+    }
+
+    const porcentagem =
+        (realizadaNumero / metaNumero) * 100;
+
+    return `${porcentagem.toFixed(1)}%`;
+}
+
+
+// ========================================
+// MOSTRAR FEEDBACK
+// ========================================
+
+function mostrarFeedback(mensagem, erro = false) {
+    feedbackRegistro.textContent = mensagem;
+
+    feedbackRegistro.classList.remove(
+        'hidden',
+        'bg-green-950',
+        'border-green-800',
+        'text-green-300',
+        'bg-red-950',
+        'border-red-800',
+        'text-red-300'
+    );
+
+    feedbackRegistro.classList.add('border');
+
+    if (erro) {
+        feedbackRegistro.classList.add(
+            'bg-red-950',
+            'border-red-800',
+            'text-red-300'
+        );
+    } else {
+        feedbackRegistro.classList.add(
+            'bg-green-950',
+            'border-green-800',
+            'text-green-300'
+        );
+    }
+}
+
+function criarIndicador(nome, valor) {
+
+    return `
+        <div
+            class="bg-gray-800/70 border border-gray-700 rounded-xl p-4"
+        >
+            <p
+                class="text-xs text-gray-400 mb-2"
+            >
+                ${nome}
+            </p>
+
+            <p
+                class="text-lg font-semibold text-white"
+            >
+                ${valor ?? 0}
+            </p>
+        </div>
+    `;
+
+}
+// ========================================
+// CARREGAR REGISTROS
 // ========================================
 
 async function carregarRegistros() {
-
-    console.log(
-        "7 - iniciando carregamento dos registros"
-    );
-
 
     try {
 
@@ -111,49 +172,38 @@ async function carregarRegistros() {
             await fetch('/api/registros');
 
 
-        console.log(
-            "8 - resposta /api/registros:",
-            resposta.status
-        );
+        if (!resposta.ok) {
+
+            throw new Error(
+                'Erro ao buscar registros.'
+            );
+
+        }
 
 
         const dados =
             await resposta.json();
 
 
-        console.log(
-            "9 - registros recebidos:",
-            dados
-        );
+        registrosCarregados =
+            dados.registros || [];
 
 
-        const listaRegistros =
-            document.querySelector(
-                '#listaRegistros'
-            );
+        listaRegistros.innerHTML = '';
 
 
-        console.log(
-            "10 - elemento da tabela:",
-            listaRegistros
-        );
+        // ========================================
+        // NENHUM REGISTRO
+        // ========================================
 
-
-        if (dados.registros.length === 0) {
+        if (registrosCarregados.length === 0) {
 
             listaRegistros.innerHTML = `
-                <tr>
-
-                    <td
-                        colspan="4"
-                        class="px-6 py-6 text-center text-gray-500"
-                    >
-
-                        Nenhum registro encontrado.
-
-                    </td>
-
-                </tr>
+                <div
+                    class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center text-gray-400"
+                >
+                    Nenhum registro encontrado.
+                </div>
             `;
 
             return;
@@ -161,72 +211,238 @@ async function carregarRegistros() {
         }
 
 
-        listaRegistros.innerHTML = '';
+        // ========================================
+        // CRIAR CARDS
+        // ========================================
 
-
-        dados.registros.forEach(
+        registrosCarregados.forEach(
             (registro) => {
 
-                console.log(
-                    "11 - adicionando registro:",
-                    registro
-                );
+                const card =
+                    document.createElement('article');
 
 
-                const linha =
-                    document.createElement('tr');
+                card.className = `
+                    bg-gray-900
+                    border
+                    border-gray-800
+                    rounded-2xl
+                    p-6
+                    md:p-8
+                    shadow-xl
+                `;
 
 
-                linha.classList.add(
-                    'border-t',
-                    'border-gray-800'
-                );
+                card.innerHTML = `
+
+                    <!-- CABEÇALHO -->
+
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm text-gray-400"
+                            >
+                                Registro
+                            </p>
+
+                            <h4
+                                class="text-xl font-bold mt-1"
+                            >
+                                ${formatarData(
+                                    registro.data
+                                )}
+                            </h4>
+
+                        </div>
 
 
-                linha.innerHTML = `
+                        <button
+                            type="button"
+                            class="btnEditar self-start sm:self-auto px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-gray-950 rounded-lg font-semibold cursor-pointer transition"
+                            data-id="${registro.id}"
+                        >
+                            Editar
+                        </button>
 
-                    <td class="px-6 py-4">
-                        ${registro.data}
-                    </td>
+                    </div>
 
-                    <td class="px-6 py-4">
-                        R$ ${Number(
-                            registro.meta_diaria
-                        ).toFixed(2)}
-                    </td>
 
-                    <td class="px-6 py-4">
-                        R$ ${Number(
-                            registro.realizada
-                        ).toFixed(2)}
-                    </td>
+                    <!-- RESULTADOS -->
 
-                    <td class="px-6 py-4">
-                        ${registro.numero_vendas}
-                    </td>
+                    <div class="mb-8">
+
+                        <h5
+                            class="text-blue-400 font-semibold mb-4"
+                        >
+                            Resultados
+                        </h5>
+
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                        >
+
+                            ${criarIndicador(
+                                'Meta diária',
+                                formatarDinheiro(
+                                    registro.meta_diaria
+                                )
+                            )}
+
+                            ${criarIndicador(
+                                'Valor realizado',
+                                formatarDinheiro(
+                                    registro.realizada
+                                )
+                            )}
+
+                            ${criarIndicador(
+                                'Número de vendas',
+                                registro.numero_vendas
+                            )}
+
+                            ${criarIndicador(
+                                '% da meta',
+                                calcularPorcentagem(
+                                    registro.meta_diaria,
+                                    registro.realizada
+                                )
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MENSAGENS -->
+
+                    <div class="mb-8">
+
+                        <h5
+                            class="text-blue-400 font-semibold mb-4"
+                        >
+                            Mensagens
+                        </h5>
+
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                        >
+
+                            ${criarIndicador(
+                                'Quantidade',
+                                registro.quantidade_mensagens
+                            )}
+
+                            ${criarIndicador(
+                                'Retornos',
+                                registro.retornos
+                            )}
+
+                            ${criarIndicador(
+                                'Vendas',
+                                registro.vendas_mensagens
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ÁUDIOS -->
+
+                    <div class="mb-8">
+
+                        <h5
+                            class="text-blue-400 font-semibold mb-4"
+                        >
+                            Áudios
+                        </h5>
+
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                        >
+
+                            ${criarIndicador(
+                                'Quantidade',
+                                registro.quantidade_audios
+                            )}
+
+                            ${criarIndicador(
+                                'Retornos',
+                                registro.retornos_audio
+                            )}
+
+                            ${criarIndicador(
+                                'Vendas',
+                                registro.vendas_audio
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROSPECÇÃO -->
+
+                    <div>
+
+                        <h5
+                            class="text-blue-400 font-semibold mb-4"
+                        >
+                            Prospecção
+                        </h5>
+
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        >
+
+                            ${criarIndicador(
+                                'Prospecções',
+                                registro.prospeccao
+                            )}
+
+                            ${criarIndicador(
+                                'Clientes novos',
+                                registro.clientes_novos
+                            )}
+
+                        </div>
+
+                    </div>
 
                 `;
 
 
                 listaRegistros.appendChild(
-                    linha
+                    card
                 );
 
             }
         );
 
 
-        console.log(
-            "12 - registros colocados na tabela"
-        );
-
-
     } catch (erro) {
 
         console.error(
-            "ERRO em carregarRegistros:",
+            'Erro ao carregar registros:',
             erro
         );
+
+
+        listaRegistros.innerHTML = `
+            <div
+                class="bg-red-950 border border-red-800 rounded-2xl p-8 text-center text-red-300"
+            >
+                Erro ao carregar os registros.
+            </div>
+        `;
 
     }
 
@@ -237,244 +453,322 @@ async function carregarRegistros() {
 // SALVAR REGISTRO
 // ========================================
 
-const formRegistro =
-    document.querySelector(
-        '#formRegistro'
-    );
+formRegistro.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
 
-console.log(
-    "13 - formulário encontrado:",
-    formRegistro
-);
+    // RESULTADOS
+
+    const data =
+        document.querySelector('#data').value;
+
+    const metaDiaria =
+        document.querySelector('#metaDiaria').value;
+
+    const realizada =
+        document.querySelector('#realizada').value;
+
+    const numeroVendas =
+        document.querySelector('#numeroVendas').value;
 
 
-formRegistro.addEventListener(
-    'submit',
-    async (event) => {
+    // MENSAGENS
 
-        event.preventDefault();
+    const quantidadeMensagens =
+        document.querySelector('#quantidadeMensagens').value;
+
+    const retornos =
+        document.querySelector('#retornos').value;
+
+    const vendasMensagens =
+        document.querySelector('#vendasMensagens').value;
 
 
-        console.log(
-            "14 - formulário enviado"
+    // ÁUDIOS
+
+    const quantidadeAudios =
+        document.querySelector('#quantidadeAudios').value;
+
+    const retornosAudio =
+        document.querySelector('#retornosAudio').value;
+
+    const vendasAudio =
+        document.querySelector('#vendasAudio').value;
+
+
+    // PROSPECÇÃO
+
+    const prospeccao =
+        document.querySelector('#prospeccao').value;
+
+    const clientesNovos =
+        document.querySelector('#clientesNovos').value;
+
+
+    // ========================================
+    // VALIDAR
+    // ========================================
+
+    if (
+        !data ||
+        metaDiaria === '' ||
+        realizada === '' ||
+        numeroVendas === ''
+    ) {
+        mostrarFeedback(
+            'Preencha os campos obrigatórios.',
+            true
         );
 
-
-        const data =
-            document.querySelector(
-                '#data'
-            ).value;
+        return;
+    }
 
 
-        const metaDiaria =
-            document.querySelector(
-                '#metaDiaria'
-            ).value;
+    // ========================================
+    // DADOS QUE SERÃO ENVIADOS
+    // ========================================
+
+    const registro = {
+        data: data,
+
+        metaDiaria: Number(metaDiaria),
+        realizada: Number(realizada),
+        numeroVendas: Number(numeroVendas),
+
+        quantidadeMensagens: Number(quantidadeMensagens),
+        retornos: Number(retornos),
+        vendasMensagens: Number(vendasMensagens),
+
+        quantidadeAudios: Number(quantidadeAudios),
+        retornosAudio: Number(retornosAudio),
+        vendasAudio: Number(vendasAudio),
+
+        prospeccao: Number(prospeccao),
+        clientesNovos: Number(clientesNovos)
+    };
 
 
-        const realizada =
-            document.querySelector(
-                '#realizada'
-            ).value;
+    console.log('Registro enviado:', registro);
 
 
-        const numeroVendas =
-            document.querySelector(
-                '#numeroVendas'
-            ).value;
+    try {
+        btnSalvar.disabled = true;
+        btnSalvar.textContent = 'Salvando...';
 
 
-        console.log(
-            "15 - dados:",
+        const resposta = await fetch(
+            '/api/registros',
             {
-                data,
-                metaDiaria,
-                realizada,
-                numeroVendas
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(registro)
             }
         );
 
 
-        try {
-
-            const resposta =
-                await fetch(
-                    '/api/registros',
-                    {
-
-                        method: 'POST',
-
-                        headers: {
-                            'Content-Type':
-                                'application/json'
-                        },
-
-                        body: JSON.stringify({
-
-                            data,
-
-                            metaDiaria,
-
-                            realizada,
-
-                            numeroVendas
-
-                        })
-
-                    }
-                );
+        const dados = await resposta.json();
 
 
-            const dados =
-                await resposta.json();
-
-
-            console.log(
-                "16 - resposta ao salvar:",
-                dados
+        if (!resposta.ok) {
+            mostrarFeedback(
+                dados.mensagem || 'Erro ao salvar registro.',
+                true
             );
 
-
-            if (!resposta.ok) {
-
-                alert(
-                    dados.mensagem
-                );
-
-                return;
-
-            }
-
-
-            alert(
-                dados.mensagem
-            );
-
-
-            document.querySelector(
-                '#metaDiaria'
-            ).value = '';
-
-
-            document.querySelector(
-                '#realizada'
-            ).value = '';
-
-
-            document.querySelector(
-                '#numeroVendas'
-            ).value = '';
-
-
-            colocarDataAtual();
-
-
-            carregarRegistros();
-
-        } catch (erro) {
-
-            console.error(
-                "ERRO ao salvar:",
-                erro
-            );
-
-            alert(
-                'Não foi possível conectar ao servidor.'
-            );
-
+            return;
         }
 
+
+        mostrarFeedback(
+            dados.mensagem || 'Registro salvo com sucesso!'
+        );
+
+
+        // ========================================
+        // LIMPAR FORMULÁRIO
+        // ========================================
+
+        formRegistro.reset();
+
+
+        // Campos novos voltam para zero
+
+        document.querySelector('#quantidadeMensagens').value = 0;
+        document.querySelector('#retornos').value = 0;
+        document.querySelector('#vendasMensagens').value = 0;
+
+        document.querySelector('#quantidadeAudios').value = 0;
+        document.querySelector('#retornosAudio').value = 0;
+        document.querySelector('#vendasAudio').value = 0;
+
+        document.querySelector('#prospeccao').value = 0;
+        document.querySelector('#clientesNovos').value = 0;
+
+
+        colocarDataAtual();
+
+
+        // Atualiza o histórico
+
+        await carregarRegistros();
+
+    } catch (erro) {
+        console.error('Erro ao salvar:', erro);
+
+        mostrarFeedback(
+            'Não foi possível conectar ao servidor.',
+            true
+        );
+
+    } finally {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = 'Salvar registro';
     }
-);
+});
+
+// ========================================
+// EDITAR REGISTRO
+// ========================================
+
+function editarRegistro(id) {
+
+    const registro = registrosCarregados.find(
+        (registro) => registro.id === id
+    );
+
+    if (!registro) {
+        return;
+    }
+
+
+    // RESULTADOS
+
+    document.querySelector('#data').value =
+        registro.data;
+
+    document.querySelector('#metaDiaria').value =
+        registro.meta_diaria;
+
+    document.querySelector('#realizada').value =
+        registro.realizada;
+
+    document.querySelector('#numeroVendas').value =
+        registro.numero_vendas;
+
+
+    // MENSAGENS
+
+    document.querySelector('#quantidadeMensagens').value =
+        registro.quantidade_mensagens;
+
+    document.querySelector('#retornos').value =
+        registro.retornos;
+
+    document.querySelector('#vendasMensagens').value =
+        registro.vendas_mensagens;
+
+
+    // ÁUDIOS
+
+    document.querySelector('#quantidadeAudios').value =
+        registro.quantidade_audios;
+
+    document.querySelector('#retornosAudio').value =
+        registro.retornos_audio;
+
+    document.querySelector('#vendasAudio').value =
+        registro.vendas_audio;
+
+
+    // PROSPECÇÃO
+
+    document.querySelector('#prospeccao').value =
+        registro.prospeccao;
+
+    document.querySelector('#clientesNovos').value =
+        registro.clientes_novos;
+
+
+    // MUDA O TEXTO DO BOTÃO
+
+    btnSalvar.textContent = 'Salvar alterações';
+
+
+    // SOBE ATÉ O FORMULÁRIO
+
+    formRegistro.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+
+// ========================================
+// CLIQUE NO BOTÃO EDITAR
+// ========================================
+
+listaRegistros.addEventListener('click', (event) => {
+
+    const botao =
+        event.target.closest('.btnEditar');
+
+    if (!botao) {
+        return;
+    }
+
+    const id =
+        Number(botao.dataset.id);
+
+    editarRegistro(id);
+});
 
 
 // ========================================
 // LOGOUT
 // ========================================
 
-const btnSair =
-    document.querySelector(
-        '#btnSair'
-    );
-
-
-console.log(
-    "17 - botão sair encontrado:",
-    btnSair
-);
-
-
-btnSair.addEventListener(
-    'click',
-    async () => {
-
-        console.log(
-            "18 - botão sair clicado"
+btnSair.addEventListener('click', async () => {
+    try {
+        const resposta = await fetch(
+            '/api/logout',
+            {
+                method: 'POST'
+            }
         );
 
 
-        try {
+        if (resposta.ok) {
+            window.location.href =
+                '../login/login.html';
 
-            const resposta =
-                await fetch(
-                    '/api/logout',
-                    {
-                        method: 'POST'
-                    }
-                );
-
-
-            const dados =
-                await resposta.json();
-
-
-            if (resposta.ok) {
-
-                window.location.href =
-                    '../login/login.html';
-
-            } else {
-
-                alert(
-                    dados.mensagem
-                );
-
-            }
-
-        } catch (erro) {
-
-            console.error(
-                "ERRO ao sair:",
-                erro
-            );
-
-            alert(
-                'Erro ao sair da conta.'
-            );
-
+            return;
         }
 
+
+        const dados = await resposta.json();
+
+        alert(
+            dados.mensagem || 'Erro ao sair.'
+        );
+
+    } catch (erro) {
+        console.error('Erro ao sair:', erro);
+
+        alert('Erro ao sair da conta.');
     }
-);
+});
 
 
 // ========================================
-// INICIALIZAÇÃO
+// INICIAR APLICAÇÃO
 // ========================================
-
-console.log(
-    "19 - iniciando aplicação"
-);
-
 
 verificarUsuario();
 
 colocarDataAtual();
 
 carregarRegistros();
-
-
-console.log(
-    "20 - aplicação iniciada"
-);
