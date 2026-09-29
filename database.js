@@ -86,4 +86,23 @@ db.prepare(`
     ON registros (usuario_id, data)
 `).run();
 
+// ========================================
+// TABELA DE METAS MENSAIS
+// ========================================
+
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS metas_mensais (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
+        mes INTEGER NOT NULL,
+        ano INTEGER NOT NULL,
+        meta REAL NOT NULL,
+
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id),
+
+        UNIQUE(usuario_id, mes, ano)
+    )
+`).run();
+
 module.exports = db;

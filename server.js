@@ -598,6 +598,122 @@ app.get("/api/registros", (req, res) => {
 });
 
 // ========================================
+// ADMIN - CRIAR / ATUALIZAR META MENSAL
+// ========================================
+
+app.post("/api/admin/metas", verificarAdmin, (req, res) => {
+
+    const {
+        usuarioId,
+        mes,
+        ano,
+        meta
+    } = req.body;
+
+    // Verifica se todos os campos foram enviados
+    if (
+        usuarioId === undefined ||
+        mes === undefined ||
+        ano === undefined ||
+        meta === undefined
+    ) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Preencha todos os campos."
+        });
+    }
+
+    // Converte os valores
+    const usuarioIdNumero = Number(usuarioId);
+    const mesNumero = Number(mes);
+    const anoNumero = Number(ano);
+    const metaNumero = Number(meta);
+
+    // Valida os números
+    if (
+        isNaN(usuarioIdNumero) ||
+        isNaN(mesNumero) ||
+        isNaN(anoNumero) ||
+        isNaN(metaNumero)
+    ) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Os valores enviados são inválidos."
+        });
+    }
+
+    // Mês precisa estar entre 1 e 12
+    if (mesNumero < 1 || mesNumero > 12) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Mês inválido."
+        });
+    }
+
+    // Meta não pode ser negativa
+    if (metaNumero < 0) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "A meta não pode ser negativa."
+        });
+    }
+
+    try {
+
+        // Confirma que a funcionária existe
+        const funcionaria = db
+            .prepare(`
+                SELECT id
+                FROM usuarios
+                WHERE id = ?
+                AND tipo = 'funcionaria'
+            `)
+            .get(usuarioIdNumero);
+
+        if (!funcionaria) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: "Funcionária não encontrada."
+            });
+        }
+
+        // Cria a meta ou atualiza caso já exista
+        db.prepare(`
+            INSERT INTO metas_mensais (
+                usuario_id,
+                mes,
+                ano,
+                meta
+            )
+            VALUES (?, ?, ?, ?)
+
+            ON CONFLICT(usuario_id, mes, ano)
+            DO UPDATE SET
+                meta = excluded.meta
+        `).run(
+            usuarioIdNumero,
+            mesNumero,
+            anoNumero,
+            metaNumero
+        );
+
+        res.json({
+            sucesso: true,
+            mensagem: "Meta mensal salva com sucesso!"
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao salvar meta mensal."
+        });
+    }
+});
+
+// ========================================
 // ADMIN - BUSCAR FUNCIONÁRIAS
 // ========================================
 
@@ -634,6 +750,139 @@ app.get("/api/admin/funcionarias", verificarAdmin, (req, res) => {
 
     }
 
+});
+
+// ========================================
+// ADMIN - RESUMO MENSAL DAS FUNCIONÁRIAS
+// ========================================
+
+app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
+
+    const { mes, ano } = req.query;
+
+    const mesNumero = Number(mes);
+    const anoNumero = Number(ano);
+
+    if (
+        !mes ||
+        !ano ||
+        isNaN(mesNumero) ||
+        isNaN(anoNumero) ||
+        mesNumero < 1 ||
+        mesNumero > 12
+    ) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Mês ou ano inválido."
+        });
+    }
+
+    try {
+
+        // Transforma 9 em "09"
+        const mesFormatado = String(mesNumero).padStart(2, "0");
+
+        // Exemplo: "2026-09"
+        const periodo = `${anoNumero}-${mesFormatado}`;
+
+        const resumo = db
+            .prepare(`
+                SELECT
+                    usuarios.id AS usuario_id,
+                    usuarios.nome AS nome_funcionaria,
+                    usuarios.email AS email_funcionaria,
+
+                    COALESCE(metas_mensais.meta, 0) AS meta_mensal,
+
+                    COALESCE(SUM(registros.realizada), 0) AS valor_vendido,
+                    COALESCE(SUM(registros.numero_vendas), 0) AS numero_vendas,
+
+                    COALESCE(SUM(registros.quantidade_mensagens), 0)
+                        AS quantidade_mensagens,
+
+                    COALESCE(SUM(registros.retornos), 0)
+                        AS retornos,
+
+                    COALESCE(SUM(registros.vendas_mensagens), 0)
+                        AS vendas_mensagens,
+
+                    COALESCE(SUM(registros.quantidade_audios), 0)
+                        AS quantidade_audios,
+
+                    COALESCE(SUM(registros.retornos_audio), 0)
+                        AS retornos_audio,
+
+                    COALESCE(SUM(registros.vendas_audio), 0)
+                        AS vendas_audio,
+
+                    COALESCE(SUM(registros.prospeccao), 0)
+                        AS prospeccao,
+
+                    COALESCE(SUM(registros.clientes_novos), 0)
+                        AS clientes_novos
+
+                FROM usuarios
+
+                LEFT JOIN registros
+                    ON registros.usuario_id = usuarios.id
+                    AND substr(registros.data, 1, 7) = ?
+
+                LEFT JOIN metas_mensais
+                    ON metas_mensais.usuario_id = usuarios.id
+                    AND metas_mensais.mes = ?
+                    AND metas_mensais.ano = ?
+
+                WHERE usuarios.tipo = 'funcionaria'
+
+                GROUP BY
+                    usuarios.id,
+                    usuarios.nome,
+                    usuarios.email,
+                    metas_mensais.meta
+
+                ORDER BY usuarios.nome ASC
+            `)
+            .all(
+                periodo,
+                mesNumero,
+                anoNumero
+            );
+
+        // Calcula a porcentagem da meta
+        const resultado = resumo.map(funcionaria => {
+
+            const meta = Number(funcionaria.meta_mensal);
+            const vendido = Number(funcionaria.valor_vendido);
+
+            const porcentagem =
+                meta > 0
+                    ? (vendido / meta) * 100
+                    : 0;
+
+            return {
+                ...funcionaria,
+                porcentagem_meta: Number(
+                    porcentagem.toFixed(2)
+                )
+            };
+        });
+
+        res.json({
+            sucesso: true,
+            mes: mesNumero,
+            ano: anoNumero,
+            funcionarias: resultado
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao gerar resumo mensal."
+        });
+    }
 });
 
 // ========================================
