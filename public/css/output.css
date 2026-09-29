@@ -17,6 +17,8 @@
     --color-yellow-500: oklch(79.5% 0.184 86.047);
     --color-yellow-600: oklch(68.1% 0.162 75.834);
     --color-green-300: oklch(87.1% 0.15 154.449);
+    --color-green-500: oklch(72.3% 0.219 149.579);
+    --color-green-700: oklch(52.7% 0.154 150.069);
     --color-green-800: oklch(44.8% 0.119 151.328);
     --color-green-950: oklch(26.6% 0.065 152.934);
     --color-blue-400: oklch(70.7% 0.165 254.624);
@@ -238,6 +240,12 @@
   .z-20 {
     z-index: 20;
   }
+  .m-8 {
+    margin: calc(var(--spacing) * 8);
+  }
+  .mx-8 {
+    margin-inline: calc(var(--spacing) * 8);
+  }
   .mx-auto {
     margin-inline: auto;
   }
@@ -423,9 +431,6 @@
   .self-start {
     align-self: flex-start;
   }
-  .overflow-hidden {
-    overflow: hidden;
-  }
   .overflow-x-auto {
     overflow-x: auto;
   }
@@ -500,6 +505,12 @@
   .bg-gray-950 {
     background-color: var(--color-gray-950);
   }
+  .bg-green-300 {
+    background-color: var(--color-green-300);
+  }
+  .bg-green-500 {
+    background-color: var(--color-green-500);
+  }
   .bg-green-950 {
     background-color: var(--color-green-950);
   }
@@ -539,9 +550,6 @@
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
   }
-  .py-3\.5 {
-    padding-block: calc(var(--spacing) * 3.5);
-  }
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
   }
@@ -557,9 +565,6 @@
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
   }
-  .pl-2 {
-    padding-left: calc(var(--spacing) * 2);
-  }
   .pl-10 {
     padding-left: calc(var(--spacing) * 10);
   }
@@ -568,9 +573,6 @@
   }
   .text-left {
     text-align: left;
-  }
-  .text-right {
-    text-align: right;
   }
   .align-top {
     vertical-align: top;
@@ -614,9 +616,6 @@
   .tracking-wider {
     --tw-tracking: var(--tracking-wider);
     letter-spacing: var(--tracking-wider);
-  }
-  .whitespace-nowrap {
-    white-space: nowrap;
   }
   .text-blue-400 {
     color: var(--color-blue-400);
@@ -704,13 +703,8 @@
     .hover\:bg-blue-700:hover {
       background-color: var(--color-blue-700);
     }
-    .hover\:bg-gray-800\/40:hover {
-      background-color: color-mix(in srgb, oklch(27.8% 0.033 256.848) 40%, transparent);
-    }
-    @supports (color: color-mix(in lab, red, red)) {
-      .hover\:bg-gray-800\/40:hover {
-        background-color: color-mix(in oklab, var(--color-gray-800) 40%, transparent);
-      }
+    .hover\:bg-green-700:hover {
+      background-color: var(--color-green-700);
     }
     .hover\:bg-red-700:hover {
       background-color: var(--color-red-700);
@@ -821,12 +815,6 @@
     }
     .lg\:grid-cols-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-  .\[\&\>tr\:nth-child\(even\)\]\:bg-gray-800\/20 > tr:nth-child(even) {
-    background-color: color-mix(in srgb, oklch(27.8% 0.033 256.848) 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-gray-800) 20%, transparent);
     }
   }
 }
