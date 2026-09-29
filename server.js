@@ -534,6 +534,286 @@ app.post("/api/registros", (req, res) => {
 
 
 // ========================================
+// RESUMO MENSAL DA FUNCIONÁRIA
+// ========================================
+
+app.get("/api/me/resumo-mensal", (req, res) => {
+
+    // ========================================
+    // VERIFICAR LOGIN
+    // ========================================
+
+    if (!req.session.usuarioId) {
+
+        return res.status(401).json({
+            sucesso: false,
+            mensagem: "Usuário não está logado."
+        });
+
+    }
+
+
+    // ========================================
+    // RECEBER MÊS E ANO
+    // ========================================
+
+    const {
+        mes,
+        ano
+    } = req.query;
+
+
+    const mesNumero =
+        Number(mes);
+
+    const anoNumero =
+        Number(ano);
+
+
+    // ========================================
+    // VALIDAR
+    // ========================================
+
+    if (
+        !mes ||
+        !ano ||
+        isNaN(mesNumero) ||
+        isNaN(anoNumero) ||
+        mesNumero < 1 ||
+        mesNumero > 12
+    ) {
+
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Mês ou ano inválido."
+        });
+
+    }
+
+
+    try {
+
+        // Exemplo:
+        // 2026 + mês 9 = "2026-09"
+
+        const mesFormatado =
+            String(mesNumero)
+                .padStart(2, "0");
+
+
+        const periodo =
+            `${anoNumero}-${mesFormatado}`;
+
+
+        // ========================================
+        // BUSCAR META MENSAL
+        // ========================================
+
+        const metaMensal = db
+            .prepare(`
+                SELECT meta
+
+                FROM metas_mensais
+
+                WHERE usuario_id = ?
+                AND mes = ?
+                AND ano = ?
+            `)
+            .get(
+                req.session.usuarioId,
+                mesNumero,
+                anoNumero
+            );
+
+
+        // ========================================
+        // SOMAR REGISTROS DO MÊS
+        // ========================================
+
+        const resumo = db
+            .prepare(`
+                SELECT
+
+                    COALESCE(
+                        SUM(realizada),
+                        0
+                    ) AS valor_vendido,
+
+                    COALESCE(
+                        SUM(numero_vendas),
+                        0
+                    ) AS numero_vendas,
+
+                    COALESCE(
+                        SUM(quantidade_mensagens),
+                        0
+                    ) AS quantidade_mensagens,
+
+                    COALESCE(
+                        SUM(retornos),
+                        0
+                    ) AS retornos,
+
+                    COALESCE(
+                        SUM(vendas_mensagens),
+                        0
+                    ) AS vendas_mensagens,
+
+                    COALESCE(
+                        SUM(quantidade_audios),
+                        0
+                    ) AS quantidade_audios,
+
+                    COALESCE(
+                        SUM(retornos_audio),
+                        0
+                    ) AS retornos_audio,
+
+                    COALESCE(
+                        SUM(vendas_audio),
+                        0
+                    ) AS vendas_audio,
+
+                    COALESCE(
+                        SUM(prospeccao),
+                        0
+                    ) AS prospeccao,
+
+                    COALESCE(
+                        SUM(clientes_novos),
+                        0
+                    ) AS clientes_novos
+
+                FROM registros
+
+                WHERE usuario_id = ?
+
+                AND substr(data, 1, 7) = ?
+            `)
+            .get(
+                req.session.usuarioId,
+                periodo
+            );
+
+
+        // ========================================
+        // CALCULAR META
+        // ========================================
+
+        const meta =
+            metaMensal
+                ? Number(metaMensal.meta)
+                : 0;
+
+
+        const vendido =
+            Number(resumo.valor_vendido);
+
+
+        const porcentagem =
+            meta > 0
+                ? (vendido / meta) * 100
+                : 0;
+
+
+        // ========================================
+        // RESPOSTA
+        // ========================================
+
+        res.json({
+
+            sucesso: true,
+
+            mes: mesNumero,
+
+            ano: anoNumero,
+
+            resumo: {
+
+                meta_mensal:
+                    meta,
+
+                valor_vendido:
+                    vendido,
+
+                porcentagem_meta:
+                    Number(
+                        porcentagem.toFixed(2)
+                    ),
+
+                numero_vendas:
+                    Number(
+                        resumo.numero_vendas
+                    ),
+
+                quantidade_mensagens:
+                    Number(
+                        resumo.quantidade_mensagens
+                    ),
+
+                retornos:
+                    Number(
+                        resumo.retornos
+                    ),
+
+                vendas_mensagens:
+                    Number(
+                        resumo.vendas_mensagens
+                    ),
+
+                quantidade_audios:
+                    Number(
+                        resumo.quantidade_audios
+                    ),
+
+                retornos_audio:
+                    Number(
+                        resumo.retornos_audio
+                    ),
+
+                vendas_audio:
+                    Number(
+                        resumo.vendas_audio
+                    ),
+
+                prospeccao:
+                    Number(
+                        resumo.prospeccao
+                    ),
+
+                clientes_novos:
+                    Number(
+                        resumo.clientes_novos
+                    )
+
+            }
+
+        });
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao gerar resumo mensal:",
+            erro
+        );
+
+
+        res.status(500).json({
+
+            sucesso: false,
+
+            mensagem:
+                "Erro ao gerar resumo mensal."
+
+        });
+
+    }
+
+});
+
+
+// ========================================
 // BUSCAR REGISTROS DA FUNCIONÁRIA
 // ========================================
 
