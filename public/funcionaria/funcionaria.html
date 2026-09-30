@@ -4,38 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
 
-    <title>Área da Funcionária | Sistema de Vendas</title>
+    <title>Área da Funcionária | Dermosens</title>
 
     <link rel="stylesheet" href="../css/output.css">
 </head>
 
-<body class="min-h-screen bg-gray-950 text-white">
+<body class="min-h-screen bg-[#eef3f1] text-[#202322]">
 
-    <!-- ======================================== -->
-    <!-- CABEÇALHO -->
-    <!-- ======================================== -->
+    <!-- ========================================
+         CABEÇALHO
+    ========================================= -->
 
-    <header
-        class="sticky top-0 z-20 border-b border-gray-800 bg-gray-900/90 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70">
+    <header class="sticky top-0 z-20 border-b border-[#d8e1de] bg-white/90 backdrop-blur">
 
-        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
 
-            <div>
-                <h1 class="text-xl font-bold">
-                    Sistema de Vendas
-                </h1>
+            <!-- Marca -->
+            <div class="flex items-center gap-4">
 
-                <p class="text-sm text-gray-400 mt-1">
-                    Área da funcionária
-                </p>
+                <div
+                    class="w-17 h-17 rounded-full bg-[#819b94] flex items-center justify-center shadow-sm"
+                >
+                    <span class="text-white text-[9px] tracking-[0.15em]">
+                        DERMOSENS
+                    </span>
+                </div>
+
+                <div>
+                    <h1 class="text-lg font-medium tracking-wide">
+                        Dermosens
+                    </h1>
+
+                    <p class="text-xs text-[#74817d]">
+                        Sistema de Vendas
+                    </p>
+                </div>
+
             </div>
 
+
+            <!-- Sair -->
             <button
                 type="button"
                 id="btnSair"
-                class="px-5 py-2.5 bg-red-600 cursor-pointer hover:bg-red-700 active:bg-red-800 rounded-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-900">
+                class="
+                    px-5 py-2.5
+                    border border-[#cbd7d3]
+                    text-[#64736f]
+                    hover:bg-[#eef3f1]
+                    hover:text-[#46534f]
+                    rounded-lg
+                    text-sm
+                    font-medium
+                    transition
+                    cursor-pointer
+                "
+            >
                 Sair
             </button>
 
@@ -44,193 +69,187 @@
     </header>
 
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
+    <!-- ========================================
+         CONTEÚDO
+    ========================================= -->
 
-        <!-- ======================================== -->
-        <!-- SAUDAÇÃO -->
-        <!-- ======================================== -->
+    <main class="max-w-6xl mx-auto px-6 py-10">
 
-        <div class="max-w-5xl mx-auto mb-10">
+
+        <!-- ========================================
+             SAUDAÇÃO
+        ========================================= -->
+
+        <div class="mb-10">
+
+            <p class="text-sm font-medium text-[#819b94] mb-2">
+                PAINEL DE VENDAS
+            </p>
 
             <h2
                 id="nomeUsuario"
-                class="text-3xl font-bold">
+                class="text-3xl font-light tracking-wide"
+            >
                 Olá!
             </h2>
 
-            <p class="text-gray-400 mt-3">
+            <p class="text-[#74817d] mt-2">
                 Registre seus resultados diários e acompanhe seu desempenho mensal.
             </p>
 
         </div>
 
 
-        <!-- ======================================== -->
-        <!-- ACOMPANHAMENTO MENSAL -->
-        <!-- ======================================== -->
+        <!-- ========================================
+             ACOMPANHAMENTO MENSAL
+        ========================================= -->
 
-        <section class="max-w-5xl mx-auto mb-16">
+        <section class="mb-14">
 
             <div
-                class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
+                class="
+                    bg-white
+                    border border-[#d8e1de]
+                    rounded-2xl
+                    p-6
+                    md:p-8
+                    shadow-sm
+                    mb-6
+                "
+            >
 
-                <div>
-
-                    <h2 class="text-2xl font-bold">
-                        Acompanhamento mensal
-                    </h2>
-
-                    <p class="text-gray-400 mt-2">
-                        Consulte sua meta e os resultados acumulados de cada mês.
-                    </p>
-
-                </div>
-
-
-                <!-- FILTROS -->
-
-                <div class="flex flex-col sm:flex-row gap-3">
-
-                    <!-- MÊS -->
+                <div
+                    class="
+                        flex
+                        flex-col
+                        lg:flex-row
+                        lg:items-end
+                        lg:justify-between
+                        gap-6
+                    "
+                >
 
                     <div>
 
-                        <label
-                            for="mesFiltro"
-                            class="block text-sm font-medium text-gray-400 mb-2">
-                            Mês
-                        </label>
-
-                        <select
-                            id="mesFiltro"
-                            class="w-full sm:w-44 px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg outline-none focus:border-blue-500 cursor-pointer">
-
-                            <option value="1">Janeiro</option>
-                            <option value="2">Fevereiro</option>
-                            <option value="3">Março</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Maio</option>
-                            <option value="6">Junho</option>
-                            <option value="7">Julho</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setembro</option>
-                            <option value="10">Outubro</option>
-                            <option value="11">Novembro</option>
-                            <option value="12">Dezembro</option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- ANO -->
-
-                    <div>
-
-                        <label
-                            for="anoFiltro"
-                            class="block text-sm font-medium text-gray-400 mb-2">
-                            Ano
-                        </label>
-
-                        <input
-                            type="number"
-                            id="anoFiltro"
-                            min="2020"
-                            max="2100"
-                            class="w-full sm:w-32 px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg outline-none focus:border-blue-500">
-
-                    </div>
-
-
-                    <!-- ATUALIZAR -->
-
-                    <div class="flex items-end">
-
-                        <button
-                            type="button"
-                            id="btnAtualizarResumo"
-                            class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg font-medium transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
-                            Atualizar
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- ======================================== -->
-            <!-- RESUMO PRINCIPAL -->
-            <!-- ======================================== -->
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-                <!-- META -->
-
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
-
-                    <p class="text-sm text-gray-400">
-                        Meta mensal
-                    </p>
-
-                    <p
-                        id="metaMensal"
-                        class="text-2xl font-bold mt-2">
-                        R$ 0,00
-                    </p>
-
-                </div>
-
-
-                <!-- VENDIDO -->
-
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
-
-                    <p class="text-sm text-gray-400">
-                        Vendido no mês
-                    </p>
-
-                    <p
-                        id="valorVendidoMes"
-                        class="text-2xl font-bold mt-2 text-green-400">
-                        R$ 0,00
-                    </p>
-
-                </div>
-
-
-                <!-- PROGRESSO -->
-
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
-
-                    <div
-                        class="flex items-center justify-between gap-4">
-
-                        <p class="text-sm text-gray-400">
-                            Progresso da meta
+                        <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94]">
+                            DESEMPENHO
                         </p>
 
-                        <span
-                            id="porcentagemMeta"
-                            class="text-lg font-bold text-blue-400">
-                            0%
-                        </span>
+                        <h2 class="text-2xl font-medium mt-1">
+                            Acompanhamento mensal
+                        </h2>
+
+                        <p class="text-[#74817d] text-sm mt-2">
+                            Consulte sua meta e os resultados acumulados de cada mês.
+                        </p>
 
                     </div>
 
 
-                    <div
-                        class="w-full h-3 bg-gray-800 rounded-full overflow-hidden mt-5">
+                    <!-- FILTROS -->
 
-                        <div
-                            id="barraProgresso"
-                            class="h-full bg-blue-600 rounded-full transition-all duration-500"
-                            style="width: 0%">
+                    <div class="flex flex-col sm:flex-row gap-3">
+
+
+                        <!-- MÊS -->
+
+                        <div>
+
+                            <label
+                                for="mesFiltro"
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
+                                Mês
+                            </label>
+
+                            <select
+                                id="mesFiltro"
+                                class="
+                                    w-full sm:w-44
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    cursor-pointer
+                                "
+                            >
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+
+                        </div>
+
+
+                        <!-- ANO -->
+
+                        <div>
+
+                            <label
+                                for="anoFiltro"
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
+                                Ano
+                            </label>
+
+                            <input
+                                type="number"
+                                id="anoFiltro"
+                                min="2020"
+                                max="2100"
+                                class="
+                                    w-full sm:w-32
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- ATUALIZAR -->
+
+                        <div class="flex items-end">
+
+                            <button
+                                type="button"
+                                id="btnAtualizarResumo"
+                                class="
+                                    w-full sm:w-auto
+                                    px-6 py-3
+                                    bg-[#819b94]
+                                    hover:bg-[#6f8982]
+                                    text-white
+                                    rounded-lg
+                                    font-medium
+                                    transition
+                                    cursor-pointer
+                                    disabled:opacity-60
+                                    disabled:cursor-not-allowed
+                                "
+                            >
+                                Atualizar
+                            </button>
+
                         </div>
 
                     </div>
@@ -240,171 +259,342 @@
             </div>
 
 
-            <!-- ======================================== -->
-            <!-- INDICADORES MENSAIS -->
-            <!-- ======================================== -->
+            <!-- ========================================
+                 CARDS PRINCIPAIS
+            ========================================= -->
 
-            <div
-                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-                <!-- VENDAS -->
+
+                <!-- META -->
 
                 <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    class="
+                        bg-white
+                        border border-[#d8e1de]
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    "
+                >
 
-                    <p class="text-xs text-gray-400">
-                        Vendas
+                    <div
+                        class="
+                            w-10 h-10
+                            bg-[#eef3f1]
+                            rounded-xl
+                            flex items-center justify-center
+                            mb-4
+                        "
+                    >
+                        <span class="text-[#819b94] text-lg">◎</span>
+                    </div>
+
+                    <p class="text-sm text-[#74817d]">
+                        Meta mensal
                     </p>
 
                     <p
-                        id="resumoVendas"
-                        class="text-xl font-bold mt-2">
-                        0
+                        id="metaMensal"
+                        class="text-2xl font-semibold mt-2"
+                    >
+                        R$ 0,00
                     </p>
 
                 </div>
 
 
-                <!-- MENSAGENS -->
+                <!-- VENDIDO -->
 
                 <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    class="
+                        bg-white
+                        border border-[#d8e1de]
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    "
+                >
 
-                    <p class="text-xs text-gray-400">
-                        Mensagens
+                    <div
+                        class="
+                            w-10 h-10
+                            bg-[#eef3f1]
+                            rounded-xl
+                            flex items-center justify-center
+                            mb-4
+                        "
+                    >
+                        <span class="text-[#819b94] text-lg">R$</span>
+                    </div>
+
+                    <p class="text-sm text-[#74817d]">
+                        Vendido no mês
                     </p>
 
                     <p
-                        id="resumoMensagens"
-                        class="text-xl font-bold mt-2">
-                        0
+                        id="valorVendidoMes"
+                        class="text-2xl font-semibold mt-2 text-[#647f77]"
+                    >
+                        R$ 0,00
                     </p>
 
                 </div>
 
 
-                <!-- RETORNOS -->
+                <!-- PROGRESSO -->
 
                 <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    class="
+                        bg-white
+                        border border-[#d8e1de]
+                        rounded-2xl
+                        p-6
+                        shadow-sm
+                    "
+                >
 
-                    <p class="text-xs text-gray-400">
-                        Retornos
+                    <div class="flex items-center justify-between gap-4">
+
+                        <p class="text-sm text-[#74817d]">
+                            Progresso da meta
+                        </p>
+
+                        <span
+                            id="porcentagemMeta"
+                            class="text-lg font-semibold text-[#647f77]"
+                        >
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            w-full
+                            h-3
+                            bg-[#e5ece9]
+                            rounded-full
+                            overflow-hidden
+                            mt-7
+                        "
+                    >
+
+                        <div
+                            id="barraProgresso"
+                            class="
+                                h-full
+                                bg-[#819b94]
+                                rounded-full
+                                transition-all
+                                duration-500
+                            "
+                            style="width: 0%"
+                        >
+                        </div>
+
+                    </div>
+
+                    <p class="text-xs text-[#899692] mt-4">
+                        Progresso referente à meta selecionada.
                     </p>
 
-                    <p
-                        id="resumoRetornos"
-                        class="text-xl font-bold mt-2">
-                        0
+                </div>
+
+            </div>
+
+
+            <!-- ========================================
+                 INDICADORES
+            ========================================= -->
+
+            <div class="mt-8">
+
+                <div class="mb-4">
+
+                    <h3 class="text-lg font-medium">
+                        Indicadores do mês
+                    </h3>
+
+                    <p class="text-sm text-[#74817d] mt-1">
+                        Resultados acumulados no período selecionado.
                     </p>
 
                 </div>
 
 
-                <!-- VENDAS POR MENSAGEM -->
-
                 <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-400">
-                        Vendas por mensagem
-                    </p>
-
-                    <p
-                        id="resumoVendasMensagens"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
-
-                </div>
+                    class="
+                        grid
+                        grid-cols-2
+                        md:grid-cols-3
+                        lg:grid-cols-5
+                        gap-4
+                    "
+                >
 
 
-                <!-- ÁUDIOS -->
+                    <!-- VENDAS -->
 
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
-                    <p class="text-xs text-gray-400">
-                        Áudios
-                    </p>
+                        <p class="text-xs text-[#74817d]">
+                            Vendas
+                        </p>
 
-                    <p
-                        id="resumoAudios"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
+                        <p
+                            id="resumoVendas"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
 
-                </div>
-
-
-                <!-- RETORNOS ÁUDIO -->
-
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-400">
-                        Retornos de áudio
-                    </p>
-
-                    <p
-                        id="resumoRetornosAudio"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
-
-                </div>
+                    </div>
 
 
-                <!-- VENDAS ÁUDIO -->
+                    <!-- MENSAGENS -->
 
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
-                    <p class="text-xs text-gray-400">
-                        Vendas por áudio
-                    </p>
+                        <p class="text-xs text-[#74817d]">
+                            Mensagens
+                        </p>
 
-                    <p
-                        id="resumoVendasAudio"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
+                        <p
+                            id="resumoMensagens"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
 
-                </div>
-
-
-                <!-- PROSPECÇÕES -->
-
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-400">
-                        Prospecções
-                    </p>
-
-                    <p
-                        id="resumoProspeccao"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
-
-                </div>
+                    </div>
 
 
-                <!-- CLIENTES NOVOS -->
+                    <!-- RETORNOS -->
 
-                <div
-                    class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
-                    <p class="text-xs text-gray-400">
-                        Clientes novos
-                    </p>
+                        <p class="text-xs text-[#74817d]">
+                            Retornos
+                        </p>
 
-                    <p
-                        id="resumoClientesNovos"
-                        class="text-xl font-bold mt-2">
-                        0
-                    </p>
+                        <p
+                            id="resumoRetornos"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- VENDAS POR MENSAGEM -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Vendas por mensagem
+                        </p>
+
+                        <p
+                            id="resumoVendasMensagens"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- ÁUDIOS -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Áudios
+                        </p>
+
+                        <p
+                            id="resumoAudios"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- RETORNOS DE ÁUDIO -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Retornos de áudio
+                        </p>
+
+                        <p
+                            id="resumoRetornosAudio"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- VENDAS POR ÁUDIO -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Vendas por áudio
+                        </p>
+
+                        <p
+                            id="resumoVendasAudio"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- PROSPECÇÕES -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Prospecções
+                        </p>
+
+                        <p
+                            id="resumoProspeccao"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <!-- CLIENTES NOVOS -->
+
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+
+                        <p class="text-xs text-[#74817d]">
+                            Clientes novos
+                        </p>
+
+                        <p
+                            id="resumoClientesNovos"
+                            class="text-xl font-semibold mt-2"
+                        >
+                            0
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -413,65 +603,92 @@
         </section>
 
 
-        <!-- ======================================== -->
-        <!-- FEEDBACK -->
-        <!-- ======================================== -->
+        <!-- ========================================
+             FEEDBACK
+        ========================================= -->
 
         <div
             id="feedbackRegistro"
             role="status"
             aria-live="polite"
-            class="max-w-4xl mx-auto mb-6 hidden rounded-xl px-5 py-4 text-sm font-medium">
+            class="
+                max-w-5xl
+                mx-auto
+                mb-6
+                hidden
+                rounded-xl
+                px-5 py-4
+                text-sm
+                font-medium
+            "
+        >
         </div>
 
 
-        <!-- ======================================== -->
-        <!-- FORMULÁRIO -->
-        <!-- ======================================== -->
+        <!-- ========================================
+             LANÇAMENTO DIÁRIO
+        ========================================= -->
 
-        <div
-            class="max-w-4xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-6 sm:p-8 md:p-12 shadow-xl">
+        <section
+            class="
+                max-w-5xl
+                mx-auto
+                bg-white
+                border border-[#d8e1de]
+                rounded-2xl
+                p-6
+                sm:p-8
+                md:p-10
+                shadow-sm
+            "
+        >
 
-            <div class="text-center mb-12">
+            <!-- Cabeçalho formulário -->
 
-                <h2 class="text-2xl font-bold">
+            <div class="mb-10">
+
+                <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94]">
+                    REGISTRO
+                </p>
+
+                <h2 class="text-2xl font-medium mt-1">
                     Lançamento diário
                 </h2>
 
-                <p class="text-gray-400 mt-3">
+                <p class="text-[#74817d] mt-2">
                     Informe os resultados obtidos no dia.
                 </p>
-
-                <span
-                    class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5">
-                </span>
 
             </div>
 
 
             <form
                 id="formRegistro"
-                novalidate>
+                novalidate
+            >
 
-                <!-- ======================================== -->
-                <!-- DATA -->
-                <!-- ======================================== -->
 
-                <div class="mb-16">
+                <!-- ========================================
+                     DATA
+                ========================================= -->
+
+                <div class="mb-10">
 
                     <label
                         for="data"
-                        class="block text-sm font-medium text-gray-300 mb-3">
-
+                        class="block text-sm font-medium text-[#596762] mb-2"
+                    >
                         Data do registro
 
                         <span
-                            class="text-red-400"
-                            aria-hidden="true">
+                            class="text-red-500"
+                            aria-hidden="true"
+                        >
                             *
                         </span>
 
                     </label>
+
 
                     <input
                         type="date"
@@ -479,39 +696,57 @@
                         name="data"
                         required
                         aria-required="true"
-                        class="w-full sm:w-72 px-4 py-3 cursor-pointer bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        class="
+                            w-full sm:w-72
+                            px-4 py-3
+                            cursor-pointer
+                            bg-[#f7f9f8]
+                            border border-[#ccd7d3]
+                            rounded-lg
+                            outline-none
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]/20
+                            transition
+                        "
+                    >
 
                 </div>
 
 
-                <!-- ======================================== -->
-                <!-- RESULTADOS -->
-                <!-- ======================================== -->
+                <!-- ========================================
+                     RESULTADOS
+                ========================================= -->
 
-                <fieldset class="mb-24">
+                <fieldset
+                    class="
+                        border-t
+                        border-[#e1e8e5]
+                        pt-8
+                        mb-12
+                    "
+                >
 
-                    <legend
-                        class="w-full text-center max-w-xl mx-auto mb-12">
-
-                        <span
-                            class="block text-2xl font-bold text-white">
-                            Resultados
-                        </span>
-
-                        <span
-                            class="block text-sm text-gray-400 mt-3">
-                            Resultados das vendas do dia
-                        </span>
-
-                        <span
-                            class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5">
-                        </span>
-
+                    <legend class="sr-only">
+                        Resultados
                     </legend>
 
 
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                    <div class="mb-7">
+
+                        <h3 class="text-xl font-medium">
+                            Resultados
+                        </h3>
+
+                        <p class="text-sm text-[#74817d] mt-1">
+                            Resultados das vendas do dia.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
 
                         <!-- VALOR REALIZADO -->
 
@@ -519,13 +754,14 @@
 
                             <label
                                 for="realizada"
-                                class="block text-sm font-medium text-gray-300 mb-3">
-
-                                Valor realizado (R$)
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
+                                Valor realizado
 
                                 <span
-                                    class="text-red-400"
-                                    aria-hidden="true">
+                                    class="text-red-500"
+                                    aria-hidden="true"
+                                >
                                     *
                                 </span>
 
@@ -535,7 +771,17 @@
                             <div class="relative">
 
                                 <span
-                                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-gray-500 text-sm">
+                                    class="
+                                        pointer-events-none
+                                        absolute
+                                        inset-y-0
+                                        left-4
+                                        flex
+                                        items-center
+                                        text-[#899692]
+                                        text-sm
+                                    "
+                                >
                                     R$
                                 </span>
 
@@ -549,7 +795,19 @@
                                     placeholder="420,00"
                                     aria-required="true"
                                     required
-                                    class="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                    class="
+                                        w-full
+                                        pl-10 pr-4 py-3
+                                        bg-[#f7f9f8]
+                                        border border-[#ccd7d3]
+                                        rounded-lg
+                                        outline-none
+                                        focus:border-[#819b94]
+                                        focus:ring-2
+                                        focus:ring-[#819b94]/20
+                                        transition
+                                    "
+                                >
 
                             </div>
 
@@ -562,13 +820,14 @@
 
                             <label
                                 for="numeroVendas"
-                                class="block text-sm font-medium text-gray-300 mb-3">
-
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Número de vendas
 
                                 <span
-                                    class="text-red-400"
-                                    aria-hidden="true">
+                                    class="text-red-500"
+                                    aria-hidden="true"
+                                >
                                     *
                                 </span>
 
@@ -584,7 +843,19 @@
                                 placeholder="12"
                                 aria-required="true"
                                 required
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -593,40 +864,46 @@
                 </fieldset>
 
 
-                <!-- ======================================== -->
-                <!-- MENSAGENS -->
-                <!-- ======================================== -->
+                <!-- ========================================
+                     MENSAGENS
+                ========================================= -->
 
-                <fieldset class="mb-24">
+                <fieldset
+                    class="
+                        border-t
+                        border-[#e1e8e5]
+                        pt-8
+                        mb-12
+                    "
+                >
 
-                    <legend
-                        class="w-full text-center max-w-xl mx-auto mb-12">
-
-                        <span
-                            class="block text-2xl font-bold text-white">
-                            Mensagens
-                        </span>
-
-                        <span
-                            class="block text-sm text-gray-400 mt-3">
-                            Indicadores de contatos realizados por mensagens
-                        </span>
-
-                        <span
-                            class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5">
-                        </span>
-
+                    <legend class="sr-only">
+                        Mensagens
                     </legend>
 
 
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                    <div class="mb-7">
+
+                        <h3 class="text-xl font-medium">
+                            Mensagens
+                        </h3>
+
+                        <p class="text-sm text-[#74817d] mt-1">
+                            Indicadores de contatos realizados por mensagens.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
 
                         <div>
 
                             <label
                                 for="quantidadeMensagens"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Quantidade de mensagens
                             </label>
 
@@ -637,7 +914,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -646,7 +936,8 @@
 
                             <label
                                 for="retornos"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Retornos de mensagens
                             </label>
 
@@ -657,7 +948,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -666,7 +970,8 @@
 
                             <label
                                 for="vendasMensagens"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Vendas por mensagens
                             </label>
 
@@ -676,8 +981,21 @@
                                 name="vendasMensagens"
                                 min="0"
                                 step="1"
-                                inputmode="numeric"                   
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                inputmode="numeric"
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -686,40 +1004,46 @@
                 </fieldset>
 
 
-                <!-- ======================================== -->
-                <!-- ÁUDIOS -->
-                <!-- ======================================== -->
+                <!-- ========================================
+                     ÁUDIOS
+                ========================================= -->
 
-                <fieldset class="mb-24">
+                <fieldset
+                    class="
+                        border-t
+                        border-[#e1e8e5]
+                        pt-8
+                        mb-12
+                    "
+                >
 
-                    <legend
-                        class="w-full text-center max-w-xl mx-auto mb-12">
-
-                        <span
-                            class="block text-2xl font-bold text-white">
-                            Áudios
-                        </span>
-
-                        <span
-                            class="block text-sm text-gray-400 mt-3">
-                            Indicadores de contatos realizados por áudio
-                        </span>
-
-                        <span
-                            class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5">
-                        </span>
-
+                    <legend class="sr-only">
+                        Áudios
                     </legend>
 
 
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                    <div class="mb-7">
+
+                        <h3 class="text-xl font-medium">
+                            Áudios
+                        </h3>
+
+                        <p class="text-sm text-[#74817d] mt-1">
+                            Indicadores de contatos realizados por áudio.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
 
                         <div>
 
                             <label
                                 for="quantidadeAudios"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Quantidade de áudios
                             </label>
 
@@ -730,7 +1054,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -739,7 +1076,8 @@
 
                             <label
                                 for="retornosAudio"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Retornos de áudio
                             </label>
 
@@ -750,7 +1088,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -759,7 +1110,8 @@
 
                             <label
                                 for="vendasAudio"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Vendas por áudio
                             </label>
 
@@ -770,7 +1122,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -779,40 +1144,46 @@
                 </fieldset>
 
 
-                <!-- ======================================== -->
-                <!-- PROSPECÇÃO -->
-                <!-- ======================================== -->
+                <!-- ========================================
+                     PROSPECÇÃO
+                ========================================= -->
 
-                <fieldset class="mb-16">
+                <fieldset
+                    class="
+                        border-t
+                        border-[#e1e8e5]
+                        pt-8
+                        mb-10
+                    "
+                >
 
-                    <legend
-                        class="w-full text-center max-w-xl mx-auto mb-12">
-
-                        <span
-                            class="block text-2xl font-bold text-white">
-                            Prospecção
-                        </span>
-
-                        <span
-                            class="block text-sm text-gray-400 mt-3">
-                            Indicadores de prospecção e novos clientes
-                        </span>
-
-                        <span
-                            class="block w-24 h-1 bg-blue-500 rounded-full mx-auto mt-5">
-                        </span>
-
+                    <legend class="sr-only">
+                        Prospecção
                     </legend>
 
 
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                    <div class="mb-7">
+
+                        <h3 class="text-xl font-medium">
+                            Prospecção
+                        </h3>
+
+                        <p class="text-sm text-[#74817d] mt-1">
+                            Indicadores de prospecção e novos clientes.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
 
                         <div>
 
                             <label
                                 for="prospeccao"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Quantidade de prospecções
                             </label>
 
@@ -823,7 +1194,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -832,7 +1216,8 @@
 
                             <label
                                 for="clientesNovos"
-                                class="block text-sm font-medium text-gray-300 mb-3">
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
                                 Clientes novos
                             </label>
 
@@ -843,7 +1228,20 @@
                                 min="0"
                                 step="1"
                                 inputmode="numeric"
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                                placeholder="0"
+                                class="
+                                    w-full
+                                    px-4 py-3
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    transition
+                                "
+                            >
 
                         </div>
 
@@ -852,31 +1250,52 @@
                 </fieldset>
 
 
-                <!-- ======================================== -->
-                <!-- SALVAR -->
-                <!-- ======================================== -->
+                <!-- ========================================
+                     SALVAR
+                ========================================= -->
 
-                <div class="flex flex-col sm:flex-row gap-4">
+                <div
+                    class="
+                        border-t
+                        border-[#e1e8e5]
+                        pt-8
+                        flex
+                        justify-end
+                    "
+                >
 
                     <button
                         type="submit"
                         id="btnSalvar"
-                        class="flex-1 py-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
-
+                        class="
+                            w-full sm:w-auto
+                            px-10 py-3.5
+                            bg-[#819b94]
+                            hover:bg-[#6f8982]
+                            active:bg-[#607a73]
+                            text-white
+                            rounded-lg
+                            font-medium
+                            tracking-wide
+                            transition
+                            cursor-pointer
+                            disabled:opacity-60
+                            disabled:cursor-not-allowed
+                        "
+                    >
                         Salvar registro
-
                     </button>
 
                 </div>
 
             </form>
 
-        </div>
+        </section>
 
     </main>
 
 
-    <script src="./funcionaria.js"></script>
+    <script src="/funcionaria/funcionaria.js"></script>
 
 </body>
 

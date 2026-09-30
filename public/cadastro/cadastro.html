@@ -5,37 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cadastro | Sistema de Vendas</title>
+    <title>Cadastro | Dermosens</title>
 
     <link rel="stylesheet" href="../css/output.css">
 </head>
 
-<body class="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+<body class="min-h-screen bg-[#eef3f1] text-[#202322] flex items-center justify-center">
 
-    <main class="w-full max-w-md px-6">
+    <main class="w-full max-w-md px-6 py-10">
 
+        <!-- Marca -->
         <div class="text-center mb-8">
 
-            <h1 class="text-3xl font-bold">
+            <div
+                class="w-32 h-32 mx-auto mb-5 rounded-full bg-[#819b94] flex items-center justify-center shadow-sm"
+            >
+                <span class="text-white text-base tracking-[0.20em] font-light">
+                    DERMOSENS
+                </span>
+            </div>
+
+            <h1 class="text-3xl font-light tracking-wide">
                 Criar conta
             </h1>
 
-            <p class="text-gray-400 mt-2">
+            <p class="text-[#65736f] mt-2 text-sm">
                 Cadastre-se para acessar o sistema
             </p>
 
         </div>
 
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+
+        <!-- Card -->
+        <div
+            class="bg-white border border-[#d8e1de] rounded-2xl p-8 shadow-sm"
+        >
 
             <form id="formCadastro">
 
-             
+                <!-- Nome -->
                 <div class="mb-5">
 
                     <label
                         for="nome"
-                        class="block text-sm font-medium text-gray-300 mb-2"
+                        class="block text-sm font-medium text-[#46534f] mb-2"
                     >
                         Nome
                     </label>
@@ -46,17 +59,32 @@
                         name="nome"
                         placeholder="Digite seu nome"
                         required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            bg-[#f7f9f8]
+                            border
+                            border-[#ccd7d3]
+                            rounded-lg
+                            outline-none
+                            transition
+                            placeholder:text-[#9aa7a3]
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]/20
+                        "
                     >
 
                 </div>
 
-              
+
+                <!-- E-mail -->
                 <div class="mb-5">
 
                     <label
                         for="email"
-                        class="block text-sm font-medium text-gray-300 mb-2"
+                        class="block text-sm font-medium text-[#46534f] mb-2"
                     >
                         E-mail
                     </label>
@@ -67,17 +95,32 @@
                         name="email"
                         placeholder="Digite seu e-mail"
                         required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            bg-[#f7f9f8]
+                            border
+                            border-[#ccd7d3]
+                            rounded-lg
+                            outline-none
+                            transition
+                            placeholder:text-[#9aa7a3]
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]/20
+                        "
                     >
 
                 </div>
 
-                
+
+                <!-- Senha -->
                 <div class="mb-5">
 
                     <label
                         for="senha"
-                        class="block text-sm font-medium text-gray-300 mb-2"
+                        class="block text-sm font-medium text-[#46534f] mb-2"
                     >
                         Senha
                     </label>
@@ -88,17 +131,32 @@
                         name="senha"
                         placeholder="Digite sua senha"
                         required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            bg-[#f7f9f8]
+                            border
+                            border-[#ccd7d3]
+                            rounded-lg
+                            outline-none
+                            transition
+                            placeholder:text-[#9aa7a3]
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]/20
+                        "
                     >
 
                 </div>
 
-                
+
+                <!-- Confirmar senha -->
                 <div class="mb-6">
 
                     <label
                         for="confirmarSenha"
-                        class="block text-sm font-medium text-gray-300 mb-2"
+                        class="block text-sm font-medium text-[#46534f] mb-2"
                     >
                         Confirmar senha
                     </label>
@@ -109,28 +167,56 @@
                         name="confirmarSenha"
                         placeholder="Digite a senha novamente"
                         required
-                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            bg-[#f7f9f8]
+                            border
+                            border-[#ccd7d3]
+                            rounded-lg
+                            outline-none
+                            transition
+                            placeholder:text-[#9aa7a3]
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]/20
+                        "
                     >
 
                 </div>
 
-                
+
+                <!-- Botão -->
                 <button
                     type="submit"
-                    class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
+                    class="
+                        w-full
+                        py-3
+                        bg-[#819b94]
+                        hover:bg-[#6f8982]
+                        text-white
+                        rounded-lg
+                        font-medium
+                        tracking-wide
+                        transition
+                        cursor-pointer
+                    "
                 >
                     Criar conta
                 </button>
 
             </form>
 
-            <p class="text-center text-sm text-gray-400 mt-6">
+
+            <!-- Login -->
+            <p class="text-center text-sm text-[#74817d] mt-6">
 
                 Já possui uma conta?
 
                 <a
                     href="../login/login.html"
-                    class="text-blue-500 hover:text-blue-400 font-medium"
+                    class="text-[#647f77] hover:text-[#4f6962] font-semibold"
                 >
                     Fazer login
                 </a>
@@ -139,9 +225,17 @@
 
         </div>
 
+
+        <!-- Rodapé -->
+        <p class="text-center text-xs text-[#899692] mt-6 tracking-wide">
+            DERMOSENS • COSMÉTICOS E TRATAMENTOS
+        </p>
+
     </main>
 
-    <script src="./cadastro.js"></script>
+
+    <script src="/cadastro/cadastro.js"></script>
 
 </body>
+
 </html>

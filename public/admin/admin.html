@@ -5,37 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Painel Administrativo | Sistema de Vendas</title>
+    <title>Painel Administrativo | Dermosens</title>
 
     <link rel="stylesheet" href="../css/output.css">
 </head>
 
-<body class="min-h-screen bg-gray-950 text-white">
+<body class="min-h-screen bg-[#eef3f1] text-[#202322]">
 
-    <!-- CABEÇALHO -->
+    <!-- ========================================
+         CABEÇALHO
+    ========================================= -->
 
-    <header class="border-b border-gray-800 bg-gray-900">
+    <header class="sticky top-0 z-20 border-b border-[#d8e1de] bg-white/90 backdrop-blur">
 
-        <div class="max-w-[1600px] mx-auto px-6 py-5 flex items-center justify-between">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
 
-            <div>
-                <h1 class="text-xl font-bold">
-                    Sistema de Vendas
-                </h1>
-
-                <p class="text-sm text-gray-400 mt-1">
-                    Painel administrativo
-                </p>
-            </div>
-
+            <!-- MARCA -->
             <div class="flex items-center gap-4">
 
-                <span id="nomeAdmin" class="text-sm text-gray-300">
-                    Administrador
-                </span>
+                <div
+                    class="w-18 h-18 rounded-full bg-[#819b94] flex items-center justify-center shadow-sm"
+                >
+                    <span class="text-white text-[9px] tracking-[0.15em]">
+                        DERMOSENS
+                    </span>
+                </div>
 
-                <button type="button" id="btnSair"
-                    class="px-5 py-2.5 bg-red-600 hover:bg-red-700 rounded-lg font-medium cursor-pointer transition">
+                <div>
+
+                    <h1 class="text-lg font-medium tracking-wide">
+                        Dermosens
+                    </h1>
+
+                    <p class="text-xs text-[#74817d]">
+                        Painel administrativo
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ADMIN / SAIR -->
+            <div class="flex items-center gap-4">
+
+                <div class="hidden sm:block text-right">
+
+                    <p class="text-xs text-[#899692]">
+                        Administrador
+                    </p>
+
+                    <span
+                        id="nomeAdmin"
+                        class="text-sm font-medium text-[#46534f]"
+                    >
+                        Administrador
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnSair"
+                    class="
+                        px-5 py-2.5
+                        border border-[#cbd7d3]
+                        text-[#64736f]
+                        hover:bg-[#eef3f1]
+                        hover:text-[#46534f]
+                        rounded-lg
+                        text-sm
+                        font-medium
+                        cursor-pointer
+                        transition
+                    "
+                >
                     Sair
                 </button>
 
@@ -46,229 +91,513 @@
     </header>
 
 
-    <!-- CONTEÚDO -->
+    <!-- ========================================
+         CONTEÚDO
+    ========================================= -->
 
     <main class="max-w-[1600px] mx-auto px-6 py-10">
 
-        <!-- TÍTULO -->
+
+        <!-- ========================================
+             TÍTULO
+        ========================================= -->
 
         <div class="mb-10">
 
-            <h2 class="text-3xl font-bold">
+            <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94] mb-2">
+                DASHBOARD
+            </p>
+
+            <h2 class="text-3xl font-light tracking-wide">
                 Visão geral
             </h2>
 
-            <p class="text-gray-400 mt-2">
+            <p class="text-[#74817d] mt-2">
                 Acompanhe o desempenho mensal da equipe.
             </p>
 
         </div>
 
 
-        <!-- CARDS -->
+        <!-- ========================================
+             CARDS
+        ========================================= -->
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
 
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
 
-                <p class="text-sm text-gray-400">
-                    Funcionárias
-                </p>
+            <!-- FUNCIONÁRIAS -->
 
-                <p id="totalFuncionarias" class="text-3xl font-bold mt-3">
-                    0
-                </p>
+            <div
+                class="
+                    bg-white
+                    border border-[#d8e1de]
+                    rounded-2xl
+                    p-6
+                    shadow-sm
+                "
+            >
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm text-[#74817d]">
+                            Funcionárias
+                        </p>
+
+                        <p
+                            id="totalFuncionarias"
+                            class="text-3xl font-semibold mt-3"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            w-11 h-11
+                            rounded-xl
+                            bg-[#eef3f1]
+                            flex
+                            items-center
+                            justify-center
+                            text-[#819b94]
+                            font-medium
+                        "
+                    >
+                        #
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <!-- VENDAS -->
 
-                <p class="text-sm text-gray-400">
-                    Vendas no mês
-                </p>
+            <div
+                class="
+                    bg-white
+                    border border-[#d8e1de]
+                    rounded-2xl
+                    p-6
+                    shadow-sm
+                "
+            >
 
-                <p id="totalVendas" class="text-3xl font-bold mt-3">
-                    0
-                </p>
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm text-[#74817d]">
+                            Vendas no mês
+                        </p>
+
+                        <p
+                            id="totalVendas"
+                            class="text-3xl font-semibold mt-3"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            w-11 h-11
+                            rounded-xl
+                            bg-[#eef3f1]
+                            flex
+                            items-center
+                            justify-center
+                            text-[#819b94]
+                            font-medium
+                        "
+                    >
+                        +
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <!-- VALOR VENDIDO -->
 
-                <p class="text-sm text-gray-400">
-                    Valor vendido no mês
-                </p>
+            <div
+                class="
+                    bg-white
+                    border border-[#d8e1de]
+                    rounded-2xl
+                    p-6
+                    shadow-sm
+                "
+            >
 
-                <p id="valorVendido" class="text-3xl font-bold mt-3">
-                    R$ 0,00
-                </p>
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm text-[#74817d]">
+                            Valor vendido no mês
+                        </p>
+
+                        <p
+                            id="valorVendido"
+                            class="text-3xl font-semibold mt-3 text-[#647f77]"
+                        >
+                            R$ 0,00
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            w-11 h-11
+                            rounded-xl
+                            bg-[#eef3f1]
+                            flex
+                            items-center
+                            justify-center
+                            text-[#819b94]
+                            text-sm
+                            font-semibold
+                        "
+                    >
+                        R$
+                    </div>
+
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- ACOMPANHAMENTO MENSAL -->
+        <!-- ========================================
+             ACOMPANHAMENTO MENSAL
+        ========================================= -->
 
-        <section>
-
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-6">
-
-                <div>
-
-                    <h3 class="text-xl font-bold">
-                        Acompanhamento mensal
-                    </h3>
-
-                    <p class="text-sm text-gray-400 mt-2">
-                        Consulte os resultados acumulados de cada funcionária.
-                    </p>
-
-                </div>
+        <section
+            class="
+                bg-white
+                border border-[#d8e1de]
+                rounded-2xl
+                shadow-sm
+                overflow-hidden
+            "
+        >
 
 
-                <!-- FILTROS -->
+            <!-- CABEÇALHO DA TABELA / FILTROS -->
 
-                <div class="flex flex-col sm:flex-row gap-4">
+            <div
+                class="
+                    p-6
+                    md:p-8
+                    border-b
+                    border-[#e1e8e5]
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        flex-col
+                        xl:flex-row
+                        xl:items-end
+                        xl:justify-between
+                        gap-6
+                    "
+                >
 
                     <div>
 
-                        <label for="mesFiltro" class="block text-sm text-gray-400 mb-2">
-                            Mês
-                        </label>
+                        <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94]">
+                            EQUIPE
+                        </p>
 
-                        <select id="mesFiltro"
-                            class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500">
-                            <option value="1">Janeiro</option>
-                            <option value="2">Fevereiro</option>
-                            <option value="3">Março</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Maio</option>
-                            <option value="6">Junho</option>
-                            <option value="7">Julho</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setembro</option>
-                            <option value="10">Outubro</option>
-                            <option value="11">Novembro</option>
-                            <option value="12">Dezembro</option>
-                        </select>
+                        <h3 class="text-xl font-medium mt-1">
+                            Acompanhamento mensal
+                        </h3>
+
+                        <p class="text-sm text-[#74817d] mt-2">
+                            Consulte os resultados acumulados de cada funcionária.
+                        </p>
 
                     </div>
 
 
-                    <div>
+                    <!-- ========================================
+                         FILTROS
+                    ========================================= -->
 
-                        <label for="anoFiltro" class="block text-sm text-gray-400 mb-2">
-                            Ano
-                        </label>
+                    <div class="flex flex-col lg:flex-row gap-3">
 
-                        <input type="number" id="anoFiltro"
-                            class="w-28 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500">
+
+                        <!-- MÊS -->
+
+                        <div>
+
+                            <label
+                                for="mesFiltro"
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
+                                Mês
+                            </label>
+
+                            <select
+                                id="mesFiltro"
+                                class="
+                                    w-full lg:w-40
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    px-4 py-2.5
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                    cursor-pointer
+                                "
+                            >
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+
+                        </div>
+
+
+                        <!-- ANO -->
+
+                        <div>
+
+                            <label
+                                for="anoFiltro"
+                                class="block text-sm font-medium text-[#596762] mb-2"
+                            >
+                                Ano
+                            </label>
+
+                            <input
+                                type="number"
+                                id="anoFiltro"
+                                min="2020"
+                                max="2100"
+                                class="
+                                    w-full lg:w-28
+                                    bg-[#f7f9f8]
+                                    border border-[#ccd7d3]
+                                    rounded-lg
+                                    px-4 py-2.5
+                                    outline-none
+                                    focus:border-[#819b94]
+                                    focus:ring-2
+                                    focus:ring-[#819b94]/20
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- ATUALIZAR -->
+
+                        <div class="flex items-end">
+
+                            <button
+                                type="button"
+                                id="btnAtualizar"
+                                class="
+                                    w-full lg:w-auto
+                                    px-5 py-2.5
+                                    border border-[#819b94]
+                                    text-[#647f77]
+                                    hover:bg-[#eef3f1]
+                                    rounded-lg
+                                    font-medium
+                                    cursor-pointer
+                                    transition
+                                "
+                            >
+                                Atualizar
+                            </button>
+
+                        </div>
+
+
+                        <!-- SALVAR METAS -->
+
+                        <div class="flex items-end">
+
+                            <button
+                                type="button"
+                                id="btnSalvarMetas"
+                                class="
+                                    w-full lg:w-auto
+                                    px-5 py-2.5
+                                    bg-[#819b94]
+                                    hover:bg-[#6f8982]
+                                    active:bg-[#607a73]
+                                    text-white
+                                    rounded-lg
+                                    font-medium
+                                    cursor-pointer
+                                    transition
+                                "
+                            >
+                                Salvar metas
+                            </button>
+
+                        </div>
 
                     </div>
-
-
-                    <button type="button" id="btnAtualizar"
-                        class="self-end px-5 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium cursor-pointer transition">
-                        Atualizar
-                    </button>
-
-                    <button type="button" id="btnSalvarMetas"
-                        class="self-end px-5 py-2.5 bg-green-600 hover:bg-green-700 rounded-lg font-medium cursor-pointer transition">
-                        Salvar metas
-                    </button>
 
                 </div>
 
             </div>
 
 
-            <!-- TABELA -->
+            <!-- ========================================
+                 TABELA
+            ========================================= -->
 
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
 
-                <div class="overflow-x-auto">
+                <table class="w-full text-sm whitespace-nowrap">
 
-                    <table class="w-full text-sm whitespace-nowrap">
+                    <thead
+                        class="
+                            bg-[#819b94]
+                            text-white
+                        "
+                    >
 
-                        <thead class="bg-gray-800 text-gray-300">
+                        <tr>
 
-                            <tr>
+                            <th
+                                class="
+                                    text-left
+                                    px-5 py-4
+                                    font-medium
+                                    tracking-wide
+                                "
+                            >
+                                Funcionária
+                            </th>
 
-                                <th class="text-left px-4 py-4">
-                                    Funcionária
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Meta mensal
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Meta mensal
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Vendido
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Vendido
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                % Meta
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    % Meta
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Vendas
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Vendas
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Mensagens
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Mensagens
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Retornos
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Retornos
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Vendas Msg.
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Vendas Msg.
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Áudios
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Áudios
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Ret. Áudio
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Ret. Áudio
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Vendas Áudio
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Vendas Áudio
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Prospecções
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Prospecções
-                                </th>
+                            <th class="text-right px-5 py-4 font-medium">
+                                Clientes novos
+                            </th>
 
-                                <th class="text-right px-4 py-4">
-                                    Clientes novos
-                                </th>
+                        </tr>
 
-                            </tr>
-
-                        </thead>
+                    </thead>
 
 
-                        <tbody id="tabelaFuncionarias" class="divide-y divide-gray-800">
+                    <tbody
+                        id="tabelaFuncionarias"
+                        class="
+                            divide-y
+                            divide-[#e1e8e5]
+                            text-[#46534f]
+                        "
+                    >
 
-                            <tr>
+                        <tr>
 
-                                <td colspan="13" class="px-6 py-10 text-center text-gray-400">
-                                    Carregando dados...
-                                </td>
+                            <td
+                                colspan="13"
+                                class="
+                                    px-6 py-12
+                                    text-center
+                                    text-[#899692]
+                                "
+                            >
+                                Carregando dados...
+                            </td>
 
-                            </tr>
+                        </tr>
 
-                        </tbody>
+                    </tbody>
 
-                    </table>
+                </table>
 
-                </div>
+            </div>
+
+
+            <!-- RODAPÉ DA TABELA -->
+
+            <div
+                class="
+                    px-6 py-4
+                    bg-[#f8faf9]
+                    border-t
+                    border-[#e1e8e5]
+                "
+            >
+
+                <p class="text-xs text-[#899692]">
+                    Os valores apresentados correspondem ao mês e ano selecionados.
+                </p>
 
             </div>
 
@@ -277,7 +606,7 @@
     </main>
 
 
-    <script src="./admin.js"></script>
+    <script src="/admin/admin.js"></script>
 
 </body>
 

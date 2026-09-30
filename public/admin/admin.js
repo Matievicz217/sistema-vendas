@@ -245,7 +245,8 @@ async function carregarResumoMensal() {
 
 
             linha.className = `
-                hover:bg-gray-800/50
+                bg-white
+                hover:bg-[#d5e3df]
                 transition
             `;
 
@@ -285,16 +286,18 @@ async function carregarResumoMensal() {
                         class="
                             input-meta
                             w-32
-                            bg-gray-800
-                            border
-                            border-gray-700
+                            px-3 py-2
+                            bg-[#f7f9f8]
+                            text-[#202322]
+                            border border-[#ccd7d3]
                             rounded-lg
-                            px-3
-                            py-2
-                            text-right
-                            text-white
                             outline-none
-                            focus:border-blue-500
+                            text-right
+                            focus:border-[#819b94]
+                            focus:ring-2
+                            focus:ring-[#819b94]
+                            transition
+                            
                         "
                     >
 
