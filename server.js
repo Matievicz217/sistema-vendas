@@ -256,7 +256,6 @@ app.get("/api/me", (req, res) => {
 
 app.post("/api/registros", (req, res) => {
   // VERIFICA LOGIN
-
   if (!req.session.usuarioId) {
     return res.status(401).json({
       sucesso: false,
@@ -265,20 +264,12 @@ app.post("/api/registros", (req, res) => {
   }
 
   // RECEBE DADOS
-
   const {
     data,
     realizada,
     numeroVendas,
-
-    quantidadeMensagens,
-    retornos,
-    vendasMensagens,
-
-    quantidadeAudios,
-    retornosAudio,
-    vendasAudio,
-
+    contatos,
+    retornoContatos,
     prospeccao,
     clientesNovos,
   } = req.body;
@@ -291,12 +282,8 @@ app.post("/api/registros", (req, res) => {
     !data ||
     realizada === undefined ||
     numeroVendas === undefined ||
-    quantidadeMensagens === undefined ||
-    retornos === undefined ||
-    vendasMensagens === undefined ||
-    quantidadeAudios === undefined ||
-    retornosAudio === undefined ||
-    vendasAudio === undefined ||
+    contatos === undefined ||
+    retornoContatos === undefined ||
     prospeccao === undefined ||
     clientesNovos === undefined
   ) {
@@ -313,15 +300,8 @@ app.post("/api/registros", (req, res) => {
   const valores = [
     realizada,
     numeroVendas,
-
-    quantidadeMensagens,
-    retornos,
-    vendasMensagens,
-
-    quantidadeAudios,
-    retornosAudio,
-    vendasAudio,
-
+    contatos,
+    retornoContatos,
     prospeccao,
     clientesNovos,
   ];
@@ -341,11 +321,11 @@ app.post("/api/registros", (req, res) => {
     const registroExistente = db
       .prepare(
         `
-                SELECT id
-                FROM registros
-                WHERE usuario_id = ?
-                AND data = ?
-            `,
+        SELECT id
+        FROM registros
+        WHERE usuario_id = ?
+        AND data = ?
+      `,
       )
       .get(req.session.usuarioId, data);
 
@@ -355,42 +335,26 @@ app.post("/api/registros", (req, res) => {
 
     if (registroExistente) {
       const atualizarRegistro = db.prepare(`
-                UPDATE registros
-                SET
-                    meta_diaria = ?,
-                    realizada = ?,
-                    numero_vendas = ?,
-
-                    quantidade_mensagens = ?,
-                    retornos = ?,
-                    vendas_mensagens = ?,
-
-                    quantidade_audios = ?,
-                    retornos_audio = ?,
-                    vendas_audio = ?,
-
-                    prospeccao = ?,
-                    clientes_novos = ?
-
-                WHERE id = ?
-            `);
+        UPDATE registros
+        SET
+          meta_diaria = ?,
+          realizada = ?,
+          numero_vendas = ?,
+          contatos = ?,
+          retorno_contatos = ?,
+          prospeccao = ?,
+          clientes_novos = ?
+        WHERE id = ?
+      `);
 
       atualizarRegistro.run(
         0,
         Number(realizada),
         Number(numeroVendas),
-
-        Number(quantidadeMensagens),
-        Number(retornos),
-        Number(vendasMensagens),
-
-        Number(quantidadeAudios),
-        Number(retornosAudio),
-        Number(vendasAudio),
-
+        Number(contatos),
+        Number(retornoContatos),
         Number(prospeccao),
         Number(clientesNovos),
-
         registroExistente.id,
       );
 
@@ -407,45 +371,28 @@ app.post("/api/registros", (req, res) => {
     // ========================================
 
     const inserirRegistro = db.prepare(`
-            INSERT INTO registros (
-                usuario_id,
-                data,
-
-                meta_diaria,
-                realizada,
-                numero_vendas,
-
-                quantidade_mensagens,
-                retornos,
-                vendas_mensagens,
-
-                quantidade_audios,
-                retornos_audio,
-                vendas_audio,
-
-                prospeccao,
-                clientes_novos
-            )
-
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
+      INSERT INTO registros (
+        usuario_id,
+        data,
+        meta_diaria,
+        realizada,
+        numero_vendas,
+        contatos,
+        retorno_contatos,
+        prospeccao,
+        clientes_novos
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
 
     const resultado = inserirRegistro.run(
       req.session.usuarioId,
       data,
-
       0,
       Number(realizada),
       Number(numeroVendas),
-
-      Number(quantidadeMensagens),
-      Number(retornos),
-      Number(vendasMensagens),
-
-      Number(quantidadeAudios),
-      Number(retornosAudio),
-      Number(vendasAudio),
-
+      Number(contatos),
+      Number(retornoContatos),
       Number(prospeccao),
       Number(clientesNovos),
     );
@@ -556,34 +503,14 @@ app.get("/api/me/resumo-mensal", (req, res) => {
                     ) AS numero_vendas,
 
                     COALESCE(
-                        SUM(quantidade_mensagens),
+                        SUM(contatos),
                         0
-                    ) AS quantidade_mensagens,
+                    ) AS contatos,
 
                     COALESCE(
-                        SUM(retornos),
+                        SUM(retorno_contatos),
                         0
-                    ) AS retornos,
-
-                    COALESCE(
-                        SUM(vendas_mensagens),
-                        0
-                    ) AS vendas_mensagens,
-
-                    COALESCE(
-                        SUM(quantidade_audios),
-                        0
-                    ) AS quantidade_audios,
-
-                    COALESCE(
-                        SUM(retornos_audio),
-                        0
-                    ) AS retornos_audio,
-
-                    COALESCE(
-                        SUM(vendas_audio),
-                        0
-                    ) AS vendas_audio,
+                    ) AS retorno_contatos,
 
                     COALESCE(
                         SUM(prospeccao),
@@ -634,17 +561,9 @@ app.get("/api/me/resumo-mensal", (req, res) => {
 
         numero_vendas: Number(resumo.numero_vendas),
 
-        quantidade_mensagens: Number(resumo.quantidade_mensagens),
+        contatos: Number(resumo.contatos),
 
-        retornos: Number(resumo.retornos),
-
-        vendas_mensagens: Number(resumo.vendas_mensagens),
-
-        quantidade_audios: Number(resumo.quantidade_audios),
-
-        retornos_audio: Number(resumo.retornos_audio),
-
-        vendas_audio: Number(resumo.vendas_audio),
+        retorno_contatos: Number(resumo.retorno_contatos),
 
         prospeccao: Number(resumo.prospeccao),
 
@@ -686,13 +605,8 @@ app.get("/api/registros", (req, res) => {
                     realizada,
                     numero_vendas,
 
-                    quantidade_mensagens,
-                    retornos,
-                    vendas_mensagens,
-
-                    quantidade_audios,
-                    retornos_audio,
-                    vendas_audio,
+                    contatos,
+                    retorno_contatos,
 
                     prospeccao,
                     clientes_novos
@@ -895,61 +809,48 @@ app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
     const resumo = db
       .prepare(
         `
-                SELECT
-                    usuarios.id AS usuario_id,
-                    usuarios.nome AS nome_funcionaria,
-                    usuarios.email AS email_funcionaria,
+          SELECT
+            usuarios.id AS usuario_id,
+            usuarios.nome AS nome_funcionaria,
+            usuarios.email AS email_funcionaria,
 
-                    COALESCE(metas_mensais.meta, 0) AS meta_mensal,
+            COALESCE(metas_mensais.meta, 0) AS meta_mensal,
 
-                    COALESCE(SUM(registros.realizada), 0) AS valor_vendido,
-                    COALESCE(SUM(registros.numero_vendas), 0) AS numero_vendas,
+            COALESCE(SUM(registros.realizada), 0) AS valor_vendido,
+            COALESCE(SUM(registros.numero_vendas), 0) AS numero_vendas,
 
-                    COALESCE(SUM(registros.quantidade_mensagens), 0)
-                        AS quantidade_mensagens,
+            COALESCE(SUM(registros.contatos), 0) AS contatos,
 
-                    COALESCE(SUM(registros.retornos), 0)
-                        AS retornos,
+            COALESCE(SUM(registros.retorno_contatos), 0)
+              AS retorno_contatos,
 
-                    COALESCE(SUM(registros.vendas_mensagens), 0)
-                        AS vendas_mensagens,
+            COALESCE(SUM(registros.prospeccao), 0)
+              AS prospeccao,
 
-                    COALESCE(SUM(registros.quantidade_audios), 0)
-                        AS quantidade_audios,
+            COALESCE(SUM(registros.clientes_novos), 0)
+              AS clientes_novos
 
-                    COALESCE(SUM(registros.retornos_audio), 0)
-                        AS retornos_audio,
+          FROM usuarios
 
-                    COALESCE(SUM(registros.vendas_audio), 0)
-                        AS vendas_audio,
+          LEFT JOIN registros
+            ON registros.usuario_id = usuarios.id
+            AND substr(registros.data, 1, 7) = ?
 
-                    COALESCE(SUM(registros.prospeccao), 0)
-                        AS prospeccao,
+          LEFT JOIN metas_mensais
+            ON metas_mensais.usuario_id = usuarios.id
+            AND metas_mensais.mes = ?
+            AND metas_mensais.ano = ?
 
-                    COALESCE(SUM(registros.clientes_novos), 0)
-                        AS clientes_novos
+          WHERE usuarios.tipo = 'funcionaria'
 
-                FROM usuarios
+          GROUP BY
+            usuarios.id,
+            usuarios.nome,
+            usuarios.email,
+            metas_mensais.meta
 
-                LEFT JOIN registros
-                    ON registros.usuario_id = usuarios.id
-                    AND substr(registros.data, 1, 7) = ?
-
-                LEFT JOIN metas_mensais
-                    ON metas_mensais.usuario_id = usuarios.id
-                    AND metas_mensais.mes = ?
-                    AND metas_mensais.ano = ?
-
-                WHERE usuarios.tipo = 'funcionaria'
-
-                GROUP BY
-                    usuarios.id,
-                    usuarios.nome,
-                    usuarios.email,
-                    metas_mensais.meta
-
-                ORDER BY usuarios.nome ASC
-            `,
+          ORDER BY usuarios.nome ASC
+        `,
       )
       .all(periodo, mesNumero, anoNumero);
 
@@ -991,38 +892,33 @@ app.get("/api/admin/registros", verificarAdmin, (req, res) => {
     const registros = db
       .prepare(
         `
-                SELECT
-                    registros.id,
-                    registros.data,
+          SELECT
+            registros.id,
+            registros.data,
 
-                    registros.meta_diaria,
-                    registros.realizada,
-                    registros.numero_vendas,
+            registros.meta_diaria,
+            registros.realizada,
+            registros.numero_vendas,
 
-                    registros.quantidade_mensagens,
-                    registros.retornos,
-                    registros.vendas_mensagens,
+            registros.contatos,
+            registros.retorno_contatos,
 
-                    registros.quantidade_audios,
-                    registros.retornos_audio,
-                    registros.vendas_audio,
+            registros.prospeccao,
+            registros.clientes_novos,
 
-                    registros.prospeccao,
-                    registros.clientes_novos,
+            usuarios.id AS usuario_id,
+            usuarios.nome AS nome_funcionaria,
+            usuarios.email AS email_funcionaria
 
-                    usuarios.id AS usuario_id,
-                    usuarios.nome AS nome_funcionaria,
-                    usuarios.email AS email_funcionaria
+          FROM registros
 
-                FROM registros
+          INNER JOIN usuarios
+            ON registros.usuario_id = usuarios.id
 
-                INNER JOIN usuarios
-                    ON registros.usuario_id = usuarios.id
+          WHERE usuarios.tipo = 'funcionaria'
 
-                WHERE usuarios.tipo = 'funcionaria'
-
-                ORDER BY registros.data DESC
-            `,
+          ORDER BY registros.data DESC
+        `,
       )
       .all();
 
@@ -1061,7 +957,6 @@ app.post("/api/logout", (req, res) => {
     });
   });
 });
-
 // ========================================
 // INICIAR SERVIDOR
 // ========================================

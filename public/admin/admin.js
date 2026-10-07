@@ -2,132 +2,96 @@
 // ELEMENTOS
 // ========================================
 
-const nomeAdmin = document.querySelector('#nomeAdmin');
+const nomeAdmin = document.querySelector("#nomeAdmin");
 
-const totalFuncionarias =
-    document.querySelector('#totalFuncionarias');
+const totalFuncionarias = document.querySelector("#totalFuncionarias");
 
-const totalVendas =
-    document.querySelector('#totalVendas');
+const totalVendas = document.querySelector("#totalVendas");
 
-const valorVendido =
-    document.querySelector('#valorVendido');
+const valorVendido = document.querySelector("#valorVendido");
 
-const tabelaFuncionarias =
-    document.querySelector('#tabelaFuncionarias');
+const tabelaFuncionarias = document.querySelector("#tabelaFuncionarias");
 
-const mesFiltro =
-    document.querySelector('#mesFiltro');
+const mesFiltro = document.querySelector("#mesFiltro");
 
-const anoFiltro =
-    document.querySelector('#anoFiltro');
+const anoFiltro = document.querySelector("#anoFiltro");
 
-const btnAtualizar =
-    document.querySelector('#btnAtualizar');
+const btnAtualizar = document.querySelector("#btnAtualizar");
 
-const btnSalvarMetas =
-    document.querySelector('#btnSalvarMetas');
+const btnSalvarMetas = document.querySelector("#btnSalvarMetas");
 
-const btnSair =
-    document.querySelector('#btnSair');
-
+const btnSair = document.querySelector("#btnSair");
 
 // ========================================
 // FORMATAR DINHEIRO
 // ========================================
 
 function formatarDinheiro(valor) {
-
-    return Number(valor).toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    });
-
+  return Number(valor).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
-
 
 // ========================================
 // VERIFICAR ADMIN
 // ========================================
 
 async function verificarAdmin() {
+  try {
+    const resposta = await fetch("/api/me");
 
-    try {
+    if (!resposta.ok) {
+      window.location.href = "/login/login.html";
 
-        const resposta =
-            await fetch('/api/me');
-
-        if (!resposta.ok) {
-
-            window.location.href =
-                '/login/login.html';
-
-            return false;
-        }
-
-        const dados =
-            await resposta.json();
-
-        if (dados.usuario.tipo !== 'admin') {
-
-            window.location.href =
-                '/funcionaria/funcionaria.html';
-
-            return false;
-        }
-
-        nomeAdmin.textContent =
-            dados.usuario.nome;
-
-        return true;
-
-    } catch (erro) {
-
-        console.error(erro);
-
-        window.location.href =
-            '/login/login.html';
-
-        return false;
+      return false;
     }
 
-}
+    const dados = await resposta.json();
 
+    if (dados.usuario.tipo !== "admin") {
+      window.location.href = "/funcionaria/funcionaria.html";
+
+      return false;
+    }
+
+    nomeAdmin.textContent = dados.usuario.nome;
+
+    return true;
+  } catch (erro) {
+    console.error(erro);
+
+    window.location.href = "/login/login.html";
+
+    return false;
+  }
+}
 
 // ========================================
 // DEFINIR PERÍODO ATUAL
 // ========================================
 
 function definirPeriodoAtual() {
+  const hoje = new Date();
 
-    const hoje = new Date();
+  mesFiltro.value = hoje.getMonth() + 1;
 
-    mesFiltro.value =
-        hoje.getMonth() + 1;
-
-    anoFiltro.value =
-        hoje.getFullYear();
-
+  anoFiltro.value = hoje.getFullYear();
 }
-
 
 // ========================================
 // CARREGAR RESUMO MENSAL
 // ========================================
 
 async function carregarResumoMensal() {
+  const mes = mesFiltro.value;
 
-    const mes =
-        mesFiltro.value;
+  const ano = anoFiltro.value;
 
-    const ano =
-        anoFiltro.value;
-
-
-    tabelaFuncionarias.innerHTML = `
+  tabelaFuncionarias.innerHTML = `
         <tr>
             <td
-                colspan="13"
+                colspan="9"
                 class="px-6 py-10 text-center text-gray-400"
             >
                 Carregando dados...
@@ -135,23 +99,18 @@ async function carregarResumoMensal() {
         </tr>
     `;
 
+  try {
+    const resposta = await fetch(
+      `/api/admin/resumo-mensal?mes=${mes}&ano=${ano}`,
+    );
 
-    try {
+    const dados = await resposta.json();
 
-        const resposta = await fetch(
-            `/api/admin/resumo-mensal?mes=${mes}&ano=${ano}`
-        );
-
-        const dados =
-            await resposta.json();
-
-
-        if (!resposta.ok) {
-
-            tabelaFuncionarias.innerHTML = `
+    if (!resposta.ok) {
+      tabelaFuncionarias.innerHTML = `
                 <tr>
                     <td
-                        colspan="13"
+                        colspan="9"
                         class="px-6 py-10 text-center text-red-400"
                     >
                         ${dados.mensagem}
@@ -159,67 +118,38 @@ async function carregarResumoMensal() {
                 </tr>
             `;
 
-            return;
-        }
+      return;
+    }
 
+    const funcionarias = dados.funcionarias;
 
-        const funcionarias =
-            dados.funcionarias;
+    // ========================================
+    // CARDS DO TOPO
+    // ========================================
 
+    totalFuncionarias.textContent = funcionarias.length;
 
-        // ========================================
-        // CARDS DO TOPO
-        // ========================================
+    const vendasMes = funcionarias.reduce((total, funcionaria) => {
+      return total + Number(funcionaria.numero_vendas);
+    }, 0);
 
-        totalFuncionarias.textContent =
-            funcionarias.length;
+    const valorMes = funcionarias.reduce((total, funcionaria) => {
+      return total + Number(funcionaria.valor_vendido);
+    }, 0);
 
+    totalVendas.textContent = vendasMes;
 
-        const vendasMes =
-            funcionarias.reduce(
-                (total, funcionaria) => {
+    valorVendido.textContent = formatarDinheiro(valorMes);
 
-                    return total +
-                        Number(
-                            funcionaria.numero_vendas
-                        );
+    // ========================================
+    // SEM FUNCIONÁRIAS
+    // ========================================
 
-                },
-                0
-            );
-
-
-        const valorMes =
-            funcionarias.reduce(
-                (total, funcionaria) => {
-
-                    return total +
-                        Number(
-                            funcionaria.valor_vendido
-                        );
-
-                },
-                0
-            );
-
-
-        totalVendas.textContent =
-            vendasMes;
-
-        valorVendido.textContent =
-            formatarDinheiro(valorMes);
-
-
-        // ========================================
-        // SEM FUNCIONÁRIAS
-        // ========================================
-
-        if (funcionarias.length === 0) {
-
-            tabelaFuncionarias.innerHTML = `
+    if (funcionarias.length === 0) {
+      tabelaFuncionarias.innerHTML = `
                 <tr>
                     <td
-                        colspan="13"
+                        colspan="9"
                         class="px-6 py-10 text-center text-gray-400"
                     >
                         Nenhuma funcionária encontrada.
@@ -227,31 +157,25 @@ async function carregarResumoMensal() {
                 </tr>
             `;
 
-            return;
-        }
+      return;
+    }
 
+    // ========================================
+    // CRIAR TABELA
+    // ========================================
 
-        // ========================================
-        // CRIAR TABELA
-        // ========================================
+    tabelaFuncionarias.innerHTML = "";
 
-        tabelaFuncionarias.innerHTML = '';
+    funcionarias.forEach((funcionaria) => {
+      const linha = document.createElement("tr");
 
-
-        funcionarias.forEach(funcionaria => {
-
-            const linha =
-                document.createElement('tr');
-
-
-            linha.className = `
+      linha.className = `
                 bg-white
                 hover:bg-[#d5e3df]
                 transition
             `;
 
-
-            linha.innerHTML = `
+      linha.innerHTML = `
 
                 <!-- FUNCIONÁRIA -->
 
@@ -277,9 +201,7 @@ async function carregarResumoMensal() {
                         min="0"
                         step="0.01"
 
-                        value="${Number(
-                            funcionaria.meta_mensal
-                        )}"
+                        value="${Number(funcionaria.meta_mensal)}"
 
                         data-usuario-id="${funcionaria.usuario_id}"
 
@@ -308,9 +230,7 @@ async function carregarResumoMensal() {
 
                 <td class="px-4 py-4 text-right font-medium">
 
-                    ${formatarDinheiro(
-                        funcionaria.valor_vendido
-                    )}
+                    ${formatarDinheiro(funcionaria.valor_vendido)}
 
                 </td>
 
@@ -331,9 +251,7 @@ async function carregarResumoMensal() {
                         "
                     >
 
-                        ${Number(
-                            funcionaria.porcentagem_meta
-                        ).toFixed(2)}%
+                        ${Number(funcionaria.porcentagem_meta).toFixed(2)}%
 
                     </span>
 
@@ -347,47 +265,18 @@ async function carregarResumoMensal() {
                 </td>
 
 
-                <!-- MENSAGENS -->
+                <!-- CONTATOS -->
 
                 <td class="px-4 py-4 text-right">
-                    ${funcionaria.quantidade_mensagens}
+                    ${funcionaria.contatos}
                 </td>
 
 
-                <!-- RETORNOS -->
+                <!-- RETORNO DE CONTATOS -->
 
                 <td class="px-4 py-4 text-right">
-                    ${funcionaria.retornos}
+                    ${funcionaria.retorno_contatos}
                 </td>
-
-
-                <!-- VENDAS POR MENSAGEM -->
-
-                <td class="px-4 py-4 text-right">
-                    ${funcionaria.vendas_mensagens}
-                </td>
-
-
-                <!-- ÁUDIOS -->
-
-                <td class="px-4 py-4 text-right">
-                    ${funcionaria.quantidade_audios}
-                </td>
-
-
-                <!-- RETORNOS DE ÁUDIO -->
-
-                <td class="px-4 py-4 text-right">
-                    ${funcionaria.retornos_audio}
-                </td>
-
-
-                <!-- VENDAS POR ÁUDIO -->
-
-                <td class="px-4 py-4 text-right">
-                    ${funcionaria.vendas_audio}
-                </td>
-
 
                 <!-- PROSPECÇÕES -->
 
@@ -404,294 +293,168 @@ async function carregarResumoMensal() {
 
             `;
 
+      tabelaFuncionarias.appendChild(linha);
+    });
+  } catch (erro) {
+    console.error("Erro ao carregar resumo mensal:", erro);
 
-            tabelaFuncionarias.appendChild(
-                linha
-            );
-
-        });
-
-
-    } catch (erro) {
-
-        console.error(
-            'Erro ao carregar resumo mensal:',
-            erro
-        );
-
-
-        tabelaFuncionarias.innerHTML = `
+    tabelaFuncionarias.innerHTML = `
             <tr>
                 <td
-                    colspan="13"
+                    colspan="9"
                     class="px-6 py-10 text-center text-red-400"
                 >
                     Erro ao carregar os dados.
                 </td>
             </tr>
         `;
-
-    }
-
+  }
 }
-
 
 // ========================================
 // SALVAR TODAS AS METAS
 // ========================================
 
 async function salvarTodasMetas() {
+  const inputs = document.querySelectorAll(".input-meta");
 
-    const inputs =
-        document.querySelectorAll(
-            '.input-meta'
-        );
+  if (inputs.length === 0) {
+    return;
+  }
 
+  const mes = Number(mesFiltro.value);
 
-    if (inputs.length === 0) {
+  const ano = Number(anoFiltro.value);
+
+  try {
+    // Feedback no botão
+    btnSalvarMetas.disabled = true;
+
+    btnSalvarMetas.textContent = "Salvando...";
+
+    // ========================================
+    // PERCORRER TODOS OS INPUTS
+    // ========================================
+
+    for (const input of inputs) {
+      const usuarioId = Number(input.dataset.usuarioId);
+
+      const meta = Number(input.value);
+
+      // Validação
+      if (isNaN(meta) || meta < 0) {
+        alert("Existe uma meta inválida.");
+
+        btnSalvarMetas.disabled = false;
+
+        btnSalvarMetas.textContent = "Salvar metas";
+
         return;
+      }
+
+      // ========================================
+      // SALVAR META
+      // ========================================
+
+      const resposta = await fetch("/api/admin/metas", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          usuarioId: usuarioId,
+
+          mes: mes,
+
+          ano: ano,
+
+          meta: meta,
+        }),
+      });
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        alert(dados.mensagem);
+
+        btnSalvarMetas.disabled = false;
+
+        btnSalvarMetas.textContent = "Salvar metas";
+
+        return;
+      }
     }
 
+    // ========================================
+    // TERMINOU DE SALVAR
+    // ========================================
 
-    const mes =
-        Number(mesFiltro.value);
+    btnSalvarMetas.textContent = "Salvo ✓";
 
-    const ano =
-        Number(anoFiltro.value);
+    // Recarrega para atualizar
+    // as porcentagens
+    await carregarResumoMensal();
 
+    setTimeout(() => {
+      btnSalvarMetas.disabled = false;
 
-    try {
+      btnSalvarMetas.textContent = "Salvar metas";
+    }, 1200);
+  } catch (erro) {
+    console.error("Erro ao salvar metas:", erro);
 
-        // Feedback no botão
-        btnSalvarMetas.disabled = true;
+    alert("Erro ao salvar as metas.");
 
-        btnSalvarMetas.textContent =
-            'Salvando...';
+    btnSalvarMetas.disabled = false;
 
-
-        // ========================================
-        // PERCORRER TODOS OS INPUTS
-        // ========================================
-
-        for (const input of inputs) {
-
-            const usuarioId =
-                Number(
-                    input.dataset.usuarioId
-                );
-
-
-            const meta =
-                Number(
-                    input.value
-                );
-
-
-            // Validação
-            if (
-                isNaN(meta) ||
-                meta < 0
-            ) {
-
-                alert(
-                    'Existe uma meta inválida.'
-                );
-
-
-                btnSalvarMetas.disabled =
-                    false;
-
-
-                btnSalvarMetas.textContent =
-                    'Salvar metas';
-
-
-                return;
-            }
-
-
-            // ========================================
-            // SALVAR META
-            // ========================================
-
-            const resposta =
-                await fetch(
-                    '/api/admin/metas',
-                    {
-                        method: 'POST',
-
-                        headers: {
-                            'Content-Type':
-                                'application/json'
-                        },
-
-                        body: JSON.stringify({
-
-                            usuarioId:
-                                usuarioId,
-
-                            mes:
-                                mes,
-
-                            ano:
-                                ano,
-
-                            meta:
-                                meta
-
-                        })
-
-                    }
-                );
-
-
-            const dados =
-                await resposta.json();
-
-
-            if (!resposta.ok) {
-
-                alert(
-                    dados.mensagem
-                );
-
-
-                btnSalvarMetas.disabled =
-                    false;
-
-
-                btnSalvarMetas.textContent =
-                    'Salvar metas';
-
-
-                return;
-            }
-
-        }
-
-
-        // ========================================
-        // TERMINOU DE SALVAR
-        // ========================================
-
-        btnSalvarMetas.textContent =
-            'Salvo ✓';
-
-
-        // Recarrega para atualizar
-        // as porcentagens
-        await carregarResumoMensal();
-
-
-        setTimeout(() => {
-
-            btnSalvarMetas.disabled =
-                false;
-
-            btnSalvarMetas.textContent =
-                'Salvar metas';
-
-        }, 1200);
-
-
-    } catch (erro) {
-
-        console.error(
-            'Erro ao salvar metas:',
-            erro
-        );
-
-
-        alert(
-            'Erro ao salvar as metas.'
-        );
-
-
-        btnSalvarMetas.disabled =
-            false;
-
-
-        btnSalvarMetas.textContent =
-            'Salvar metas';
-
-    }
-
+    btnSalvarMetas.textContent = "Salvar metas";
+  }
 }
-
 
 // ========================================
 // ATUALIZAR TABELA
 // ========================================
 
-btnAtualizar.addEventListener(
-    'click',
-    carregarResumoMensal
-);
-
+btnAtualizar.addEventListener("click", carregarResumoMensal);
 
 // ========================================
 // SALVAR METAS
 // ========================================
 
-btnSalvarMetas.addEventListener(
-    'click',
-    salvarTodasMetas
-);
-
+btnSalvarMetas.addEventListener("click", salvarTodasMetas);
 
 // ========================================
 // LOGOUT
 // ========================================
 
-btnSair.addEventListener(
-    'click',
-    async () => {
+btnSair.addEventListener("click", async () => {
+  try {
+    await fetch("/api/logout", {
+      method: "POST",
+    });
 
-        try {
-
-            await fetch(
-                '/api/logout',
-                {
-                    method: 'POST'
-                }
-            );
-
-
-            window.location.href =
-                '/login/login.html';
-
-
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-);
-
+    window.location.href = "/login/login.html";
+  } catch (erro) {
+    console.error(erro);
+  }
+});
 
 // ========================================
 // INICIAR PÁGINA
 // ========================================
 
 async function iniciarPagina() {
+  const adminValido = await verificarAdmin();
 
-    const adminValido =
-        await verificarAdmin();
+  if (!adminValido) {
+    return;
+  }
 
+  definirPeriodoAtual();
 
-    if (!adminValido) {
-        return;
-    }
-
-
-    definirPeriodoAtual();
-
-
-    await carregarResumoMensal();
-
+  await carregarResumoMensal();
 }
-
 
 iniciarPagina();

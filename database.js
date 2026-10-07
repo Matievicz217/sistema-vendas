@@ -6,8 +6,7 @@ const db = new Database("db.sqlite");
 // TABELA DE USUÁRIOS
 // ========================================
 
-db.prepare(
-  `
+db.prepare(`
     CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
@@ -15,8 +14,8 @@ db.prepare(
         senha_hash TEXT NOT NULL,
         tipo TEXT NOT NULL DEFAULT 'funcionaria'
     )
-`,
-).run();
+`).run();
+
 
 // ========================================
 // TABELA DE REGISTROS
@@ -32,13 +31,8 @@ db.prepare(`
         realizada REAL NOT NULL,
         numero_vendas INTEGER NOT NULL,
 
-        quantidade_mensagens INTEGER NOT NULL DEFAULT 0,
-        retornos INTEGER NOT NULL DEFAULT 0,
-        vendas_mensagens INTEGER NOT NULL DEFAULT 0,
-
-        quantidade_audios INTEGER NOT NULL DEFAULT 0,
-        retornos_audio INTEGER NOT NULL DEFAULT 0,
-        vendas_audio INTEGER NOT NULL DEFAULT 0,
+        contatos INTEGER NOT NULL DEFAULT 0,
+        retorno_contatos INTEGER NOT NULL DEFAULT 0,
 
         prospeccao INTEGER NOT NULL DEFAULT 0,
         clientes_novos INTEGER NOT NULL DEFAULT 0,
@@ -48,20 +42,20 @@ db.prepare(`
     )
 `).run();
 
+
+// ========================================
+// MIGRAÇÃO DE COLUNAS
+// ========================================
+
 const colunasNovas = [
-    ["quantidade_mensagens", "INTEGER NOT NULL DEFAULT 0"],
-    ["retornos", "INTEGER NOT NULL DEFAULT 0"],
-    ["vendas_mensagens", "INTEGER NOT NULL DEFAULT 0"],
-
-    ["quantidade_audios", "INTEGER NOT NULL DEFAULT 0"],
-    ["retornos_audio", "INTEGER NOT NULL DEFAULT 0"],
-    ["vendas_audio", "INTEGER NOT NULL DEFAULT 0"],
-
+    ["contatos", "INTEGER NOT NULL DEFAULT 0"],
+    ["retorno_contatos", "INTEGER NOT NULL DEFAULT 0"],
     ["prospeccao", "INTEGER NOT NULL DEFAULT 0"],
     ["clientes_novos", "INTEGER NOT NULL DEFAULT 0"]
 ];
 
 for (const [nome, tipo] of colunasNovas) {
+
     const colunaExiste = db
         .prepare(`
             SELECT name
@@ -71,6 +65,7 @@ for (const [nome, tipo] of colunasNovas) {
         .get(nome);
 
     if (!colunaExiste) {
+
         db.prepare(`
             ALTER TABLE registros
             ADD COLUMN ${nome} ${tipo}
@@ -80,11 +75,17 @@ for (const [nome, tipo] of colunasNovas) {
     }
 }
 
+
+// ========================================
+// REGISTRO ÚNICO POR FUNCIONÁRIA/DIA
+// ========================================
+
 db.prepare(`
     CREATE UNIQUE INDEX IF NOT EXISTS
     indice_registro_unico
     ON registros (usuario_id, data)
 `).run();
+
 
 // ========================================
 // TABELA DE METAS MENSAIS
@@ -104,5 +105,6 @@ db.prepare(`
         UNIQUE(usuario_id, mes, ano)
     )
 `).run();
+
 
 module.exports = db;

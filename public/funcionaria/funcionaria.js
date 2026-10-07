@@ -20,13 +20,8 @@ const porcentagemMeta = document.querySelector("#porcentagemMeta");
 const barraProgresso = document.querySelector("#barraProgresso");
 
 const resumoVendas = document.querySelector("#resumoVendas");
-const resumoMensagens = document.querySelector("#resumoMensagens");
-const resumoRetornos = document.querySelector("#resumoRetornos");
-const resumoVendasMensagens = document.querySelector("#resumoVendasMensagens");
-
-const resumoAudios = document.querySelector("#resumoAudios");
-const resumoRetornosAudio = document.querySelector("#resumoRetornosAudio");
-const resumoVendasAudio = document.querySelector("#resumoVendasAudio");
+const resumoContatos = document.querySelector("#resumoContatos");
+const resumoRetornoContatos = document.querySelector("#resumoRetornoContatos");
 
 const resumoProspeccao = document.querySelector("#resumoProspeccao");
 const resumoClientesNovos = document.querySelector("#resumoClientesNovos");
@@ -184,17 +179,8 @@ async function carregarResumoMensal() {
 
     resumoVendas.textContent = resumo.numero_vendas || 0;
 
-    resumoMensagens.textContent = resumo.quantidade_mensagens || 0;
-
-    resumoRetornos.textContent = resumo.retornos || 0;
-
-    resumoVendasMensagens.textContent = resumo.vendas_mensagens || 0;
-
-    resumoAudios.textContent = resumo.quantidade_audios || 0;
-
-    resumoRetornosAudio.textContent = resumo.retornos_audio || 0;
-
-    resumoVendasAudio.textContent = resumo.vendas_audio || 0;
+    resumoContatos.textContent = resumo.contatos || 0;
+    resumoRetornoContatos.textContent = resumo.retorno_contatos || 0;
 
     resumoProspeccao.textContent = resumo.prospeccao || 0;
 
@@ -227,27 +213,13 @@ formRegistro.addEventListener("submit", async (event) => {
   const numeroVendas = document.querySelector("#numeroVendas").value;
 
   // ========================================
-  // MENSAGENS
+  // ========================================
+  // CONTATOS
   // ========================================
 
-  const quantidadeMensagens = document.querySelector(
-    "#quantidadeMensagens",
-  ).value;
+  const contatos = document.querySelector("#contatos").value;
 
-  const retornos = document.querySelector("#retornos").value;
-
-  const vendasMensagens = document.querySelector("#vendasMensagens").value;
-
-  // ========================================
-  // ÁUDIOS
-  // ========================================
-
-  const quantidadeAudios = document.querySelector("#quantidadeAudios").value;
-
-  const retornosAudio = document.querySelector("#retornosAudio").value;
-
-  const vendasAudio = document.querySelector("#vendasAudio").value;
-
+  const retornoContatos = document.querySelector("#retornoContatos").value;
   // ========================================
   // PROSPECÇÃO
   // ========================================
@@ -277,17 +249,9 @@ formRegistro.addEventListener("submit", async (event) => {
 
     numeroVendas: Number(numeroVendas),
 
-    quantidadeMensagens: Number(quantidadeMensagens || 0),
+    contatos: Number(contatos || 0),
 
-    retornos: Number(retornos || 0),
-
-    vendasMensagens: Number(vendasMensagens || 0),
-
-    quantidadeAudios: Number(quantidadeAudios || 0),
-
-    retornosAudio: Number(retornosAudio || 0),
-
-    vendasAudio: Number(vendasAudio || 0),
+    retornoContatos: Number(retornoContatos || 0),
 
     prospeccao: Number(prospeccao || 0),
 

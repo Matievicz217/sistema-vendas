@@ -1,136 +1,405 @@
 <!DOCTYPE html>
+
+
+
 <html lang="pt-BR">
 
+
+
+
+
+
+
 <head>
+
+
+
     <meta charset="UTF-8">
+
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+
+
 
     <title>Área da Funcionária | Dermosens</title>
 
+
+
+
+
+
+
     <link rel="stylesheet" href="../css/output.css">
+
+
+
 </head>
+
+
+
+
+
+
 
 <body class="min-h-screen bg-[#eef3f1] text-[#202322]">
 
+
+
+
+
+
+
     <!-- ========================================
+
+
+
          CABEÇALHO
+
+
+
     ========================================= -->
+
+
+
+
+
+
 
     <header class="sticky top-0 z-20 border-b border-[#d8e1de] bg-white/90 backdrop-blur">
 
+
+
+
+
+
+
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
 
+
+
+
+
+
+
             <!-- Marca -->
+
+
+
             <div class="flex items-center gap-4">
 
-                <div
-                    class="w-17 h-17 rounded-full bg-[#819b94] flex items-center justify-center shadow-sm"
-                >
+
+
+
+
+
+
+                <div class="w-17 h-17 rounded-full bg-[#819b94] flex items-center justify-center shadow-sm">
+
+
+
                     <span class="text-white text-[9px] tracking-[0.15em]">
+
+
+
                         DERMOSENS
+
+
+
                     </span>
+
+
+
                 </div>
+
+
+
+
+
+
 
                 <div>
+
+
+
                     <h1 class="text-lg font-medium tracking-wide">
+
+
+
                         Dermosens
+
+
+
                     </h1>
 
+
+
+
+
+
+
                     <p class="text-xs text-[#74817d]">
+
+
+
                         Sistema de Vendas
+
+
+
                     </p>
+
+
+
                 </div>
+
+
+
+
+
+
 
             </div>
 
 
+
+
+
+
+
+
+
+
+
             <!-- Sair -->
-            <button
-                type="button"
-                id="btnSair"
-                class="
+
+
+
+            <button type="button" id="btnSair" class="
+
+
+
                     px-5 py-2.5
+
+
+
                     border border-[#cbd7d3]
+
+
+
                     text-[#64736f]
+
+
+
                     hover:bg-[#eef3f1]
+
+
+
                     hover:text-[#46534f]
+
+
+
                     rounded-lg
+
+
+
                     text-sm
+
+
+
                     font-medium
+
+
+
                     transition
+
+
+
                     cursor-pointer
-                "
-            >
+
+
+
+                ">
+
+
+
                 Sair
+
+
+
             </button>
 
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
 
     </header>
 
 
+
+
+
+
+
+
+
+
+
     <!-- ========================================
+
+
+
          CONTEÚDO
+
+
+
     ========================================= -->
+
+
+
+
+
+
 
     <main class="max-w-6xl mx-auto px-6 py-10">
 
 
+
+
+
+
+
+
+
+
+
         <!-- ========================================
+
+
+
              SAUDAÇÃO
+
+
+
         ========================================= -->
+
+
+
+
+
+
 
         <div class="mb-10">
 
+
+
+
+
+
+
             <p class="text-sm font-medium text-[#819b94] mb-2">
+
+
+
                 PAINEL DE VENDAS
+
+
+
             </p>
 
-            <h2
-                id="nomeUsuario"
-                class="text-3xl font-light tracking-wide"
-            >
+
+
+
+
+
+
+            <h2 id="nomeUsuario" class="text-3xl font-light tracking-wide">
+
+
+
                 Olá!
+
+
+
             </h2>
 
+
+
+
+
+
+
             <p class="text-[#74817d] mt-2">
+
+
+
                 Registre seus resultados diários e acompanhe seu desempenho mensal.
+
+
+
             </p>
+
+
+
+
+
+
 
         </div>
 
 
+
+
+
+
+
+
+
+
+
         <!-- ========================================
+
+
+
              ACOMPANHAMENTO MENSAL
+
+
+
         ========================================= -->
+
+
+
+
+
+
 
         <section class="mb-14">
 
-            <div
-                class="
-                    bg-white
-                    border border-[#d8e1de]
-                    rounded-2xl
-                    p-6
-                    md:p-8
-                    shadow-sm
-                    mb-6
-                "
-            >
 
-                <div
-                    class="
-                        flex
-                        flex-col
-                        lg:flex-row
-                        lg:items-end
-                        lg:justify-between
-                        gap-6
-                    "
-                >
 
+
+
+
+
+            <div class="bg-white border border-[#d8e1de] rounded-2xl p-6 md:p-8 shadow-sm mb-6">
+
+                <div class="space-y-6">
+
+                    <!-- TÍTULO -->
                     <div>
-
                         <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94]">
                             DESEMPENHO
                         </p>
@@ -142,41 +411,13 @@
                         <p class="text-[#74817d] text-sm mt-2">
                             Consulte sua meta e os resultados acumulados de cada mês.
                         </p>
-
                     </div>
 
-
                     <!-- FILTROS -->
-
-                    <div class="flex flex-col sm:flex-row gap-3">
-
-
-                        <!-- MÊS -->
-
+                    <div class="flex flex-wrap items-end gap-4">
                         <div>
-
-                            <label
-                                for="mesFiltro"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Mês
-                            </label>
-
-                            <select
-                                id="mesFiltro"
-                                class="
-                                    w-full sm:w-44
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    cursor-pointer
-                                "
-                            >
+                            <label for="mesFiltro" class="block text-sm font-medium text-[#596762] mb-2">Mês</label>
+                            <select id="mesFiltro" class="w-44 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20 cursor-pointer">
                                 <option value="1">Janeiro</option>
                                 <option value="2">Fevereiro</option>
                                 <option value="3">Março</option>
@@ -190,1113 +431,2317 @@
                                 <option value="11">Novembro</option>
                                 <option value="12">Dezembro</option>
                             </select>
-
                         </div>
-
-
-                        <!-- ANO -->
 
                         <div>
-
-                            <label
-                                for="anoFiltro"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Ano
-                            </label>
-
-                            <input
-                                type="number"
-                                id="anoFiltro"
-                                min="2020"
-                                max="2100"
-                                class="
-                                    w-full sm:w-32
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                "
-                            >
-
+                            <label for="anoFiltro" class="block text-sm font-medium text-[#596762] mb-2">Ano</label>
+                            <input type="number" id="anoFiltro" min="2020" max="2100" class="w-32 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20">
                         </div>
 
-
-                        <!-- ATUALIZAR -->
-
-                        <div class="flex items-end">
-
-                            <button
-                                type="button"
-                                id="btnAtualizarResumo"
-                                class="
-                                    w-full sm:w-auto
-                                    px-6 py-3
-                                    bg-[#819b94]
-                                    hover:bg-[#6f8982]
-                                    text-white
-                                    rounded-lg
-                                    font-medium
-                                    transition
-                                    cursor-pointer
-                                    disabled:opacity-60
-                                    disabled:cursor-not-allowed
-                                "
-                            >
-                                Atualizar
-                            </button>
-
-                        </div>
-
+                        <button type="button" id="btnAtualizarResumo" class="px-6 py-3 bg-[#819b94] hover:bg-[#6f8982] text-white rounded-lg font-medium transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                            Atualizar
+                        </button>
                     </div>
 
                 </div>
-
             </div>
 
 
+
             <!-- ========================================
+
+
+
                  CARDS PRINCIPAIS
+
+
+
             ========================================= -->
+
+
+
+
+
+
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
 
+
+
+
+
+
+
+
+
+
                 <!-- META -->
 
-                <div
-                    class="
-                        bg-white
-                        border border-[#d8e1de]
-                        rounded-2xl
-                        p-6
-                        shadow-sm
-                    "
-                >
 
-                    <div
-                        class="
+
+
+
+
+
+                <div class="
+
+
+
+                        bg-white
+
+
+
+                        border border-[#d8e1de]
+
+
+
+                        rounded-2xl
+
+
+
+                        p-6
+
+
+
+                        shadow-sm
+
+
+
+                    ">
+
+
+
+
+
+
+
+                    <div class="
+
+
+
                             w-10 h-10
+
+
+
                             bg-[#eef3f1]
+
+
+
                             rounded-xl
+
+
+
                             flex items-center justify-center
+
+
+
                             mb-4
-                        "
-                    >
+
+
+
+                        ">
+
+
+
                         <span class="text-[#819b94] text-lg">◎</span>
+
+
+
                     </div>
 
+
+
+
+
+
+
                     <p class="text-sm text-[#74817d]">
+
+
+
                         Meta mensal
+
+
+
                     </p>
 
-                    <p
-                        id="metaMensal"
-                        class="text-2xl font-semibold mt-2"
-                    >
+
+
+
+
+
+
+                    <p id="metaMensal" class="text-2xl font-semibold mt-2">
+
+
+
                         R$ 0,00
+
+
+
                     </p>
+
+
+
+
+
+
 
                 </div>
+
+
+
+
+
+
+
+
+
 
 
                 <!-- VENDIDO -->
 
-                <div
-                    class="
-                        bg-white
-                        border border-[#d8e1de]
-                        rounded-2xl
-                        p-6
-                        shadow-sm
-                    "
-                >
 
-                    <div
-                        class="
+
+
+
+
+
+                <div class="
+
+
+
+                        bg-white
+
+
+
+                        border border-[#d8e1de]
+
+
+
+                        rounded-2xl
+
+
+
+                        p-6
+
+
+
+                        shadow-sm
+
+
+
+                    ">
+
+
+
+
+
+
+
+                    <div class="
+
+
+
                             w-10 h-10
+
+
+
                             bg-[#eef3f1]
+
+
+
                             rounded-xl
+
+
+
                             flex items-center justify-center
+
+
+
                             mb-4
-                        "
-                    >
+
+
+
+                        ">
+
+
+
                         <span class="text-[#819b94] text-lg">R$</span>
+
+
+
                     </div>
 
+
+
+
+
+
+
                     <p class="text-sm text-[#74817d]">
+
+
+
                         Vendido no mês
+
+
+
                     </p>
 
-                    <p
-                        id="valorVendidoMes"
-                        class="text-2xl font-semibold mt-2 text-[#647f77]"
-                    >
+
+
+
+
+
+
+                    <p id="valorVendidoMes" class="text-2xl font-semibold mt-2 text-[#647f77]">
+
+
+
                         R$ 0,00
+
+
+
                     </p>
+
+
+
+
+
+
 
                 </div>
+
+
+
+
+
+
+
+
+
 
 
                 <!-- PROGRESSO -->
 
-                <div
-                    class="
+
+
+
+
+
+
+                <div class="
+
+
+
                         bg-white
+
+
+
                         border border-[#d8e1de]
+
+
+
                         rounded-2xl
+
+
+
                         p-6
+
+
+
                         shadow-sm
-                    "
-                >
+
+
+
+                    ">
+
+
+
+
+
+
 
                     <div class="flex items-center justify-between gap-4">
 
+
+
+
+
+
+
                         <p class="text-sm text-[#74817d]">
+
+
+
                             Progresso da meta
+
+
+
                         </p>
 
-                        <span
-                            id="porcentagemMeta"
-                            class="text-lg font-semibold text-[#647f77]"
-                        >
+
+
+
+
+
+
+                        <span id="porcentagemMeta" class="text-lg font-semibold text-[#647f77]">
+
+
+
                             0%
+
+
+
                         </span>
 
+
+
+
+
+
+
                     </div>
 
 
-                    <div
-                        class="
-                            w-full
-                            h-3
-                            bg-[#e5ece9]
-                            rounded-full
-                            overflow-hidden
-                            mt-7
-                        "
-                    >
 
-                        <div
-                            id="barraProgresso"
-                            class="
+
+
+
+
+
+
+
+
+                    <div class="
+
+
+
+                            w-full
+
+
+
+                            h-3
+
+
+
+                            bg-[#e5ece9]
+
+
+
+                            rounded-full
+
+
+
+                            overflow-hidden
+
+
+
+                            mt-7
+
+
+
+                        ">
+
+
+
+
+
+
+
+                        <div id="barraProgresso" class="
+
+
+
                                 h-full
+
+
+
                                 bg-[#819b94]
+
+
+
                                 rounded-full
+
+
+
                                 transition-all
+
+
+
                                 duration-500
-                            "
-                            style="width: 0%"
-                        >
+
+
+
+                            " style="width: 0%">
+
+
+
                         </div>
 
+
+
+
+
+
+
                     </div>
 
+
+
+
+
+
+
                     <p class="text-xs text-[#899692] mt-4">
+
+
+
                         Progresso referente à meta selecionada.
+
+
+
                     </p>
 
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
 
             </div>
 
 
+
+
+
+
+
+
+
+
+
             <!-- ========================================
+
+
+
                  INDICADORES
+
+
+
             ========================================= -->
+
+
+
+
+
+
 
             <div class="mt-8">
 
+
+
+
+
+
+
                 <div class="mb-4">
 
+
+
+
+
+
+
                     <h3 class="text-lg font-medium">
+
+
+
                         Indicadores do mês
+
+
+
                     </h3>
 
+
+
+
+
+
+
                     <p class="text-sm text-[#74817d] mt-1">
+
+
+
                         Resultados acumulados no período selecionado.
+
+
+
                     </p>
+
+
+
+
+
+
 
                 </div>
 
 
-                <div
-                    class="
-                        grid
-                        grid-cols-2
-                        md:grid-cols-3
-                        lg:grid-cols-5
-                        gap-4
-                    "
-                >
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="
+
+
+
+        grid
+
+
+
+        grid-cols-2
+
+
+
+        md:grid-cols-3
+
+
+
+        lg:grid-cols-5
+
+
+
+        gap-4
+
+
+
+    ">
+
+
+
+
+
 
 
                     <!-- VENDAS -->
 
+
+
                     <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
+
+
                         <p class="text-xs text-[#74817d]">
+
+
+
                             Vendas
+
+
+
                         </p>
 
-                        <p
-                            id="resumoVendas"
-                            class="text-xl font-semibold mt-2"
-                        >
+
+
+
+
+
+
+                        <p id="resumoVendas" class="text-xl font-semibold mt-2">
+
+
+
                             0
+
+
+
                         </p>
+
+
 
                     </div>
 
 
-                    <!-- MENSAGENS -->
+
+
+
+
+
+                    <!-- CONTATOS -->
+
+
 
                     <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
+
+
                         <p class="text-xs text-[#74817d]">
-                            Mensagens
+
+
+
+                            Contatos
+
+
+
                         </p>
 
-                        <p
-                            id="resumoMensagens"
-                            class="text-xl font-semibold mt-2"
-                        >
+
+
+
+
+
+
+                        <p id="resumoContatos" class="text-xl font-semibold mt-2">
+
+
+
                             0
+
+
+
                         </p>
+
+
 
                     </div>
 
 
-                    <!-- RETORNOS -->
+
+
+
+
+
+                    <!-- RETORNO DE CONTATOS -->
+
+
 
                     <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
+
+
                         <p class="text-xs text-[#74817d]">
-                            Retornos
+
+
+
+                            Retorno de contatos
+
+
+
                         </p>
 
-                        <p
-                            id="resumoRetornos"
-                            class="text-xl font-semibold mt-2"
-                        >
+
+
+
+
+
+
+                        <p id="resumoRetornoContatos" class="text-xl font-semibold mt-2">
+
+
+
                             0
+
+
+
                         </p>
+
+
 
                     </div>
 
 
-                    <!-- VENDAS POR MENSAGEM -->
-
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-
-                        <p class="text-xs text-[#74817d]">
-                            Vendas por mensagem
-                        </p>
-
-                        <p
-                            id="resumoVendasMensagens"
-                            class="text-xl font-semibold mt-2"
-                        >
-                            0
-                        </p>
-
-                    </div>
 
 
-                    <!-- ÁUDIOS -->
 
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-
-                        <p class="text-xs text-[#74817d]">
-                            Áudios
-                        </p>
-
-                        <p
-                            id="resumoAudios"
-                            class="text-xl font-semibold mt-2"
-                        >
-                            0
-                        </p>
-
-                    </div>
-
-
-                    <!-- RETORNOS DE ÁUDIO -->
-
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-
-                        <p class="text-xs text-[#74817d]">
-                            Retornos de áudio
-                        </p>
-
-                        <p
-                            id="resumoRetornosAudio"
-                            class="text-xl font-semibold mt-2"
-                        >
-                            0
-                        </p>
-
-                    </div>
-
-
-                    <!-- VENDAS POR ÁUDIO -->
-
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-
-                        <p class="text-xs text-[#74817d]">
-                            Vendas por áudio
-                        </p>
-
-                        <p
-                            id="resumoVendasAudio"
-                            class="text-xl font-semibold mt-2"
-                        >
-                            0
-                        </p>
-
-                    </div>
 
 
                     <!-- PROSPECÇÕES -->
 
+
+
                     <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
+
+
                         <p class="text-xs text-[#74817d]">
+
+
+
                             Prospecções
+
+
+
                         </p>
 
-                        <p
-                            id="resumoProspeccao"
-                            class="text-xl font-semibold mt-2"
-                        >
+
+
+
+
+
+
+                        <p id="resumoProspeccao" class="text-xl font-semibold mt-2">
+
+
+
                             0
+
+
+
                         </p>
+
+
 
                     </div>
+
+
+
+
+
 
 
                     <!-- CLIENTES NOVOS -->
 
+
+
                     <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
 
+
+
                         <p class="text-xs text-[#74817d]">
+
+
+
                             Clientes novos
+
+
+
                         </p>
 
-                        <p
-                            id="resumoClientesNovos"
-                            class="text-xl font-semibold mt-2"
-                        >
+
+
+
+
+
+
+                        <p id="resumoClientesNovos" class="text-xl font-semibold mt-2">
+
+
+
                             0
+
+
+
                         </p>
+
+
 
                     </div>
 
+
+
+
+
+
+
                 </div>
 
-            </div>
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
 
         </section>
 
 
+
+
+
+
+
+
+
+
+
         <!-- ========================================
+
+
+
              FEEDBACK
+
+
+
         ========================================= -->
 
-        <div
-            id="feedbackRegistro"
-            role="status"
-            aria-live="polite"
-            class="
+
+
+
+
+
+
+        <div id="feedbackRegistro" role="status" aria-live="polite" class="
+
+
+
                 max-w-5xl
+
+
+
                 mx-auto
+
+
+
                 mb-6
+
+
+
                 hidden
+
+
+
                 rounded-xl
+
+
+
                 px-5 py-4
+
+
+
                 text-sm
+
+
+
                 font-medium
-            "
-        >
+
+
+
+            ">
+
+
+
         </div>
 
 
+
+
+
+
+
+
+
+
+
         <!-- ========================================
+
+
+
              LANÇAMENTO DIÁRIO
+
+
+
         ========================================= -->
 
-        <section
-            class="
+
+
+
+
+
+
+        <section class="
+
+
+
                 max-w-5xl
+
+
+
                 mx-auto
+
+
+
                 bg-white
+
+
+
                 border border-[#d8e1de]
+
+
+
                 rounded-2xl
+
+
+
                 p-6
+
+
+
                 sm:p-8
+
+
+
                 md:p-10
+
+
+
                 shadow-sm
-            "
-        >
+
+
+
+            ">
+
+
+
+
+
+
 
             <!-- Cabeçalho formulário -->
 
+
+
+
+
+
+
             <div class="mb-10">
 
+
+
+
+
+
+
                 <p class="text-xs font-semibold tracking-[0.15em] text-[#819b94]">
+
+
+
                     REGISTRO
+
+
+
                 </p>
+
+
+
+
+
+
 
                 <h2 class="text-2xl font-medium mt-1">
+
+
+
                     Lançamento diário
+
+
+
                 </h2>
 
+
+
+
+
+
+
                 <p class="text-[#74817d] mt-2">
+
+
+
                     Informe os resultados obtidos no dia.
+
+
+
                 </p>
+
+
+
+
+
+
 
             </div>
 
 
-            <form
-                id="formRegistro"
-                novalidate
-            >
+
+
+
+
+
+
+
+
+
+            <form id="formRegistro" novalidate>
+
+
+
+
+
+
+
+
+
 
 
                 <!-- ========================================
+
+
+
                      DATA
+
+
+
                 ========================================= -->
+
+
+
+
+
+
 
                 <div class="mb-10">
 
-                    <label
-                        for="data"
-                        class="block text-sm font-medium text-[#596762] mb-2"
-                    >
+
+
+
+
+
+
+                    <label for="data" class="block text-sm font-medium text-[#596762] mb-2">
+
+
+
                         Data do registro
 
-                        <span
-                            class="text-red-500"
-                            aria-hidden="true"
-                        >
-                            *
+
+
+
+
+
+
+                        <span class="text-red-500" aria-hidden="true">
+
+
+
+                            \*
+
+
+
                         </span>
+
+
+
+
+
+
 
                     </label>
 
 
-                    <input
-                        type="date"
-                        id="data"
-                        name="data"
-                        required
-                        aria-required="true"
-                        class="
+
+
+
+
+
+
+
+
+
+                    <input type="date" id="data" name="data" required aria-required="true" class="
+
+
+
                             w-full sm:w-72
+
+
+
                             px-4 py-3
+
+
+
                             cursor-pointer
+
+
+
                             bg-[#f7f9f8]
+
+
+
                             border border-[#ccd7d3]
+
+
+
                             rounded-lg
+
+
+
                             outline-none
+
+
+
                             focus:border-[#819b94]
+
+
+
                             focus:ring-2
+
+
+
                             focus:ring-[#819b94]/20
+
+
+
                             transition
-                        "
-                    >
+
+
+
+                        ">
+
+
+
+
+
+
 
                 </div>
 
 
+
+
+
+
+
+
+
+
+
                 <!-- ========================================
+
+
+
                      RESULTADOS
+
+
+
                 ========================================= -->
 
-                <fieldset
-                    class="
+
+
+
+
+
+
+                <fieldset class="
+
+
+
                         border-t
+
+
+
                         border-[#e1e8e5]
+
+
+
                         pt-8
+
+
+
                         mb-12
-                    "
-                >
+
+
+
+                    ">
+
+
+
+
+
+
 
                     <legend class="sr-only">
+
+
+
                         Resultados
+
+
+
                     </legend>
+
+
+
+
+
+
+
+
+
 
 
                     <div class="mb-7">
 
+
+
+
+
+
+
                         <h3 class="text-xl font-medium">
+
+
+
                             Resultados
+
+
+
                         </h3>
 
+
+
+
+
+
+
                         <p class="text-sm text-[#74817d] mt-1">
+
+
+
                             Resultados das vendas do dia.
+
+
+
                         </p>
+
+
+
+
+
+
 
                     </div>
 
 
+
+
+
+
+
+
+
+
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+
+
+
+
+
+
+
 
 
                         <!-- VALOR REALIZADO -->
 
+
+
+
+
+
+
                         <div>
 
-                            <label
-                                for="realizada"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
+
+
+
+
+
+
+                            <label for="realizada" class="block text-sm font-medium text-[#596762] mb-2">
+
+
+
                                 Valor realizado
 
-                                <span
-                                    class="text-red-500"
-                                    aria-hidden="true"
-                                >
-                                    *
+
+
+
+
+
+
+                                <span class="text-red-500" aria-hidden="true">
+
+
+
+                                    \*
+
+
+
                                 </span>
 
+
+
+
+
+
+
                             </label>
+
+
+
+
+
+
+
+
+
 
 
                             <div class="relative">
 
-                                <span
-                                    class="
+
+
+
+
+
+
+                                <span class="
+
+
+
                                         pointer-events-none
+
+
+
                                         absolute
+
+
+
                                         inset-y-0
+
+
+
                                         left-4
+
+
+
                                         flex
+
+
+
                                         items-center
+
+
+
                                         text-[#899692]
+
+
+
                                         text-sm
-                                    "
-                                >
+
+
+
+                                    ">
+
+
+
                                     R$
+
+
+
                                 </span>
 
-                                <input
-                                    type="number"
-                                    id="realizada"
-                                    name="realizada"
-                                    min="0"
-                                    step="0.01"
-                                    inputmode="decimal"
-                                    placeholder="420,00"
-                                    aria-required="true"
-                                    required
-                                    class="
+
+
+
+
+
+
+                                <input type="number" id="realizada" name="realizada" min="0" step="0.01"
+
+
+
+                                    inputmode="decimal" placeholder="420,00" aria-required="true" required class="
+
+
+
                                         w-full
+
+
+
                                         pl-10 pr-4 py-3
+
+
+
                                         bg-[#f7f9f8]
+
+
+
                                         border border-[#ccd7d3]
+
+
+
                                         rounded-lg
+
+
+
                                         outline-none
+
+
+
                                         focus:border-[#819b94]
+
+
+
                                         focus:ring-2
+
+
+
                                         focus:ring-[#819b94]/20
+
+
+
                                         transition
-                                    "
-                                >
+
+
+
+                                    ">
+
+
+
+
+
+
 
                             </div>
 
+
+
+
+
+
+
                         </div>
+
+
+
+
+
+
+
+
+
 
 
                         <!-- NÚMERO DE VENDAS -->
 
+
+
+
+
+
+
                         <div>
 
-                            <label
-                                for="numeroVendas"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
+
+
+
+
+
+
+                            <label for="numeroVendas" class="block text-sm font-medium text-[#596762] mb-2">
+
+
+
                                 Número de vendas
 
-                                <span
-                                    class="text-red-500"
-                                    aria-hidden="true"
-                                >
-                                    *
+
+
+
+
+
+
+                                <span class="text-red-500" aria-hidden="true">
+
+
+
+                                    \*
+
+
+
                                 </span>
 
+
+
+
+
+
+
                             </label>
 
-                            <input
-                                type="number"
-                                id="numeroVendas"
-                                name="numeroVendas"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="12"
-                                aria-required="true"
-                                required
-                                class="
+
+
+
+
+
+
+                            <input type="number" id="numeroVendas" name="numeroVendas" min="0" step="1"
+
+
+
+                                inputmode="numeric" placeholder="12" aria-required="true" required class="
+
+
+
                                     w-full
+
+
+
                                     px-4 py-3
+
+
+
                                     bg-[#f7f9f8]
+
+
+
                                     border border-[#ccd7d3]
+
+
+
                                     rounded-lg
+
+
+
                                     outline-none
+
+
+
                                     focus:border-[#819b94]
+
+
+
                                     focus:ring-2
+
+
+
                                     focus:ring-[#819b94]/20
+
+
+
                                     transition
-                                "
-                            >
+
+
+
+                                ">
+
+
+
+
+
+
 
                         </div>
 
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
 
                 </fieldset>
 
 
+
+
+
+
+
+
+
+
+
                 <!-- ========================================
-                     MENSAGENS
+
+                     CONTATOS
+
                 ========================================= -->
 
-                <fieldset
-                    class="
+
+
+                <fieldset class="
+
                         border-t
+
                         border-[#e1e8e5]
+
                         pt-8
+
                         mb-12
-                    "
-                >
+
+                    ">
+
+
 
                     <legend class="sr-only">
-                        Mensagens
+
+                        Contatos
+
                     </legend>
+
 
 
                     <div class="mb-7">
 
                         <h3 class="text-xl font-medium">
-                            Mensagens
+
+                            Contatos
+
                         </h3>
 
+
+
                         <p class="text-sm text-[#74817d] mt-1">
-                            Indicadores de contatos realizados por mensagens.
+
+                            Informe os contatos realizados e os retornos recebidos no dia.
+
                         </p>
 
                     </div>
 
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-
-                        <div>
-
-                            <label
-                                for="quantidadeMensagens"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Quantidade de mensagens
-                            </label>
-
-                            <input
-                                type="number"
-                                id="quantidadeMensagens"
-                                name="quantidadeMensagens"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label
-                                for="retornos"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Retornos de mensagens
-                            </label>
-
-                            <input
-                                type="number"
-                                id="retornos"
-                                name="retornos"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label
-                                for="vendasMensagens"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Vendas por mensagens
-                            </label>
-
-                            <input
-                                type="number"
-                                id="vendasMensagens"
-                                name="vendasMensagens"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-                    </div>
-
-                </fieldset>
-
-
-                <!-- ========================================
-                     ÁUDIOS
-                ========================================= -->
-
-                <fieldset
-                    class="
-                        border-t
-                        border-[#e1e8e5]
-                        pt-8
-                        mb-12
-                    "
-                >
-
-                    <legend class="sr-only">
-                        Áudios
-                    </legend>
-
-
-                    <div class="mb-7">
-
-                        <h3 class="text-xl font-medium">
-                            Áudios
-                        </h3>
-
-                        <p class="text-sm text-[#74817d] mt-1">
-                            Indicadores de contatos realizados por áudio.
-                        </p>
-
-                    </div>
-
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-
-                        <div>
-
-                            <label
-                                for="quantidadeAudios"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Quantidade de áudios
-                            </label>
-
-                            <input
-                                type="number"
-                                id="quantidadeAudios"
-                                name="quantidadeAudios"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label
-                                for="retornosAudio"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Retornos de áudio
-                            </label>
-
-                            <input
-                                type="number"
-                                id="retornosAudio"
-                                name="retornosAudio"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <label
-                                for="vendasAudio"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Vendas por áudio
-                            </label>
-
-                            <input
-                                type="number"
-                                id="vendasAudio"
-                                name="vendasAudio"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
-                                    w-full
-                                    px-4 py-3
-                                    bg-[#f7f9f8]
-                                    border border-[#ccd7d3]
-                                    rounded-lg
-                                    outline-none
-                                    focus:border-[#819b94]
-                                    focus:ring-2
-                                    focus:ring-[#819b94]/20
-                                    transition
-                                "
-                            >
-
-                        </div>
-
-                    </div>
-
-                </fieldset>
-
-
-                <!-- ========================================
-                     PROSPECÇÃO
-                ========================================= -->
-
-                <fieldset
-                    class="
-                        border-t
-                        border-[#e1e8e5]
-                        pt-8
-                        mb-10
-                    "
-                >
-
-                    <legend class="sr-only">
-                        Prospecção
-                    </legend>
-
-
-                    <div class="mb-7">
-
-                        <h3 class="text-xl font-medium">
-                            Prospecção
-                        </h3>
-
-                        <p class="text-sm text-[#74817d] mt-1">
-                            Indicadores de prospecção e novos clientes.
-                        </p>
-
-                    </div>
 
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
+
                         <div>
 
-                            <label
-                                for="prospeccao"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Quantidade de prospecções
+                            <label for="contatos" class="block text-sm font-medium text-[#596762] mb-2">
+
+                                Contatos
+
                             </label>
 
-                            <input
-                                type="number"
-                                id="prospeccao"
-                                name="prospeccao"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
+
+
+                            <input type="number" id="contatos" name="contatos" min="0" step="1"
+
+                                inputmode="numeric" placeholder="0" class="
+
                                     w-full
+
                                     px-4 py-3
+
                                     bg-[#f7f9f8]
+
                                     border border-[#ccd7d3]
+
                                     rounded-lg
+
                                     outline-none
+
                                     focus:border-[#819b94]
+
                                     focus:ring-2
+
                                     focus:ring-[#819b94]/20
+
                                     transition
-                                "
-                            >
+
+                                ">
 
                         </div>
 
 
+
                         <div>
 
-                            <label
-                                for="clientesNovos"
-                                class="block text-sm font-medium text-[#596762] mb-2"
-                            >
-                                Clientes novos
+                            <label for="retornoContatos" class="block text-sm font-medium text-[#596762] mb-2">
+
+                                Retorno de contatos
+
                             </label>
 
-                            <input
-                                type="number"
-                                id="clientesNovos"
-                                name="clientesNovos"
-                                min="0"
-                                step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                                class="
+
+
+                            <input type="number" id="retornoContatos" name="retornoContatos" min="0" step="1"
+
+                                inputmode="numeric" placeholder="0" class="
+
                                     w-full
+
                                     px-4 py-3
+
                                     bg-[#f7f9f8]
+
                                     border border-[#ccd7d3]
+
                                     rounded-lg
+
                                     outline-none
+
                                     focus:border-[#819b94]
+
                                     focus:ring-2
+
                                     focus:ring-[#819b94]/20
+
                                     transition
-                                "
-                            >
+
+                                ">
 
                         </div>
+
+
 
                     </div>
+
+
 
                 </fieldset>
 
 
+
+
+
                 <!-- ========================================
-                     SALVAR
+
+
+
+                     PROSPECÇÃO
+
+
+
                 ========================================= -->
 
-                <div
-                    class="
-                        border-t
-                        border-[#e1e8e5]
-                        pt-8
-                        flex
-                        justify-end
-                    "
-                >
 
-                    <button
-                        type="submit"
-                        id="btnSalvar"
-                        class="
+
+
+
+
+
+                <fieldset class="
+
+
+
+                        border-t
+
+
+
+                        border-[#e1e8e5]
+
+
+
+                        pt-8
+
+
+
+                        mb-10
+
+
+
+                    ">
+
+
+
+
+
+
+
+                    <legend class="sr-only">
+
+
+
+                        Prospecção
+
+
+
+                    </legend>
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="mb-7">
+
+
+
+
+
+
+
+                        <h3 class="text-xl font-medium">
+
+
+
+                            Prospecção
+
+
+
+                        </h3>
+
+
+
+
+
+
+
+                        <p class="text-sm text-[#74817d] mt-1">
+
+
+
+                            Indicadores de prospecção e novos clientes.
+
+
+
+                        </p>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+
+
+
+
+
+
+
+
+
+                        <div>
+
+
+
+
+
+
+
+                            <label for="prospeccao" class="block text-sm font-medium text-[#596762] mb-2">
+
+
+
+                                Quantidade de prospecções
+
+
+
+                            </label>
+
+
+
+
+
+
+
+                            <input type="number" id="prospeccao" name="prospeccao" min="0" step="1" inputmode="numeric"
+
+
+
+                                placeholder="0" class="
+
+
+
+                                    w-full
+
+
+
+                                    px-4 py-3
+
+
+
+                                    bg-[#f7f9f8]
+
+
+
+                                    border border-[#ccd7d3]
+
+
+
+                                    rounded-lg
+
+
+
+                                    outline-none
+
+
+
+                                    focus:border-[#819b94]
+
+
+
+                                    focus:ring-2
+
+
+
+                                    focus:ring-[#819b94]/20
+
+
+
+                                    transition
+
+
+
+                                ">
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+                        <div>
+
+
+
+
+
+
+
+                            <label for="clientesNovos" class="block text-sm font-medium text-[#596762] mb-2">
+
+
+
+                                Clientes novos
+
+
+
+                            </label>
+
+
+
+
+
+
+
+                            <input type="number" id="clientesNovos" name="clientesNovos" min="0" step="1"
+
+
+
+                                inputmode="numeric" placeholder="0" class="
+
+
+
+                                    w-full
+
+
+
+                                    px-4 py-3
+
+
+
+                                    bg-[#f7f9f8]
+
+
+
+                                    border border-[#ccd7d3]
+
+
+
+                                    rounded-lg
+
+
+
+                                    outline-none
+
+
+
+                                    focus:border-[#819b94]
+
+
+
+                                    focus:ring-2
+
+
+
+                                    focus:ring-[#819b94]/20
+
+
+
+                                    transition
+
+
+
+                                ">
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                </fieldset>
+
+
+
+
+
+
+
+
+
+
+
+                <!-- ========================================
+
+
+
+                     SALVAR
+
+
+
+                ========================================= -->
+
+
+
+
+
+
+
+                <div class="
+
+
+
+                        border-t
+
+
+
+                        border-[#e1e8e5]
+
+
+
+                        pt-8
+
+
+
+                        flex
+
+
+
+                        justify-end
+
+
+
+                    ">
+
+
+
+
+
+
+
+                    <button type="submit" id="btnSalvar" class="
+
+
+
                             w-full sm:w-auto
+
+
+
                             px-10 py-3.5
+
+
+
                             bg-[#819b94]
+
+
+
                             hover:bg-[#6f8982]
+
+
+
                             active:bg-[#607a73]
+
+
+
                             text-white
+
+
+
                             rounded-lg
+
+
+
                             font-medium
+
+
+
                             tracking-wide
+
+
+
                             transition
+
+
+
                             cursor-pointer
+
+
+
                             disabled:opacity-60
+
+
+
                             disabled:cursor-not-allowed
-                        "
-                    >
+
+
+
+                        ">
+
+
+
                         Salvar registro
+
+
+
                     </button>
+
+
+
+
+
+
 
                 </div>
 
+
+
+
+
+
+
             </form>
 
+
+
+
+
+
+
         </section>
+
+
+
+
+
+
 
     </main>
 
 
+
+
+
+
+
+
+
+
+
     <script src="/funcionaria/funcionaria.js"></script>
 
+
+
+
+
+
+
 </body>
+
+
+
+
+
+
 
 </html>
