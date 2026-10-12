@@ -20,17 +20,49 @@ const PORT = Number(process.env.PORT || 3000);
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
+class SessionStore extends SqliteStore {
+  startInterval() {
+    this.expirationTimer = setInterval(
+      this.clearExpiredSessions.bind(this),
+      this.expired.intervalMs,
+    );
+    this.expirationTimer.unref();
+  }
+
+  stopInterval() {
+    clearInterval(this.expirationTimer);
+  }
+}
+
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+  throw new Error("PORT deve ser um número entre 1 e 65535.");
+}
+
 if (
   process.env.NODE_ENV === "production" &&
   (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32)
 ) {
   throw new Error("SESSION_SECRET deve ter pelo menos 32 caracteres em produção.");
 }
+if (
+  process.env.NODE_ENV === "production" &&
+  (!process.env.CODIGO_CADASTRO || process.env.CODIGO_CADASTRO.length < 16)
+) {
+  throw new Error("CODIGO_CADASTRO deve ter pelo menos 16 caracteres em produção.");
+}
 const SESSION_SECRET =
   process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex");
 
 if (!process.env.SESSION_SECRET && process.env.NODE_ENV !== "production") {
   console.warn("SESSION_SECRET não definido; sessões serão invalidadas ao reiniciar.");
+}
+
+const trustProxy = process.env.TRUST_PROXY_HOPS || "0";
+if (!/^\d+$/.test(trustProxy) || Number(trustProxy) > 5) {
+  throw new Error("TRUST_PROXY_HOPS deve ser um inteiro entre 0 e 5.");
+}
+if (Number(trustProxy) > 0) {
+  app.set("trust proxy", Number(trustProxy));
 }
 
 app.disable("x-powered-by");
@@ -44,18 +76,29 @@ app.use(
 // MIDDLEWARES
 // ========================================
 
+app.get("/healthz", (req, res) => {
+  try {
+    db.prepare("SELECT 1").get();
+    res.json({ status: "ok" });
+  } catch (erro) {
+    console.error("Health check falhou:", erro);
+    res.status(503).json({ status: "indisponível" });
+  }
+});
+
 app.use(express.json());
+
+const sessionStore = new SessionStore({
+  client: db,
+  expired: {
+    clear: true,
+    intervalMs: 15 * 60 * 1000,
+  },
+});
 
 app.use(
   session({
-    store: new SqliteStore({
-      client: db,
-      expired: {
-        clear: true,
-        intervalMs: 15 * 60 * 1000,
-      },
-    }),
-
+    store: sessionStore,
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -66,8 +109,9 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 8,
     },
-  })
+  }),
 );
+
 app.use(express.static(path.join(__dirname, "public")));
 
 // ========================================
@@ -1159,9 +1203,27 @@ if (require.main === module) {
     app.router.stack.filter((item) => item.route).map((item) => item.route.path),
   );
 
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
+
+  let encerrando = false;
+  const encerrarServidor = (sinal) => {
+    if (encerrando) return;
+    encerrando = true;
+    console.log(`Recebido ${sinal}; encerrando servidor.`);
+    server.close((erro) => {
+      if (erro) {
+        console.error("Erro ao encerrar servidor:", erro);
+        process.exitCode = 1;
+      }
+      sessionStore.stopInterval();
+      db.close();
+    });
+  };
+
+  process.once("SIGINT", () => encerrarServidor("SIGINT"));
+  process.once("SIGTERM", () => encerrarServidor("SIGTERM"));
 }
 
 module.exports = app;

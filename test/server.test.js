@@ -1,6 +1,6 @@
 const { after, before, describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { execFileSync } = require("node:child_process");
+const { execFileSync, spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -11,15 +11,7 @@ process.env.SESSION_SECRET = "test-session-secret-with-at-least-32-characters";
 process.env.CODIGO_CADASTRO = "codigo-de-teste";
 process.env.DATABASE_PATH = path.join(pastaTemporaria, "api.sqlite");
 
-const setIntervalOriginal = global.setInterval;
-global.setInterval = (...args) => {
-  const timer = setIntervalOriginal(...args);
-  // The session-store package's expiry interval otherwise keeps tests alive.
-  timer.unref();
-  return timer;
-};
 const app = require("../server");
-global.setInterval = setIntervalOriginal;
 const db = require("../database");
 const {
   normalizarEmail,
@@ -108,6 +100,10 @@ describe("API", () => {
     assert.equal(identidade.status, 200);
     assert.equal((await identidade.json()).usuario.email, "teste@exemplo.com");
 
+    const health = await fetch(`${baseUrl}/healthz`);
+    assert.equal(health.status, 200);
+    assert.deepEqual(await health.json(), { status: "ok" });
+
     const acessoAdmin = await fetch(`${baseUrl}/api/admin/funcionarias`, {
       headers: { Cookie: cookie },
     });
@@ -152,5 +148,27 @@ describe("API", () => {
     assert.equal(admin.tipo, "admin");
     assert.match(admin.senha_hash, /^\$2[aby]\$/);
     adminDb.close();
+  });
+
+  it("recusa iniciar em produção sem segredos obrigatórios", () => {
+    const dbProduction = path.join(pastaTemporaria, "production.sqlite");
+    const processo = spawnSync(
+      process.execPath,
+      ["-e", "require('./server')"],
+      {
+        cwd: path.join(__dirname, ".."),
+        env: {
+          ...process.env,
+          NODE_ENV: "production",
+          SESSION_SECRET: "",
+          CODIGO_CADASTRO: "",
+          DATABASE_PATH: dbProduction,
+        },
+        encoding: "utf8",
+      },
+    );
+
+    assert.notEqual(processo.status, 0);
+    assert.match(processo.stderr, /SESSION_SECRET deve ter pelo menos 32 caracteres em produção/);
   });
 });

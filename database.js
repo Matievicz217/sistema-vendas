@@ -4,6 +4,7 @@ const path = require("node:path");
 const db = new Database(
   process.env.DATABASE_PATH || path.join(__dirname, "db.sqlite"),
 );
+db.pragma("foreign_keys = ON");
 
 // ========================================
 // TABELA DE USUÁRIOS
