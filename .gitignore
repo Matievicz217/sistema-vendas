@@ -5,6 +5,8 @@ node_modules/
 db.sqlite
 *.sqlite
 *.sqlite3
+db.sqlite-shm
+db.sqlite-wal
 
 # Variáveis de ambiente
 .env

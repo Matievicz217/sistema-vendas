@@ -1,41 +1,65 @@
-// ========================================
-// ELEMENTOS DA PÁGINA
-// ========================================
+const $ = (selector) => document.querySelector(selector);
 
-const formRegistro = document.querySelector("#formRegistro");
-const nomeUsuario = document.querySelector("#nomeUsuario");
-const btnSalvar = document.querySelector("#btnSalvar");
-const btnSair = document.querySelector("#btnSair");
-const feedbackRegistro = document.querySelector("#feedbackRegistro");
+const formRegistro = $("#formRegistro");
+const nomeUsuario = $("#nomeUsuario");
+const btnSalvar = $("#btnSalvar");
+const btnSair = $("#btnSair");
+const feedbackRegistro = $("#feedbackRegistro");
 
-// Filtros do acompanhamento mensal
-const mesFiltro = document.querySelector("#mesFiltro");
-const anoFiltro = document.querySelector("#anoFiltro");
-const btnAtualizarResumo = document.querySelector("#btnAtualizarResumo");
+const mesFiltro = $("#mesFiltro");
+const anoFiltro = $("#anoFiltro");
+const btnAtualizarResumo = $("#btnAtualizarResumo");
 
-// Resumo mensal
-const metaMensal = document.querySelector("#metaMensal");
-const valorVendidoMes = document.querySelector("#valorVendidoMes");
-const porcentagemMeta = document.querySelector("#porcentagemMeta");
-const barraProgresso = document.querySelector("#barraProgresso");
+const metaMensal = $("#metaMensal");
+const valorVendidoMes = $("#valorVendidoMes");
+const porcentagemMeta = $("#porcentagemMeta");
+const barraProgresso = $("#barraProgresso");
 
-const resumoVendas = document.querySelector("#resumoVendas");
-const resumoContatos = document.querySelector("#resumoContatos");
-const resumoRetornoContatos = document.querySelector("#resumoRetornoContatos");
+const resumoVendas = $("#resumoVendas");
+const resumoContatos = $("#resumoContatos");
+const resumoRetornoContatos = $("#resumoRetornoContatos");
 
-const resumoProspeccao = document.querySelector("#resumoProspeccao");
-const resumoClientesNovos = document.querySelector("#resumoClientesNovos");
-const resumoBalde = document.querySelector("#resumoBalde");
+const resumoProspeccao = $("#resumoProspeccao");
+const resumoClientesNovos = $("#resumoClientesNovos");
+const resumoBalde = $("#resumoBalde");
 
-const metaDiariaNecessaria = document.querySelector("#metaDiariaNecessaria");
-const diasUteisRestantes = document.querySelector("#diasUteisRestantes");
-const tabelaRanking = document.querySelector("#tabelaRanking");
+const metaDiariaNecessaria = $("#metaDiariaNecessaria");
+const diasUteisRestantes = $("#diasUteisRestantes");
+const tabelaRanking = $("#tabelaRanking");
+
+if (
+  !formRegistro ||
+  !nomeUsuario ||
+  !btnSalvar ||
+  !btnSair ||
+  !feedbackRegistro ||
+  !mesFiltro ||
+  !anoFiltro ||
+  !btnAtualizarResumo ||
+  !metaMensal ||
+  !valorVendidoMes ||
+  !porcentagemMeta ||
+  !barraProgresso ||
+  !resumoVendas ||
+  !resumoContatos ||
+  !resumoRetornoContatos ||
+  !resumoProspeccao ||
+  !resumoClientesNovos ||
+  !resumoBalde ||
+  !metaDiariaNecessaria ||
+  !diasUteisRestantes ||
+  !tabelaRanking
+) {
+  console.warn("funcionaria.js carregado sem todos os elementos da página.");
+}
 
 // ========================================
 // VERIFICAR USUÁRIO
 // ========================================
 
 async function verificarUsuario() {
+  if (!nomeUsuario) return;
+
   try {
     const resposta = await fetch("/api/me");
 
@@ -46,7 +70,9 @@ async function verificarUsuario() {
 
     const dados = await resposta.json();
 
-    nomeUsuario.textContent = `Olá, ${dados.usuario.nome}!`;
+    if (dados?.usuario?.nome) {
+      nomeUsuario.textContent = `Olá, ${dados.usuario.nome}!`;
+    }
   } catch (erro) {
     console.error("Erro ao verificar usuário:", erro);
   }
@@ -98,6 +124,8 @@ function formatarDinheiro(valor) {
 // ========================================
 
 function mostrarFeedback(mensagem, erro = false) {
+  if (!feedbackRegistro) return;
+
   feedbackRegistro.textContent = mensagem;
 
   feedbackRegistro.classList.remove(

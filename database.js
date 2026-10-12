@@ -1,6 +1,9 @@
 const Database = require("better-sqlite3");
+const path = require("node:path");
 
-const db = new Database("db.sqlite");
+const db = new Database(
+  process.env.DATABASE_PATH || path.join(__dirname, "db.sqlite"),
+);
 
 // ========================================
 // TABELA DE USUÁRIOS

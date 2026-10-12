@@ -1,26 +1,30 @@
-// ========================================
-// ELEMENTOS
-// ========================================
+const $ = (selector) => document.querySelector(selector);
 
-const nomeAdmin = document.querySelector("#nomeAdmin");
+const nomeAdmin = $("#nomeAdmin");
+const totalFuncionarias = $("#totalFuncionarias");
+const totalVendas = $("#totalVendas");
+const valorVendido = $("#valorVendido");
+const tabelaFuncionarias = $("#tabelaFuncionarias");
+const mesFiltro = $("#mesFiltro");
+const anoFiltro = $("#anoFiltro");
+const btnAtualizar = $("#btnAtualizar");
+const btnSalvarMetas = $("#btnSalvarMetas");
+const btnSair = $("#btnSair");
 
-const totalFuncionarias = document.querySelector("#totalFuncionarias");
-
-const totalVendas = document.querySelector("#totalVendas");
-
-const valorVendido = document.querySelector("#valorVendido");
-
-const tabelaFuncionarias = document.querySelector("#tabelaFuncionarias");
-
-const mesFiltro = document.querySelector("#mesFiltro");
-
-const anoFiltro = document.querySelector("#anoFiltro");
-
-const btnAtualizar = document.querySelector("#btnAtualizar");
-
-const btnSalvarMetas = document.querySelector("#btnSalvarMetas");
-
-const btnSair = document.querySelector("#btnSair");
+if (
+  !nomeAdmin ||
+  !totalFuncionarias ||
+  !totalVendas ||
+  !valorVendido ||
+  !tabelaFuncionarias ||
+  !mesFiltro ||
+  !anoFiltro ||
+  !btnAtualizar ||
+  !btnSalvarMetas ||
+  !btnSair
+) {
+  console.warn("admin.js carregado sem todos os elementos da página.");
+}
 
 // ========================================
 // FORMATAR DINHEIRO
@@ -30,6 +34,19 @@ function formatarDinheiro(valor) {
   return Number(valor).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
+  });
+}
+
+function escaparHTML(valor) {
+  return String(valor).replace(/[&<>"']/g, (caractere) => {
+    const entidades = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entidades[caractere];
   });
 }
 
@@ -43,26 +60,24 @@ async function verificarAdmin() {
 
     if (!resposta.ok) {
       window.location.href = "/login/login.html";
-
       return false;
     }
 
     const dados = await resposta.json();
 
-    if (dados.usuario.tipo !== "admin") {
+    if (!dados?.usuario || dados.usuario.tipo !== "admin") {
       window.location.href = "/funcionaria/funcionaria.html";
-
       return false;
     }
 
-    nomeAdmin.textContent = dados.usuario.nome;
+    if (nomeAdmin) {
+      nomeAdmin.textContent = dados.usuario.nome;
+    }
 
     return true;
   } catch (erro) {
     console.error(erro);
-
     window.location.href = "/login/login.html";
-
     return false;
   }
 }
@@ -72,10 +87,10 @@ async function verificarAdmin() {
 // ========================================
 
 function definirPeriodoAtual() {
+  if (!mesFiltro || !anoFiltro) return;
+
   const hoje = new Date();
-
   mesFiltro.value = hoje.getMonth() + 1;
-
   anoFiltro.value = hoje.getFullYear();
 }
 
@@ -84,6 +99,8 @@ function definirPeriodoAtual() {
 // ========================================
 
 async function carregarResumoMensal() {
+  if (!mesFiltro || !anoFiltro || !tabelaFuncionarias) return;
+
   const mes = mesFiltro.value;
 
   const ano = anoFiltro.value;
@@ -127,19 +144,25 @@ async function carregarResumoMensal() {
     // CARDS DO TOPO
     // ========================================
 
-    totalFuncionarias.textContent = funcionarias.length;
+    if (totalFuncionarias) {
+      totalFuncionarias.textContent = String(funcionarias.length);
+    }
 
     const vendasMes = funcionarias.reduce((total, funcionaria) => {
-      return total + Number(funcionaria.numero_vendas);
+      return total + Number(funcionaria.numero_vendas || 0);
     }, 0);
 
     const valorMes = funcionarias.reduce((total, funcionaria) => {
-      return total + Number(funcionaria.valor_vendido);
+      return total + Number(funcionaria.valor_vendido || 0);
     }, 0);
 
-    totalVendas.textContent = vendasMes;
+    if (totalVendas) {
+      totalVendas.textContent = String(vendasMes);
+    }
 
-    valorVendido.textContent = formatarDinheiro(valorMes);
+    if (valorVendido) {
+      valorVendido.textContent = formatarDinheiro(valorMes);
+    }
 
     // ========================================
     // SEM FUNCIONÁRIAS
@@ -182,11 +205,11 @@ async function carregarResumoMensal() {
                 <td class="px-4 py-4">
 
                     <div class="font-semibold text-white">
-                        ${funcionaria.nome_funcionaria}
+                        ${escaparHTML(funcionaria.nome_funcionaria)}
                     </div>
 
                     <div class="text-xs text-gray-500 mt-1">
-                        ${funcionaria.email_funcionaria}
+                        ${escaparHTML(funcionaria.email_funcionaria)}
                     </div>
 
                 </td>
@@ -423,29 +446,27 @@ async function salvarTodasMetas() {
 // ATUALIZAR TABELA
 // ========================================
 
-btnAtualizar.addEventListener("click", carregarResumoMensal);
+if (btnAtualizar) {
+  btnAtualizar.addEventListener("click", carregarResumoMensal);
+}
 
-// ========================================
-// SALVAR METAS
-// ========================================
+if (btnSalvarMetas) {
+  btnSalvarMetas.addEventListener("click", salvarTodasMetas);
+}
 
-btnSalvarMetas.addEventListener("click", salvarTodasMetas);
+if (btnSair) {
+  btnSair.addEventListener("click", async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+      });
 
-// ========================================
-// LOGOUT
-// ========================================
-
-btnSair.addEventListener("click", async () => {
-  try {
-    await fetch("/api/logout", {
-      method: "POST",
-    });
-
-    window.location.href = "/login/login.html";
-  } catch (erro) {
-    console.error(erro);
-  }
-});
+      window.location.href = "/login/login.html";
+    } catch (erro) {
+      console.error(erro);
+    }
+  });
+}
 
 // ========================================
 // INICIAR PÁGINA

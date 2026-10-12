@@ -1,17 +1,44 @@
 require("dotenv").config();
 const express = require("express");
+const crypto = require("node:crypto");
+const path = require("node:path");
 const db = require("./database");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
+const SqliteStore = require("better-sqlite3-session-store")(session);
+const verificarAdmin = require("./middleware/verificar-admin");
+const {
+  normalizarEmail,
+  textoValido,
+  valorNumerico,
+  emailValido,
+  dataValida,
+} = require("./lib/validation");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
-app.use(helmet());
+if (
+  process.env.NODE_ENV === "production" &&
+  (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32)
+) {
+  throw new Error("SESSION_SECRET deve ter pelo menos 32 caracteres em produção.");
+}
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex");
 
-console.log("SERVER NOVO CARREGADO");
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV !== "production") {
+  console.warn("SESSION_SECRET não definido; sessões serão invalidadas ao reiniciar.");
+}
+
+app.disable("x-powered-by");
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 
 // ========================================
 // MIDDLEWARES
@@ -21,18 +48,27 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    store: new SqliteStore({
+      client: db,
+      expired: {
+        clear: true,
+        intervalMs: 15 * 60 * 1000,
+      },
+    }),
+
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 8,
     },
-  }),
+  })
 );
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // ========================================
 // PÁGINA INICIAL
@@ -41,31 +77,6 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/login/login.html");
 });
-
-// ========================================
-// VERIFICAR ADMIN
-// ========================================
-
-function verificarAdmin(req, res, next) {
-  // Verifica se existe usuário logado
-  if (!req.session.usuarioId) {
-    return res.status(401).json({
-      sucesso: false,
-      mensagem: "Usuário não está logado.",
-    });
-  }
-
-  // Verifica se o usuário é administrador
-  if (req.session.tipo !== "admin") {
-    return res.status(403).json({
-      sucesso: false,
-      mensagem: "Acesso não autorizado.",
-    });
-  }
-
-  // É admin, pode continuar
-  next();
-}
 
 const cadastroLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -83,10 +94,15 @@ const cadastroLimiter = rateLimit({
 // ========================================
 
 app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
-  const { nome, email, senha, codigoAcesso } = req.body;
+  const nome = typeof req.body?.nome === "string" ? req.body.nome.trim() : "";
+  const email = normalizarEmail(req.body?.email);
+  const senha = typeof req.body?.senha === "string" ? req.body.senha : "";
+  const codigoAcesso =
+    typeof req.body?.codigoAcesso === "string"
+      ? req.body.codigoAcesso.trim()
+      : "";
 
   if (
-    typeof codigoAcesso !== "string" ||
     !process.env.CODIGO_CADASTRO ||
     codigoAcesso !== process.env.CODIGO_CADASTRO
   ) {
@@ -95,22 +111,29 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
       mensagem: "Código de acesso inválido.",
     });
   }
-  if (!nome || !email || !senha) {
+
+  if (!textoValido(nome, { min: 2, max: 120 })) {
     return res.status(400).json({
       sucesso: false,
-      mensagem: "Preencha todos os campos.",
+      mensagem: "Informe um nome válido com pelo menos 2 caracteres.",
     });
   }
-  if (typeof senha !== "string" || senha.length < 8) {
+
+  if (!emailValido(email)) {
     return res.status(400).json({
       sucesso: false,
-      mensagem: "A senha deve ter pelo menos 8 caracteres.",
+      mensagem: "Informe um e-mail válido.",
+    });
+  }
+
+  if (typeof senha !== "string" || senha.length < 8 || senha.length > 128) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "A senha deve ter entre 8 e 128 caracteres.",
     });
   }
 
   try {
-    // VERIFICA SE O E-MAIL JÁ EXISTE
-
     const usuarioExistente = db
       .prepare(
         `
@@ -128,11 +151,7 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
       });
     }
 
-    // CRIA O HASH DA SENHA
-
     const senhaHash = await bcrypt.hash(senha, 10);
-
-    // INSERE USUÁRIO
 
     const inserirUsuario = db.prepare(`
             INSERT INTO usuarios (
@@ -150,6 +169,13 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
       mensagem: "Usuário cadastrado com sucesso!",
     });
   } catch (erro) {
+    if (erro.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res.status(409).json({
+        sucesso: false,
+        mensagem: "Este e-mail já está cadastrado.",
+      });
+    }
+
     console.error(erro);
 
     res.status(500).json({
@@ -175,18 +201,24 @@ const loginLimiter = rateLimit({
 // ========================================
 
 app.post("/api/login", loginLimiter, async (req, res) => {
-  const { email, senha } = req.body;
+  const email = normalizarEmail(req.body?.email);
+  const senha = typeof req.body?.senha === "string" ? req.body.senha : "";
 
-  if (!email || !senha) {
+  if (!email || !senha || senha.length > 128) {
     return res.status(400).json({
       sucesso: false,
       mensagem: "Preencha o e-mail e a senha.",
     });
   }
 
-  try {
-    // PROCURA USUÁRIO
+  if (!emailValido(email)) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "Informe um e-mail válido.",
+    });
+  }
 
+  try {
     const usuario = db
       .prepare(
         `
@@ -329,12 +361,22 @@ app.post("/api/registros", (req, res) => {
     balde,
   } = req.body;
 
+  const camposNumericos = [
+    { nome: "realizada", valor: realizada },
+    { nome: "numeroVendas", valor: numeroVendas },
+    { nome: "contatos", valor: contatos },
+    { nome: "retornoContatos", valor: retornoContatos },
+    { nome: "prospeccao", valor: prospeccao },
+    { nome: "clientesNovos", valor: clientesNovos },
+    { nome: "balde", valor: balde },
+  ];
+
   // ========================================
   // VALIDAÇÃO DOS CAMPOS
   // ========================================
 
   if (
-    !data ||
+    !dataValida(data) ||
     realizada === undefined ||
     numeroVendas === undefined ||
     contatos === undefined ||
@@ -353,23 +395,23 @@ app.post("/api/registros", (req, res) => {
   // VALIDAÇÃO DOS NÚMEROS
   // ========================================
 
-  const valores = [
-    realizada,
-    numeroVendas,
-    contatos,
-    retornoContatos,
-    prospeccao,
-    clientesNovos,
-    balde,
-  ];
+  const valoresInvalidos = camposNumericos.filter(
+    ({ valor }) => !valorNumerico(valor, { min: 0, max: 999999999 }),
+  );
+  const camposInteiros = camposNumericos.filter(
+    ({ nome }) => nome !== "realizada",
+  );
 
-  if (valores.some((valor) => isNaN(valor))) {
+  if (
+    valoresInvalidos.length > 0 ||
+    camposInteiros.some(({ valor }) => !Number.isInteger(valor))
+  ) {
     return res.status(400).json({
       sucesso: false,
-      mensagem: "Os valores precisam ser números.",
+      mensagem:
+        "Os valores devem ser números válidos, não negativos e sem exagero de magnitude.",
     });
   }
-
   try {
     // ========================================
     // VERIFICA SE JÁ EXISTE REGISTRO NA DATA
@@ -466,6 +508,13 @@ app.post("/api/registros", (req, res) => {
     });
   } catch (erro) {
     console.error(erro);
+
+    if (erro.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res.status(409).json({
+        sucesso: false,
+        mensagem: "Este e-mail já está cadastrado.",
+      });
+    }
 
     res.status(500).json({
       sucesso: false,
@@ -1105,10 +1154,14 @@ app.post("/api/logout", (req, res) => {
 // ========================================
 // INICIAR SERVIDOR
 // ========================================
-console.log(
-  app.router.stack.filter((item) => item.route).map((item) => item.route.path),
-);
+if (require.main === module) {
+  console.log(
+    app.router.stack.filter((item) => item.route).map((item) => item.route.path),
+  );
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
+}
+
+module.exports = app;
