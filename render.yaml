@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: sistema-vendas
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm test && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: vendas-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_PATH
+        value: /var/data/db.sqlite
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CODIGO_CADASTRO
+        generateValue: true

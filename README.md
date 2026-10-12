@@ -26,6 +26,16 @@ O banco local fica em `db.sqlite` por padrão. É possível definir `DATABASE_PA
 - Execute `npm run create-admin` uma vez contra o mesmo `DATABASE_PATH` persistente da aplicação, usando variáveis temporárias `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD`; remova a senha do ambiente após executar.
 - Antes de publicar, rode `npm test` e `npm run build`.
 
+## Hospedar no Render
+
+1. Envie este repositório ao GitHub e, no Render, escolha **New > Blueprint**, conectando o repositório. O Render encontrará `render.yaml` na raiz.
+2. Revise o Blueprint e confirme a criação do serviço web. Ele usa o plano Starter porque SQLite precisa de disco persistente; o banco será salvo em `/var/data/db.sqlite`.
+3. Aguarde o primeiro deploy ficar saudável em `/healthz`. O Blueprint gera `SESSION_SECRET` e `CODIGO_CADASTRO` como segredos do serviço e configura `TRUST_PROXY_HOPS=1` para o proxy do Render.
+4. Crie a conta admin uma única vez usando o Shell do serviço no Render: defina temporariamente `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` no ambiente/shell e execute `npm run create-admin`. O comando usa `DATABASE_PATH` do serviço, portanto grava no disco persistente. Remova as variáveis temporárias após o comando.
+5. Não crie outra instância do serviço e não remova o disco associado, pois o SQLite e as sessões são locais a esse disco.
+
+O plano Starter e o disco persistente são pagos. Confira os preços atuais do Render antes de confirmar. Não use o plano gratuito para este banco: sistema de arquivos efêmero pode perder os dados.
+
 ## Testes
 
 Execute `npm test`. Os testes usam um banco SQLite temporário e não alteram o banco de desenvolvimento.
