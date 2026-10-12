@@ -7,14 +7,15 @@ formCadastro.addEventListener('submit', async (event) => {
     const email = document.querySelector('#email').value.trim();
     const senha = document.querySelector('#senha').value;
     const confirmarSenha = document.querySelector('#confirmarSenha').value;
+    const codigoAcesso = document.querySelector('#codigoAcesso').value.trim();
 
     if (senha !== confirmarSenha) {
         alert('As senhas não são iguais.');
         return;
     }
 
-    if (senha.length < 6) {
-        alert('A senha precisa ter pelo menos 6 caracteres.');
+    if (senha.length < 8) {
+        alert('A senha precisa ter pelo menos 8 caracteres.');
         return;
     }
 
@@ -27,7 +28,8 @@ formCadastro.addEventListener('submit', async (event) => {
             body: JSON.stringify({
                 nome,
                 email,
-                senha
+                senha,
+                codigoAcesso
             })
         });
 

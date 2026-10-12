@@ -25,11 +25,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 8,
     },
   }),
 );
-
 app.use(express.static("public"));
 
 // ========================================
@@ -65,17 +67,44 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
+const cadastroLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    sucesso: false,
+    mensagem: "Muitas tentativas de cadastro. Aguarde 15 minutos.",
+  },
+});
+
 // ========================================
 // CADASTRO
 // ========================================
 
-app.post("/api/cadastro", async (req, res) => {
-  const { nome, email, senha } = req.body;
+app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
+  const { nome, email, senha, codigoAcesso } = req.body;
 
+  if (
+    typeof codigoAcesso !== "string" ||
+    !process.env.CODIGO_CADASTRO ||
+    codigoAcesso !== process.env.CODIGO_CADASTRO
+  ) {
+    return res.status(403).json({
+      sucesso: false,
+      mensagem: "Código de acesso inválido.",
+    });
+  }
   if (!nome || !email || !senha) {
     return res.status(400).json({
       sucesso: false,
       mensagem: "Preencha todos os campos.",
+    });
+  }
+  if (typeof senha !== "string" || senha.length < 8) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "A senha deve ter pelo menos 8 caracteres.",
     });
   }
 
@@ -137,15 +166,15 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
   message: {
     sucesso: false,
-    mensagem: "Muitas tentativas. Aguarde 15 minutos."
-  }
+    mensagem: "Muitas tentativas. Aguarde 15 minutos.",
+  },
 });
 
 // ========================================
 // LOGIN
 // ========================================
 
-app.post("/api/login",loginLimiter, async (req, res) => {
+app.post("/api/login", loginLimiter, async (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
@@ -188,19 +217,28 @@ app.post("/api/login",loginLimiter, async (req, res) => {
 
     // CRIA SESSÃO
 
-    req.session.usuarioId = usuario.id;
-    req.session.tipo = usuario.tipo;
+    req.session.regenerate((erro) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json({
+          sucesso: false,
+          mensagem: "Erro ao iniciar sessão.",
+        });
+      }
 
-    res.json({
-      sucesso: true,
-      mensagem: "Login realizado com sucesso!",
+      req.session.usuarioId = usuario.id;
+      req.session.tipo = usuario.tipo;
 
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        tipo: usuario.tipo,
-      },
+      res.json({
+        sucesso: true,
+        mensagem: "Login realizado com sucesso!",
+        usuario: {
+          id: usuario.id,
+          nome: usuario.nome,
+          email: usuario.email,
+          tipo: usuario.tipo,
+        },
+      });
     });
   } catch (erro) {
     console.error(erro);
@@ -1004,7 +1042,9 @@ app.get("/api/ranking", (req, res) => {
   try {
     const periodo = `${ano}-${String(mes).padStart(2, "0")}`;
 
-    const ranking = db.prepare(`
+    const ranking = db
+      .prepare(
+        `
       SELECT
         usuarios.id AS usuario_id,
         usuarios.nome AS nome_funcionaria,
@@ -1021,7 +1061,9 @@ app.get("/api/ranking", (req, res) => {
       GROUP BY usuarios.id, usuarios.nome
 
       ORDER BY valor_vendido DESC, usuarios.nome ASC
-    `).all(periodo);
+    `,
+      )
+      .all(periodo);
 
     res.json({
       sucesso: true,
@@ -1029,7 +1071,6 @@ app.get("/api/ranking", (req, res) => {
       ano,
       ranking,
     });
-
   } catch (erro) {
     console.error("Erro ao buscar ranking:", erro);
 
