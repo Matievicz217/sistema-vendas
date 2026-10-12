@@ -29,6 +29,7 @@ const resumoBalde = document.querySelector("#resumoBalde");
 
 const metaDiariaNecessaria = document.querySelector("#metaDiariaNecessaria");
 const diasUteisRestantes = document.querySelector("#diasUteisRestantes");
+const tabelaRanking = document.querySelector("#tabelaRanking");
 
 // ========================================
 // VERIFICAR USUÁRIO
@@ -170,7 +171,67 @@ function calcularDiasUteisRestantes(mes, ano) {
 // ========================================
 // CARREGAR RESUMO MENSAL
 // ========================================
+// ========================================
+// CARREGAR RANKING DE VENDAS
+// ========================================
 
+async function carregarRanking() {
+  const mes = Number(mesFiltro.value);
+  const ano = Number(anoFiltro.value);
+
+  try {
+    const resposta = await fetch(`/api/ranking?mes=${mes}&ano=${ano}`);
+
+    if (!resposta.ok) {
+      throw new Error("Erro ao carregar ranking.");
+    }
+
+    const dados = await resposta.json();
+
+    tabelaRanking.innerHTML = "";
+
+    if (dados.ranking.length === 0) {
+      tabelaRanking.innerHTML = `
+        <tr>
+          <td colspan="3" class="py-5 text-center">
+            Nenhuma funcionária encontrada.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    dados.ranking.forEach((funcionaria, index) => {
+      const linha = document.createElement("tr");
+      linha.className = "border-b border-[#eef3f1]";
+
+      const posicao = document.createElement("td");
+      posicao.className = "py-4";
+      posicao.textContent = `${index + 1}º`;
+
+      const nome = document.createElement("td");
+      nome.className = "py-4";
+      nome.textContent = funcionaria.nome_funcionaria;
+
+      const vendido = document.createElement("td");
+      vendido.className = "py-4 text-right font-semibold";
+      vendido.textContent = formatarDinheiro(funcionaria.valor_vendido);
+
+      linha.append(posicao, nome, vendido);
+      tabelaRanking.appendChild(linha);
+    });
+  } catch (erro) {
+    console.error("Erro no ranking:", erro);
+
+    tabelaRanking.innerHTML = `
+      <tr>
+        <td colspan="3" class="py-5 text-center text-red-500">
+          Não foi possível carregar o ranking.
+        </td>
+      </tr>
+    `;
+  }
+}
 async function carregarResumoMensal() {
   try {
     const mes = Number(mesFiltro.value);
@@ -262,6 +323,7 @@ async function carregarResumoMensal() {
     resumoClientesNovos.textContent = resumo.clientes_novos || 0;
 
     resumoBalde.textContent = resumo.balde || 0;
+    await carregarRanking();
   } catch (erro) {
     console.error("Erro ao carregar resumo mensal:", erro);
 

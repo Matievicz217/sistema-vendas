@@ -473,6 +473,9 @@
   .border-\[\#e1e8e5\] {
     border-color: #e1e8e5;
   }
+  .border-\[\#eef3f1\] {
+    border-color: #eef3f1;
+  }
   .border-green-800 {
     border-color: var(--color-green-800);
   }
@@ -559,6 +562,9 @@
   }
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
+  }
+  .py-5 {
+    padding-block: calc(var(--spacing) * 5);
   }
   .py-10 {
     padding-block: calc(var(--spacing) * 10);

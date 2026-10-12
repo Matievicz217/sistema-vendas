@@ -955,6 +955,76 @@ app.get("/api/admin/registros", verificarAdmin, (req, res) => {
 });
 
 // ========================================
+// RANKING MENSAL DE VENDAS
+// ========================================
+
+app.get("/api/ranking", (req, res) => {
+  // Apenas usuários logados podem consultar
+  if (!req.session.usuarioId) {
+    return res.status(401).json({
+      sucesso: false,
+      mensagem: "Usuário não está logado.",
+    });
+  }
+
+  const mes = Number(req.query.mes);
+  const ano = Number(req.query.ano);
+
+  // Validar mês e ano
+  if (
+    !Number.isInteger(mes) ||
+    !Number.isInteger(ano) ||
+    mes < 1 ||
+    mes > 12 ||
+    ano < 2020 ||
+    ano > 2100
+  ) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "Mês ou ano inválido.",
+    });
+  }
+
+  try {
+    const periodo = `${ano}-${String(mes).padStart(2, "0")}`;
+
+    const ranking = db.prepare(`
+      SELECT
+        usuarios.id AS usuario_id,
+        usuarios.nome AS nome_funcionaria,
+        COALESCE(SUM(registros.realizada), 0) AS valor_vendido
+
+      FROM usuarios
+
+      LEFT JOIN registros
+        ON registros.usuario_id = usuarios.id
+        AND substr(registros.data, 1, 7) = ?
+
+      WHERE usuarios.tipo = 'funcionaria'
+
+      GROUP BY usuarios.id, usuarios.nome
+
+      ORDER BY valor_vendido DESC, usuarios.nome ASC
+    `).all(periodo);
+
+    res.json({
+      sucesso: true,
+      mes,
+      ano,
+      ranking,
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar ranking:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao carregar ranking.",
+    });
+  }
+});
+
+// ========================================
 // LOGOUT
 // ========================================
 

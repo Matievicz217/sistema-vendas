@@ -166,39 +166,39 @@
                     <p id="valorVendidoMes" class="text-2xl font-semibold mt-2 text-[#647f77]">
                         R$ 0,00
                     </p>
-                    </div>
+                </div>
 
-                    <!-- META DIÁRIA NECESSÁRIA -->
-                    <div class="bg-white border border-[#d8e1de] rounded-2xl p-6 shadow-sm">
-                        <p class="text-sm text-[#74817d]">
-                            Precisa vender por dia
-                        </p>
+                <!-- META DIÁRIA NECESSÁRIA -->
+                <div class="bg-white border border-[#d8e1de] rounded-2xl p-6 shadow-sm">
+                    <p class="text-sm text-[#74817d]">
+                        Precisa vender por dia
+                    </p>
 
-                        <p id="metaDiariaNecessaria" class="text-2xl font-semibold mt-3 text-[#647f77]">
-                            R$ 0,00
-                        </p>
+                    <p id="metaDiariaNecessaria" class="text-2xl font-semibold mt-3 text-[#647f77]">
+                        R$ 0,00
+                    </p>
 
-                        <p id="diasUteisRestantes" class="text-xs text-[#899692] mt-3">
-                            Calculando dias úteis...
-                        </p>
-                    </div>
-                    <!-- PROGRESSO -->
-                    <div class="
+                    <p id="diasUteisRestantes" class="text-xs text-[#899692] mt-3">
+                        Calculando dias úteis...
+                    </p>
+                </div>
+                <!-- PROGRESSO -->
+                <div class="
                         bg-white
                         border border-[#d8e1de]
                         rounded-2xl
                         p-6
                         shadow-sm
                     ">
-                        <div class="flex items-center justify-between gap-4">
-                            <p class="text-sm text-[#74817d]">
-                                Progresso da meta
-                            </p>
-                            <span id="porcentagemMeta" class="text-lg font-semibold text-[#647f77]">
-                                0%
-                            </span>
-                        </div>
-                        <div class="
+                    <div class="flex items-center justify-between gap-4">
+                        <p class="text-sm text-[#74817d]">
+                            Progresso da meta
+                        </p>
+                        <span id="porcentagemMeta" class="text-lg font-semibold text-[#647f77]">
+                            0%
+                        </span>
+                    </div>
+                    <div class="
                             w-full
                             h-3
                             bg-[#e5ece9]
@@ -206,91 +206,123 @@
                             overflow-hidden
                             mt-7
                         ">
-                            <div id="barraProgresso" class="
+                        <div id="barraProgresso" class="
                                 h-full
                                 bg-[#819b94]
                                 rounded-full
                                 transition-all
                                 duration-500
                             " style="width: 0%">
-                            </div>
                         </div>
-                        <p class="text-xs text-[#899692] mt-4">
-                            Progresso referente à meta selecionada.
-                        </p>
                     </div>
+                    <p class="text-xs text-[#899692] mt-4">
+                        Progresso referente à meta selecionada.
+                    </p>
                 </div>
-                <!-- ========================================
+            </div>
+            <!-- ========================================
                  INDICADORES
             ========================================= -->
-                <div class="mt-8">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-medium">
-                            Indicadores do mês
-                        </h3>
-                        <p class="text-sm text-[#74817d] mt-1">
-                            Resultados acumulados no período selecionado.
-                        </p>
-                    </div>
-                    <div class="
+            <div class="mt-8">
+                <div class="mb-4">
+                    <h3 class="text-lg font-medium">
+                        Indicadores do mês
+                    </h3>
+                    <p class="text-sm text-[#74817d] mt-1">
+                        Resultados acumulados no período selecionado.
+                    </p>
+                </div>
+                <div class="
                             grid
                             grid-cols-2
                             md:grid-cols-3
                             lg:grid-cols-5
                             gap-4
                         ">
-                        <!-- VENDAS -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">
-                                Vendas
-                            </p>
-                            <p id="resumoVendas" class="text-xl font-semibold mt-2">
-                                0
-                            </p>
-                        </div>
-                        <!-- CONTATOS -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">
-                                Contatos
-                            </p>
-                            <p id="resumoContatos" class="text-xl font-semibold mt-2">
-                                0
-                            </p>
-                        </div>
-                        <!-- RETORNO DE CONTATOS -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">
-                                Retorno de contatos
-                            </p>
-                            <p id="resumoRetornoContatos" class="text-xl font-semibold mt-2">
-                                0
-                            </p>
-                        </div>
-                        <!-- PROSPECÇÕES -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">
-                                Prospecções
-                            </p>
-                            <p id="resumoProspeccao" class="text-xl font-semibold mt-2">
-                                0
-                            </p>
-                        </div>
-                        <!-- CLIENTES NOVOS -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">
-                                Clientes novos
-                            </p>
-                            <p id="resumoClientesNovos" class="text-xl font-semibold mt-2">
-                                0
-                            </p>
-                        </div>
-                        <!-- BALDE -->
-                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                            <p class="text-xs text-[#74817d]">Balde</p>
-                            <p id="resumoBalde" class="text-xl font-semibold mt-2">0</p>
-                        </div>
+                    <!-- VENDAS -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">
+                            Vendas
+                        </p>
+                        <p id="resumoVendas" class="text-xl font-semibold mt-2">
+                            0
+                        </p>
+                    </div>
+                    <!-- CONTATOS -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">
+                            Contatos
+                        </p>
+                        <p id="resumoContatos" class="text-xl font-semibold mt-2">
+                            0
+                        </p>
+                    </div>
+                    <!-- RETORNO DE CONTATOS -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">
+                            Retorno de contatos
+                        </p>
+                        <p id="resumoRetornoContatos" class="text-xl font-semibold mt-2">
+                            0
+                        </p>
+                    </div>
+                    <!-- PROSPECÇÕES -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">
+                            Prospecções
+                        </p>
+                        <p id="resumoProspeccao" class="text-xl font-semibold mt-2">
+                            0
+                        </p>
+                    </div>
+                    <!-- CLIENTES NOVOS -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">
+                            Clientes novos
+                        </p>
+                        <p id="resumoClientesNovos" class="text-xl font-semibold mt-2">
+                            0
+                        </p>
+                    </div>
+                    <!-- BALDE -->
+                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                        <p class="text-xs text-[#74817d]">Balde</p>
+                        <p id="resumoBalde" class="text-xl font-semibold mt-2">0</p>
                     </div>
                 </div>
+            </div>
+            <!-- RANKING DE VENDAS -->
+            <div class="mt-8 bg-white border border-[#d8e1de] rounded-2xl p-6 shadow-sm">
+
+                <h3 class="text-lg font-medium mb-2">
+                    Ranking de vendas
+                </h3>
+
+                <p class="text-sm text-[#74817d] mb-6">
+                    Classificação das funcionárias no mês selecionado.
+                </p>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="border-b border-[#d8e1de]">
+                            <tr class="text-sm text-[#74817d]">
+                                <th class="py-3">Posição</th>
+                                <th class="py-3">Funcionária</th>
+                                <th class="py-3 text-right">Vendido</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabelaRanking">
+                            <tr>
+                                <td colspan="3" class="py-5 text-center text-[#74817d]">
+                                    Carregando ranking...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
         </section>
         <!-- ========================================
              FEEDBACK
