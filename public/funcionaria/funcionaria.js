@@ -504,6 +504,12 @@ btnAtualizarResumo.addEventListener("click", async () => {
 // ========================================
 
 btnSair.addEventListener("click", async () => {
+  const sair = await window.confirmarAcao(
+    "Deseja realmente sair da sua conta?",
+    { titulo: "Sair da conta", confirmar: "Sair" },
+  );
+  if (!sair) return;
+
   try {
     const resposta = await fetch("/api/logout", {
       method: "POST",
@@ -517,11 +523,14 @@ btnSair.addEventListener("click", async () => {
 
     const dados = await resposta.json();
 
-    alert(dados.mensagem || "Erro ao sair.");
+    window.mostrarNotificacao(
+      dados.mensagem || "Erro ao sair.",
+      "error",
+    );
   } catch (erro) {
     console.error("Erro ao sair:", erro);
 
-    alert("Erro ao sair da conta.");
+    window.mostrarNotificacao("Erro ao sair da conta.", "error");
   }
 });
 

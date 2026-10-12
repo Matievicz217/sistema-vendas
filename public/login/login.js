@@ -8,6 +8,9 @@ function mostrarFeedback(mensagem, erro = false) {
   feedbackLogin.textContent = mensagem;
   feedbackLogin.classList.remove("hidden", "text-red-700", "text-green-700");
   feedbackLogin.classList.add(erro ? "text-red-700" : "text-green-700");
+  if (erro) {
+    window.mostrarNotificacao(mensagem, "error");
+  }
 }
 
 if (formLogin) {

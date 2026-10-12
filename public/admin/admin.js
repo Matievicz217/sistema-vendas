@@ -345,45 +345,30 @@ async function carregarResumoMensal() {
 // ========================================
 
 async function salvarTodasMetas() {
+  if (!btnSalvarMetas || !mesFiltro || !anoFiltro) return;
+
   const inputs = document.querySelectorAll(".input-meta");
 
   if (inputs.length === 0) {
+    window.mostrarNotificacao("Não há metas para salvar neste mês.", "error");
     return;
   }
 
   const mes = Number(mesFiltro.value);
-
   const ano = Number(anoFiltro.value);
 
   try {
-    // Feedback no botão
     btnSalvarMetas.disabled = true;
-
     btnSalvarMetas.textContent = "Salvando...";
-
-    // ========================================
-    // PERCORRER TODOS OS INPUTS
-    // ========================================
 
     for (const input of inputs) {
       const usuarioId = Number(input.dataset.usuarioId);
-
       const meta = Number(input.value);
 
-      // Validação
-      if (isNaN(meta) || meta < 0) {
-        alert("Existe uma meta inválida.");
-
-        btnSalvarMetas.disabled = false;
-
-        btnSalvarMetas.textContent = "Salvar metas";
-
+      if (!Number.isFinite(meta) || meta < 0) {
+        window.mostrarNotificacao("Existe uma meta inválida.", "error");
         return;
       }
-
-      // ========================================
-      // SALVAR META
-      // ========================================
 
       const resposta = await fetch("/api/admin/metas", {
         method: "POST",
@@ -406,38 +391,22 @@ async function salvarTodasMetas() {
       const dados = await resposta.json();
 
       if (!resposta.ok) {
-        alert(dados.mensagem);
-
-        btnSalvarMetas.disabled = false;
-
-        btnSalvarMetas.textContent = "Salvar metas";
-
+        window.mostrarNotificacao(
+          dados.mensagem || "Não foi possível salvar as metas.",
+          "error",
+        );
         return;
       }
     }
 
-    // ========================================
-    // TERMINOU DE SALVAR
-    // ========================================
-
     btnSalvarMetas.textContent = "Salvo ✓";
-
-    // Recarrega para atualizar
-    // as porcentagens
+    window.mostrarNotificacao("Metas salvas com sucesso.");
     await carregarResumoMensal();
-
-    setTimeout(() => {
-      btnSalvarMetas.disabled = false;
-
-      btnSalvarMetas.textContent = "Salvar metas";
-    }, 1200);
   } catch (erro) {
     console.error("Erro ao salvar metas:", erro);
-
-    alert("Erro ao salvar as metas.");
-
+    window.mostrarNotificacao("Erro ao salvar as metas.", "error");
+  } finally {
     btnSalvarMetas.disabled = false;
-
     btnSalvarMetas.textContent = "Salvar metas";
   }
 }
@@ -456,14 +425,30 @@ if (btnSalvarMetas) {
 
 if (btnSair) {
   btnSair.addEventListener("click", async () => {
+    const sair = await window.confirmarAcao(
+      "Deseja realmente sair do painel administrativo?",
+      { titulo: "Sair da conta", confirmar: "Sair" },
+    );
+    if (!sair) return;
+
     try {
-      await fetch("/api/logout", {
+      const resposta = await fetch("/api/logout", {
         method: "POST",
       });
+
+      if (!resposta.ok) {
+        const dados = await resposta.json();
+        window.mostrarNotificacao(
+          dados.mensagem || "Não foi possível sair da conta.",
+          "error",
+        );
+        return;
+      }
 
       window.location.href = "/login/login.html";
     } catch (erro) {
       console.error(erro);
+      window.mostrarNotificacao("Erro ao sair da conta.", "error");
     }
   });
 }

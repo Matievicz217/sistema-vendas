@@ -8,6 +8,9 @@ function mostrarFeedback(mensagem, erro = false) {
   feedbackCadastro.textContent = mensagem;
   feedbackCadastro.classList.remove("hidden", "text-red-700", "text-green-700");
   feedbackCadastro.classList.add(erro ? "text-red-700" : "text-green-700");
+  if (erro) {
+    window.mostrarNotificacao(mensagem, "error");
+  }
 }
 
 if (formCadastro) {
