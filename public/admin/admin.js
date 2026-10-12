@@ -91,7 +91,7 @@ async function carregarResumoMensal() {
   tabelaFuncionarias.innerHTML = `
         <tr>
             <td
-                colspan="9"
+                colspan="10"
                 class="px-6 py-10 text-center text-gray-400"
             >
                 Carregando dados...
@@ -110,7 +110,7 @@ async function carregarResumoMensal() {
       tabelaFuncionarias.innerHTML = `
                 <tr>
                     <td
-                        colspan="9"
+                        colspan="10"
                         class="px-6 py-10 text-center text-red-400"
                     >
                         ${dados.mensagem}
@@ -149,7 +149,7 @@ async function carregarResumoMensal() {
       tabelaFuncionarias.innerHTML = `
                 <tr>
                     <td
-                        colspan="9"
+                        colspan="10"
                         class="px-6 py-10 text-center text-gray-400"
                     >
                         Nenhuma funcionária encontrada.
@@ -291,6 +291,12 @@ async function carregarResumoMensal() {
                     ${funcionaria.clientes_novos}
                 </td>
 
+                <!-- BALDE -->
+
+                <td class="px-4 py-4 text-right">
+                    ${funcionaria.balde ?? 0}
+                </td>
+
             `;
 
       tabelaFuncionarias.appendChild(linha);
@@ -301,7 +307,7 @@ async function carregarResumoMensal() {
     tabelaFuncionarias.innerHTML = `
             <tr>
                 <td
-                    colspan="9"
+                  colspan="10"
                     class="px-6 py-10 text-center text-red-400"
                 >
                     Erro ao carregar os dados.
