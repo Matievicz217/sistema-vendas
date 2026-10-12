@@ -272,6 +272,7 @@ app.post("/api/registros", (req, res) => {
     retornoContatos,
     prospeccao,
     clientesNovos,
+    balde,
   } = req.body;
 
   // ========================================
@@ -285,7 +286,8 @@ app.post("/api/registros", (req, res) => {
     contatos === undefined ||
     retornoContatos === undefined ||
     prospeccao === undefined ||
-    clientesNovos === undefined
+    clientesNovos === undefined ||
+    balde === undefined
   ) {
     return res.status(400).json({
       sucesso: false,
@@ -304,6 +306,7 @@ app.post("/api/registros", (req, res) => {
     retornoContatos,
     prospeccao,
     clientesNovos,
+    balde,
   ];
 
   if (valores.some((valor) => isNaN(valor))) {
@@ -343,7 +346,8 @@ app.post("/api/registros", (req, res) => {
           contatos = ?,
           retorno_contatos = ?,
           prospeccao = ?,
-          clientes_novos = ?
+          clientes_novos = ?,
+          balde = ?
         WHERE id = ?
       `);
 
@@ -355,6 +359,7 @@ app.post("/api/registros", (req, res) => {
         Number(retornoContatos),
         Number(prospeccao),
         Number(clientesNovos),
+        Number(balde),
         registroExistente.id,
       );
 
@@ -380,9 +385,10 @@ app.post("/api/registros", (req, res) => {
         contatos,
         retorno_contatos,
         prospeccao,
-        clientes_novos
+        clientes_novos,
+        balde
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const resultado = inserirRegistro.run(
@@ -395,6 +401,7 @@ app.post("/api/registros", (req, res) => {
       Number(retornoContatos),
       Number(prospeccao),
       Number(clientesNovos),
+      Number(balde),
     );
 
     res.json({
@@ -516,11 +523,15 @@ app.get("/api/me/resumo-mensal", (req, res) => {
                         SUM(prospeccao),
                         0
                     ) AS prospeccao,
-
                     COALESCE(
                         SUM(clientes_novos),
                         0
-                    ) AS clientes_novos
+                    ) AS clientes_novos,
+
+                    COALESCE(
+                        SUM(balde),
+                        0
+                    ) AS balde
 
                 FROM registros
 
@@ -568,6 +579,8 @@ app.get("/api/me/resumo-mensal", (req, res) => {
         prospeccao: Number(resumo.prospeccao),
 
         clientes_novos: Number(resumo.clientes_novos),
+
+        balde: Number(resumo.balde),
       },
     });
   } catch (erro) {
@@ -609,7 +622,8 @@ app.get("/api/registros", (req, res) => {
                     retorno_contatos,
 
                     prospeccao,
-                    clientes_novos
+                    clientes_novos,
+                    balde
 
                 FROM registros
 
@@ -828,7 +842,10 @@ app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
               AS prospeccao,
 
             COALESCE(SUM(registros.clientes_novos), 0)
-              AS clientes_novos
+              AS clientes_novos,
+
+            COALESCE(SUM(registros.balde), 0)
+              AS balde
 
           FROM usuarios
 
@@ -905,6 +922,7 @@ app.get("/api/admin/registros", verificarAdmin, (req, res) => {
 
             registros.prospeccao,
             registros.clientes_novos,
+            registros.balde,
 
             usuarios.id AS usuario_id,
             usuarios.nome AS nome_funcionaria,

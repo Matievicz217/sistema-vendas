@@ -256,6 +256,8 @@ formRegistro.addEventListener("submit", async (event) => {
     prospeccao: Number(prospeccao || 0),
 
     clientesNovos: Number(clientesNovos || 0),
+
+    balde: Number(balde || 0),
   };
 
   try {
