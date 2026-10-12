@@ -25,6 +25,7 @@ const resumoRetornoContatos = document.querySelector("#resumoRetornoContatos");
 
 const resumoProspeccao = document.querySelector("#resumoProspeccao");
 const resumoClientesNovos = document.querySelector("#resumoClientesNovos");
+const resumoBalde = document.querySelector("#resumoBalde");
 
 // ========================================
 // VERIFICAR USUÁRIO
@@ -185,6 +186,9 @@ async function carregarResumoMensal() {
     resumoProspeccao.textContent = resumo.prospeccao || 0;
 
     resumoClientesNovos.textContent = resumo.clientes_novos || 0;
+
+    resumoBalde.textContent = resumo.balde || 0;
+
   } catch (erro) {
     console.error("Erro ao carregar resumo mensal:", erro);
 
@@ -211,6 +215,8 @@ formRegistro.addEventListener("submit", async (event) => {
   const realizada = document.querySelector("#realizada").value;
 
   const numeroVendas = document.querySelector("#numeroVendas").value;
+
+  const balde = document.querySelector("#balde").value;
 
   // ========================================
   // ========================================
