@@ -6,7 +6,8 @@ const db = new Database("db.sqlite");
 // TABELA DE USUÁRIOS
 // ========================================
 
-db.prepare(`
+db.prepare(
+  `
     CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
@@ -14,14 +15,15 @@ db.prepare(`
         senha_hash TEXT NOT NULL,
         tipo TEXT NOT NULL DEFAULT 'funcionaria'
     )
-`).run();
-
+`,
+).run();
 
 // ========================================
 // TABELA DE REGISTROS
 // ========================================
 
-db.prepare(`
+db.prepare(
+  `
     CREATE TABLE IF NOT EXISTS registros (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario_id INTEGER NOT NULL,
@@ -34,14 +36,16 @@ db.prepare(`
         contatos INTEGER NOT NULL DEFAULT 0,
         retorno_contatos INTEGER NOT NULL DEFAULT 0,
 
+
         prospeccao INTEGER NOT NULL DEFAULT 0,
         clientes_novos INTEGER NOT NULL DEFAULT 0,
+        balde INTEGER NOT NULL DEFAULT 0,
 
         FOREIGN KEY (usuario_id)
         REFERENCES usuarios(id)
     )
-`).run();
-
+`,
+).run();
 
 // ========================================
 // MIGRAÇÃO DE COLUNAS
@@ -51,47 +55,50 @@ const colunasNovas = [
     ["contatos", "INTEGER NOT NULL DEFAULT 0"],
     ["retorno_contatos", "INTEGER NOT NULL DEFAULT 0"],
     ["prospeccao", "INTEGER NOT NULL DEFAULT 0"],
-    ["clientes_novos", "INTEGER NOT NULL DEFAULT 0"]
+    ["clientes_novos", "INTEGER NOT NULL DEFAULT 0"],
+    ["balde", "INTEGER NOT NULL DEFAULT 0"]
 ];
-
 for (const [nome, tipo] of colunasNovas) {
-
-    const colunaExiste = db
-        .prepare(`
+  const colunaExiste = db
+    .prepare(
+      `
             SELECT name
             FROM pragma_table_info('registros')
             WHERE name = ?
-        `)
-        .get(nome);
+        `,
+    )
+    .get(nome);
 
-    if (!colunaExiste) {
-
-        db.prepare(`
+  if (!colunaExiste) {
+    db.prepare(
+      `
             ALTER TABLE registros
             ADD COLUMN ${nome} ${tipo}
-        `).run();
+        `,
+    ).run();
 
-        console.log(`Coluna ${nome} adicionada!`);
-    }
+    console.log(`Coluna ${nome} adicionada!`);
+  }
 }
-
 
 // ========================================
 // REGISTRO ÚNICO POR FUNCIONÁRIA/DIA
 // ========================================
 
-db.prepare(`
+db.prepare(
+  `
     CREATE UNIQUE INDEX IF NOT EXISTS
     indice_registro_unico
     ON registros (usuario_id, data)
-`).run();
-
+`,
+).run();
 
 // ========================================
 // TABELA DE METAS MENSAIS
 // ========================================
 
-db.prepare(`
+db.prepare(
+  `
     CREATE TABLE IF NOT EXISTS metas_mensais (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario_id INTEGER NOT NULL,
@@ -104,7 +111,7 @@ db.prepare(`
 
         UNIQUE(usuario_id, mes, ano)
     )
-`).run();
-
+`,
+).run();
 
 module.exports = db;
