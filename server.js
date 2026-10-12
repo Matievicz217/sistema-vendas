@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const db = require("./database");
 const bcrypt = require("bcrypt");
@@ -5,6 +6,10 @@ const session = require("express-session");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+
+app.use(helmet());
 
 console.log("SERVER NOVO CARREGADO");
 
@@ -16,7 +21,7 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: "sistema-vendas-segredo",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -125,11 +130,22 @@ app.post("/api/cadastro", async (req, res) => {
   }
 });
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    sucesso: false,
+    mensagem: "Muitas tentativas. Aguarde 15 minutos."
+  }
+});
+
 // ========================================
 // LOGIN
 // ========================================
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/login",loginLimiter, async (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
