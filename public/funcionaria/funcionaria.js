@@ -234,6 +234,8 @@ formRegistro.addEventListener("submit", async (event) => {
 
   const clientesNovos = document.querySelector("#clientesNovos").value;
 
+  
+
   // ========================================
   // VALIDAR CAMPOS OBRIGATÓRIOS
   // ========================================
