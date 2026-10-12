@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área da Funcionária | Dermosens</title>
     <link rel="stylesheet" href="../css/output.css">
 </head>
+
 <body class="min-h-screen bg-[#eef3f1] text-[#202322]">
     <!-- ========================================
          CABEÇALHO
@@ -85,7 +87,8 @@
                     <div class="flex flex-wrap items-end gap-4">
                         <div>
                             <label for="mesFiltro" class="block text-sm font-medium text-[#596762] mb-2">Mês</label>
-                            <select id="mesFiltro" class="w-44 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20 cursor-pointer">
+                            <select id="mesFiltro"
+                                class="w-44 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20 cursor-pointer">
                                 <option value="1">Janeiro</option>
                                 <option value="2">Fevereiro</option>
                                 <option value="3">Março</option>
@@ -102,9 +105,11 @@
                         </div>
                         <div>
                             <label for="anoFiltro" class="block text-sm font-medium text-[#596762] mb-2">Ano</label>
-                            <input type="number" id="anoFiltro" min="2020" max="2100" class="w-32 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20">
+                            <input type="number" id="anoFiltro" min="2020" max="2100"
+                                class="w-32 px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20">
                         </div>
-                        <button type="button" id="btnAtualizarResumo" class="px-6 py-3 bg-[#819b94] hover:bg-[#6f8982] text-white rounded-lg font-medium transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                        <button type="button" id="btnAtualizarResumo"
+                            class="px-6 py-3 bg-[#819b94] hover:bg-[#6f8982] text-white rounded-lg font-medium transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                             Atualizar
                         </button>
                     </div>
@@ -113,7 +118,7 @@
             <!-- ========================================
                  CARDS PRINCIPAIS
             ========================================= -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                 <!-- META -->
                 <div class="
                         bg-white
@@ -161,24 +166,39 @@
                     <p id="valorVendidoMes" class="text-2xl font-semibold mt-2 text-[#647f77]">
                         R$ 0,00
                     </p>
-                </div>
-                <!-- PROGRESSO -->
-                <div class="
+                    </div>
+
+                    <!-- META DIÁRIA NECESSÁRIA -->
+                    <div class="bg-white border border-[#d8e1de] rounded-2xl p-6 shadow-sm">
+                        <p class="text-sm text-[#74817d]">
+                            Precisa vender por dia
+                        </p>
+
+                        <p id="metaDiariaNecessaria" class="text-2xl font-semibold mt-3 text-[#647f77]">
+                            R$ 0,00
+                        </p>
+
+                        <p id="diasUteisRestantes" class="text-xs text-[#899692] mt-3">
+                            Calculando dias úteis...
+                        </p>
+                    </div>
+                    <!-- PROGRESSO -->
+                    <div class="
                         bg-white
                         border border-[#d8e1de]
                         rounded-2xl
                         p-6
                         shadow-sm
                     ">
-                    <div class="flex items-center justify-between gap-4">
-                        <p class="text-sm text-[#74817d]">
-                            Progresso da meta
-                        </p>
-                        <span id="porcentagemMeta" class="text-lg font-semibold text-[#647f77]">
-                            0%
-                        </span>
-                    </div>
-                    <div class="
+                        <div class="flex items-center justify-between gap-4">
+                            <p class="text-sm text-[#74817d]">
+                                Progresso da meta
+                            </p>
+                            <span id="porcentagemMeta" class="text-lg font-semibold text-[#647f77]">
+                                0%
+                            </span>
+                        </div>
+                        <div class="
                             w-full
                             h-3
                             bg-[#e5ece9]
@@ -186,90 +206,90 @@
                             overflow-hidden
                             mt-7
                         ">
-                        <div id="barraProgresso" class="
+                            <div id="barraProgresso" class="
                                 h-full
                                 bg-[#819b94]
                                 rounded-full
                                 transition-all
                                 duration-500
                             " style="width: 0%">
+                            </div>
                         </div>
+                        <p class="text-xs text-[#899692] mt-4">
+                            Progresso referente à meta selecionada.
+                        </p>
                     </div>
-                    <p class="text-xs text-[#899692] mt-4">
-                        Progresso referente à meta selecionada.
-                    </p>
                 </div>
-            </div>
-            <!-- ========================================
+                <!-- ========================================
                  INDICADORES
             ========================================= -->
-            <div class="mt-8">
-                <div class="mb-4">
-                    <h3 class="text-lg font-medium">
-                        Indicadores do mês
-                    </h3>
-                    <p class="text-sm text-[#74817d] mt-1">
-                        Resultados acumulados no período selecionado.
-                    </p>
-                </div>
-                <div class="
+                <div class="mt-8">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-medium">
+                            Indicadores do mês
+                        </h3>
+                        <p class="text-sm text-[#74817d] mt-1">
+                            Resultados acumulados no período selecionado.
+                        </p>
+                    </div>
+                    <div class="
                             grid
                             grid-cols-2
                             md:grid-cols-3
                             lg:grid-cols-5
                             gap-4
                         ">
-                    <!-- VENDAS -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">
-                            Vendas
-                        </p>
-                        <p id="resumoVendas" class="text-xl font-semibold mt-2">
-                            0
-                        </p>
+                        <!-- VENDAS -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">
+                                Vendas
+                            </p>
+                            <p id="resumoVendas" class="text-xl font-semibold mt-2">
+                                0
+                            </p>
+                        </div>
+                        <!-- CONTATOS -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">
+                                Contatos
+                            </p>
+                            <p id="resumoContatos" class="text-xl font-semibold mt-2">
+                                0
+                            </p>
+                        </div>
+                        <!-- RETORNO DE CONTATOS -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">
+                                Retorno de contatos
+                            </p>
+                            <p id="resumoRetornoContatos" class="text-xl font-semibold mt-2">
+                                0
+                            </p>
+                        </div>
+                        <!-- PROSPECÇÕES -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">
+                                Prospecções
+                            </p>
+                            <p id="resumoProspeccao" class="text-xl font-semibold mt-2">
+                                0
+                            </p>
+                        </div>
+                        <!-- CLIENTES NOVOS -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">
+                                Clientes novos
+                            </p>
+                            <p id="resumoClientesNovos" class="text-xl font-semibold mt-2">
+                                0
+                            </p>
+                        </div>
+                        <!-- BALDE -->
+                        <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
+                            <p class="text-xs text-[#74817d]">Balde</p>
+                            <p id="resumoBalde" class="text-xl font-semibold mt-2">0</p>
+                        </div>
                     </div>
-                    <!-- CONTATOS -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">
-                            Contatos
-                        </p>
-                        <p id="resumoContatos" class="text-xl font-semibold mt-2">
-                            0
-                        </p>
-                    </div>
-                    <!-- RETORNO DE CONTATOS -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">
-                            Retorno de contatos
-                        </p>
-                        <p id="resumoRetornoContatos" class="text-xl font-semibold mt-2">
-                            0
-                        </p>
-                    </div>
-                    <!-- PROSPECÇÕES -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">
-                            Prospecções
-                        </p>
-                        <p id="resumoProspeccao" class="text-xl font-semibold mt-2">
-                            0
-                        </p>
-                    </div>
-                    <!-- CLIENTES NOVOS -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">
-                            Clientes novos
-                        </p>
-                        <p id="resumoClientesNovos" class="text-xl font-semibold mt-2">
-                            0
-                        </p>
-                    </div>
-                                    <!-- BALDE -->
-                    <div class="bg-white border border-[#d8e1de] rounded-xl p-5">
-                        <p class="text-xs text-[#74817d]">Balde</p>
-                        <p id="resumoBalde" class="text-xl font-semibold mt-2">0</p>
-                    </div>
-</div>
                 </div>
         </section>
         <!-- ========================================
@@ -443,8 +463,8 @@
                             <label for="contatos" class="block text-sm font-medium text-[#596762] mb-2">
                                 Contatos
                             </label>
-                            <input type="number" id="contatos" name="contatos" min="0" step="1"
-                                inputmode="numeric" placeholder="0" class="
+                            <input type="number" id="contatos" name="contatos" min="0" step="1" inputmode="numeric"
+                                placeholder="0" class="
                                     w-full
                                     px-4 py-3
                                     bg-[#f7f9f8]
@@ -534,13 +554,14 @@
                                     transition
                                 ">
                         </div>
-                                            <!-- BALDE -->
+                        <!-- BALDE -->
                         <div>
                             <label for="balde" class="block text-sm font-medium text-[#596762] mb-2">Balde</label>
-                            <input type="number" id="balde" name="balde" min="0" step="1"
-                                inputmode="numeric" placeholder="0" class="w-full px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20 transition">
+                            <input type="number" id="balde" name="balde" min="0" step="1" inputmode="numeric"
+                                placeholder="0"
+                                class="w-full px-4 py-3 bg-[#f7f9f8] border border-[#ccd7d3] rounded-lg outline-none focus:border-[#819b94] focus:ring-2 focus:ring-[#819b94]/20 transition">
                         </div>
-</div>
+                    </div>
                 </fieldset>
                 <!-- ========================================
                      SALVAR
@@ -575,4 +596,5 @@
     </main>
     <script src="/funcionaria/funcionaria.js"></script>
 </body>
+
 </html>

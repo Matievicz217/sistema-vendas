@@ -27,6 +27,9 @@ const resumoProspeccao = document.querySelector("#resumoProspeccao");
 const resumoClientesNovos = document.querySelector("#resumoClientesNovos");
 const resumoBalde = document.querySelector("#resumoBalde");
 
+const metaDiariaNecessaria = document.querySelector("#metaDiariaNecessaria");
+const diasUteisRestantes = document.querySelector("#diasUteisRestantes");
+
 // ========================================
 // VERIFICAR USUÁRIO
 // ========================================
@@ -123,6 +126,47 @@ function mostrarFeedback(mensagem, erro = false) {
   }
 }
 
+function calcularDiasUteisRestantes(mes, ano) {
+  const hoje = new Date();
+
+  // Começa hoje, caso o mês selecionado seja o atual.
+  // Para meses futuros, começa no primeiro dia.
+  const inicio = new Date(ano, mes - 1, 1);
+
+  if (ano === hoje.getFullYear() && mes === hoje.getMonth() + 1) {
+    inicio.setDate(hoje.getDate());
+  }
+
+  const fim = new Date(ano, mes, 0);
+  if (
+    ano < hoje.getFullYear() ||
+    (ano === hoje.getFullYear() && mes < hoje.getMonth() + 1)
+  ) {
+    return 0;
+  }
+
+  // Se o mês já passou, não há dias restantes.
+  if (inicio > fim) {
+    return 0;
+  }
+
+  let diasUteis = 0;
+
+  for (
+    let data = new Date(inicio);
+    data <= fim;
+    data.setDate(data.getDate() + 1)
+  ) {
+    const diaSemana = data.getDay();
+
+    if (diaSemana !== 0 && diaSemana !== 6) {
+      diasUteis++;
+    }
+  }
+
+  return diasUteis;
+}
+
 // ========================================
 // CARREGAR RESUMO MENSAL
 // ========================================
@@ -149,6 +193,36 @@ async function carregarResumoMensal() {
     const dados = await resposta.json();
 
     const resumo = dados.resumo;
+    const meta = Number(resumo.meta_mensal || 0);
+    const vendido = Number(resumo.valor_vendido || 0);
+
+    const faltaVender = Math.max(meta - vendido, 0);
+
+    const hoje = new Date();
+    const periodoPassado =
+      ano < hoje.getFullYear() ||
+      (ano === hoje.getFullYear() && mes < hoje.getMonth() + 1);
+
+    const diasRestantes = periodoPassado
+      ? 0
+      : calcularDiasUteisRestantes(mes, ano);
+
+    if (meta <= 0) {
+      metaDiariaNecessaria.textContent = "Sem meta definida";
+      diasUteisRestantes.textContent = "Aguardando definição da meta mensal.";
+    } else if (faltaVender === 0) {
+      metaDiariaNecessaria.textContent = formatarDinheiro(0);
+      diasUteisRestantes.textContent = "Meta mensal atingida!";
+    } else if (diasRestantes === 0) {
+      metaDiariaNecessaria.textContent = "Prazo encerrado";
+      diasUteisRestantes.textContent = "Não há dias úteis restantes neste mês.";
+    } else {
+      const valorPorDia = faltaVender / diasRestantes;
+
+      metaDiariaNecessaria.textContent = formatarDinheiro(valorPorDia);
+
+      diasUteisRestantes.textContent = `${diasRestantes} dia(s) útil(eis) restante(s)`;
+    }
 
     // ========================================
     // META E VENDAS
@@ -188,7 +262,6 @@ async function carregarResumoMensal() {
     resumoClientesNovos.textContent = resumo.clientes_novos || 0;
 
     resumoBalde.textContent = resumo.balde || 0;
-
   } catch (erro) {
     console.error("Erro ao carregar resumo mensal:", erro);
 
@@ -233,8 +306,6 @@ formRegistro.addEventListener("submit", async (event) => {
   const prospeccao = document.querySelector("#prospeccao").value;
 
   const clientesNovos = document.querySelector("#clientesNovos").value;
-
-  
 
   // ========================================
   // VALIDAR CAMPOS OBRIGATÓRIOS
