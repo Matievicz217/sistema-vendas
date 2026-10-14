@@ -56,11 +56,15 @@ function escaparHTML(valor) {
 
 async function verificarAdmin() {
   try {
-    const resposta = await fetch("/api/me");
+    const resposta = await fetch("/api/me", { cache: "no-store" });
 
-    if (!resposta.ok) {
+    if (resposta.status === 401 || resposta.status === 404) {
       window.location.href = "/login/login.html";
       return false;
+    }
+
+    if (!resposta.ok) {
+      throw new Error("Não foi possível verificar sua sessão.");
     }
 
     const dados = await resposta.json();
@@ -77,7 +81,7 @@ async function verificarAdmin() {
     return true;
   } catch (erro) {
     console.error(erro);
-    window.location.href = "/login/login.html";
+    window.mostrarNotificacao("Não foi possível verificar sua sessão. Atualize a página para tentar novamente.", "error");
     return false;
   }
 }

@@ -54,6 +54,17 @@ if (formLogin) {
         return;
       }
 
+      const sessao = await fetch("/api/me", { cache: "no-store" });
+      if (!sessao.ok) {
+        mostrarFeedback(
+          sessao.status === 401
+            ? "Não foi possível manter sua sessão. Verifique se os cookies estão permitidos e tente novamente."
+            : "Não foi possível verificar sua sessão. Tente novamente.",
+          true,
+        );
+        return;
+      }
+
       if (dados.usuario.tipo === "admin") {
         window.location.href = "/admin/admin.html";
       } else {

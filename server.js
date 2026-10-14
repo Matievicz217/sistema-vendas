@@ -291,6 +291,15 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       });
     }
 
+    // Cookies seguros exigem HTTPS reconhecido pelo servidor/proxy.
+    if (process.env.NODE_ENV === "production" && !req.secure) {
+      console.error("Login sem HTTPS reconhecido. Verifique TRUST_PROXY_HOPS no provedor.");
+      return res.status(503).json({
+        sucesso: false,
+        mensagem: "Não foi possível iniciar uma sessão segura. Acesse por HTTPS; se o erro continuar, verifique a configuração do proxy no servidor.",
+      });
+    }
+
     // CRIA SESSÃO
 
     req.session.regenerate((erro) => {
@@ -305,15 +314,25 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       req.session.usuarioId = usuario.id;
       req.session.tipo = usuario.tipo;
 
-      res.json({
-        sucesso: true,
-        mensagem: "Login realizado com sucesso!",
-        usuario: {
-          id: usuario.id,
-          nome: usuario.nome,
-          email: usuario.email,
-          tipo: usuario.tipo,
-        },
+      req.session.save((erroSalvar) => {
+        if (erroSalvar) {
+          console.error("Erro ao salvar sessão:", erroSalvar);
+          return res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao salvar a sessão. Tente novamente.",
+          });
+        }
+
+        res.json({
+          sucesso: true,
+          mensagem: "Login realizado com sucesso!",
+          usuario: {
+            id: usuario.id,
+            nome: usuario.nome,
+            email: usuario.email,
+            tipo: usuario.tipo,
+          },
+        });
       });
     });
   } catch (erro) {

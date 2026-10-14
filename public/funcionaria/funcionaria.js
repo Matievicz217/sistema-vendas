@@ -58,14 +58,18 @@ if (
 // ========================================
 
 async function verificarUsuario() {
-  if (!nomeUsuario) return;
+  if (!nomeUsuario) return false;
 
   try {
-    const resposta = await fetch("/api/me");
+    const resposta = await fetch("/api/me", { cache: "no-store" });
+
+    if (resposta.status === 401 || resposta.status === 404) {
+      window.location.href = "../login/login.html";
+      return false;
+    }
 
     if (!resposta.ok) {
-      window.location.href = "../login/login.html";
-      return;
+      throw new Error("Não foi possível verificar sua sessão.");
     }
 
     const dados = await resposta.json();
@@ -73,8 +77,11 @@ async function verificarUsuario() {
     if (dados?.usuario?.nome) {
       nomeUsuario.textContent = `Olá, ${dados.usuario.nome}!`;
     }
+    return true;
   } catch (erro) {
     console.error("Erro ao verificar usuário:", erro);
+    mostrarFeedback("Não foi possível verificar sua sessão. Atualize a página para tentar novamente.", true);
+    return false;
   }
 }
 
@@ -539,7 +546,7 @@ btnSair.addEventListener("click", async () => {
 // ========================================
 
 async function iniciarAplicacao() {
-  await verificarUsuario();
+  if (!(await verificarUsuario())) return;
 
   colocarDataAtual();
 
