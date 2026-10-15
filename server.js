@@ -57,7 +57,10 @@ if (!process.env.SESSION_SECRET && process.env.NODE_ENV !== "production") {
   console.warn("SESSION_SECRET não definido; sessões serão invalidadas ao reiniciar.");
 }
 
-const trustProxy = process.env.TRUST_PROXY_HOPS || "0";
+// O Render termina HTTPS no proxy antes de encaminhar a requisição ao Node.
+// Uma configuração explícita continua tendo prioridade, inclusive o valor 0.
+const trustProxy =
+  process.env.TRUST_PROXY_HOPS || (process.env.RENDER === "true" ? "1" : "0");
 if (!/^\d+$/.test(trustProxy) || Number(trustProxy) > 5) {
   throw new Error("TRUST_PROXY_HOPS deve ser um inteiro entre 0 e 5.");
 }
