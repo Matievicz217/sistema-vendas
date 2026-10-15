@@ -1234,6 +1234,10 @@ app.post("/api/logout", async (req, res) => {
 // ========================================
 async function iniciarServidor() {
   await db.initialize();
+  if (process.env.BOOTSTRAP_ADMIN === "true") {
+    await require("./lib/create-admin")(db);
+  }
+  console.log(`Banco de dados: ${db.dialect}`);
   console.log(
     app.router.stack.filter((item) => item.route).map((item) => item.route.path),
   );

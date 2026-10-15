@@ -74,3 +74,17 @@ it('PostgreSQL: sessão expirada, renovação e remoção', async () => {
     await call('destroy','valid');assert.equal(await call('get','valid'),null);
   } finally { store.stopInterval(); }
 });
+
+it('PostgreSQL: primeiro admin é idempotente e preserva credenciais existentes', async () => {
+  const createAdmin = require('../lib/create-admin');
+  const env = {ADMIN_NAME:'Admin Inicial',ADMIN_EMAIL:' INICIAL@TESTE.COM ',ADMIN_PASSWORD:'senha-inicial-segura'};
+  await createAdmin(db,env);
+  const original = await db.prepare('SELECT * FROM usuarios WHERE email = ?').get('inicial@teste.com');
+  assert.equal(original.tipo,'admin');
+  assert.equal(await require('bcrypt').compare(env.ADMIN_PASSWORD,original.senha_hash),true);
+  await createAdmin(db,{...env,ADMIN_PASSWORD:'outra-senha-segura'});
+  const unchanged = await db.prepare('SELECT * FROM usuarios WHERE email = ?').get('inicial@teste.com');
+  assert.equal(unchanged.senha_hash,original.senha_hash);
+  await assert.rejects(createAdmin(db,{...env,ADMIN_EMAIL:'maria@teste.com'}), /não é administradora/);
+  await assert.rejects(createAdmin(db,{...env,ADMIN_PASSWORD:'curta'}), /12 e 128/);
+});

@@ -57,3 +57,9 @@ Para uma instalação nova e sem dados antigos, basta definir `DATABASE_URL` e e
 Não é necessário um disco local para o PostgreSQL: o armazenamento é gerenciado pelo serviço de banco. Se usar conexão externa que exija TLS, use a configuração SSL indicada pelo provedor na URL, mantendo a validação do certificado. Não desative a verificação de certificados.
 
 Os testes PostgreSQL da API usam `pg-mem`, um emulador, e não substituem a validação da importação e das transações no banco PostgreSQL real antes da troca.
+
+## PostgreSQL vazio no Render sem Shell
+
+Para começar com um banco novo, configure no serviço web `DATABASE_URL` com a Internal Database URL do PostgreSQL, na mesma região. Defina também `BOOTSTRAP_ADMIN=true`, `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` (de 12 a 128 caracteres). Mantenha `NODE_ENV=production`, `SESSION_SECRET` e `CODIGO_CADASTRO` válidos. Salve e faça o deploy.
+
+A inicialização cria as tabelas e a conta administradora antes de atender requisições. Uma conta administradora existente não tem a senha alterada; se o e-mail pertencer a uma funcionária, a inicialização falha sem promover a conta. Após confirmar o primeiro login, remova `BOOTSTRAP_ADMIN`, `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` do ambiente e faça novo deploy. O sistema continua usando a conta salva no PostgreSQL. Esse procedimento não importa dados do SQLite e não apaga seu arquivo antigo.
