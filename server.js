@@ -79,9 +79,19 @@ app.use(
 // MIDDLEWARES
 // ========================================
 
-app.get("/healthz", (req, res) => {
+app.use(async (req, res, next) => {
   try {
-    db.prepare("SELECT 1").get();
+    await db.initialize();
+    next();
+  } catch (error) {
+    console.error("Banco indisponível:", error.message);
+    res.status(503).json({ sucesso: false, mensagem: "Banco de dados indisponível." });
+  }
+});
+
+app.get("/healthz", async (req, res) => {
+  try {
+    await db.prepare("SELECT 1").get();
     res.json({ status: "ok" });
   } catch (erro) {
     console.error("Health check falhou:", erro);
@@ -91,7 +101,9 @@ app.get("/healthz", (req, res) => {
 
 app.use(express.json());
 
-const sessionStore = new SessionStore({
+const sessionStore = db.dialect === "postgres"
+  ? new (require("./lib/postgres-session-store"))(db)
+  : new SessionStore({
   client: db,
   expired: {
     clear: true,
@@ -121,7 +133,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // PÁGINA INICIAL
 // ========================================
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.sendFile(__dirname + "/public/login/login.html");
 });
 
@@ -181,7 +193,7 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
   }
 
   try {
-    const usuarioExistente = db
+    const usuarioExistente = await db
       .prepare(
         `
                 SELECT id
@@ -209,14 +221,14 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
             VALUES (?, ?, ?)
         `);
 
-    inserirUsuario.run(nome, email, senhaHash);
+    await inserirUsuario.run(nome, email, senhaHash);
 
     res.json({
       sucesso: true,
       mensagem: "Usuário cadastrado com sucesso!",
     });
   } catch (erro) {
-    if (erro.code === "SQLITE_CONSTRAINT_UNIQUE") {
+    if (["SQLITE_CONSTRAINT_UNIQUE", "23505"].includes(erro.code)) {
       return res.status(409).json({
         sucesso: false,
         mensagem: "Este e-mail já está cadastrado.",
@@ -266,7 +278,7 @@ app.post("/api/login", loginLimiter, async (req, res) => {
   }
 
   try {
-    const usuario = db
+    const usuario = await db
       .prepare(
         `
                 SELECT *
@@ -352,7 +364,7 @@ app.post("/api/login", loginLimiter, async (req, res) => {
 // VERIFICAR USUÁRIO LOGADO
 // ========================================
 
-app.get("/api/me", (req, res) => {
+app.get("/api/me", async (req, res) => {
   if (!req.session.usuarioId) {
     return res.status(401).json({
       logado: false,
@@ -361,7 +373,7 @@ app.get("/api/me", (req, res) => {
   }
 
   try {
-    const usuario = db
+    const usuario = await db
       .prepare(
         `
                 SELECT
@@ -406,7 +418,7 @@ app.get("/api/me", (req, res) => {
 // CRIAR / ATUALIZAR REGISTRO DIÁRIO
 // ========================================
 
-app.post("/api/registros", (req, res) => {
+app.post("/api/registros", async (req, res) => {
   // VERIFICA LOGIN
   if (!req.session.usuarioId) {
     return res.status(401).json({
@@ -483,7 +495,7 @@ app.post("/api/registros", (req, res) => {
     // VERIFICA SE JÁ EXISTE REGISTRO NA DATA
     // ========================================
 
-    const registroExistente = db
+    const registroExistente = await db
       .prepare(
         `
         SELECT id
@@ -513,7 +525,7 @@ app.post("/api/registros", (req, res) => {
         WHERE id = ?
       `);
 
-      atualizarRegistro.run(
+      await atualizarRegistro.run(
         0,
         Number(realizada),
         Number(numeroVendas),
@@ -553,7 +565,7 @@ app.post("/api/registros", (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    const resultado = inserirRegistro.run(
+    const resultado = await inserirRegistro.run(
       req.session.usuarioId,
       data,
       0,
@@ -575,7 +587,7 @@ app.post("/api/registros", (req, res) => {
   } catch (erro) {
     console.error(erro);
 
-    if (erro.code === "SQLITE_CONSTRAINT_UNIQUE") {
+    if (["SQLITE_CONSTRAINT_UNIQUE", "23505"].includes(erro.code)) {
       return res.status(409).json({
         sucesso: false,
         mensagem: "Este e-mail já está cadastrado.",
@@ -593,7 +605,7 @@ app.post("/api/registros", (req, res) => {
 // RESUMO MENSAL DA FUNCIONÁRIA
 // ========================================
 
-app.get("/api/me/resumo-mensal", (req, res) => {
+app.get("/api/me/resumo-mensal", async (req, res) => {
   // ========================================
   // VERIFICAR LOGIN
   // ========================================
@@ -645,7 +657,7 @@ app.get("/api/me/resumo-mensal", (req, res) => {
     // BUSCAR META MENSAL
     // ========================================
 
-    const metaMensal = db
+    const metaMensal = await db
       .prepare(
         `
                 SELECT meta
@@ -663,7 +675,7 @@ app.get("/api/me/resumo-mensal", (req, res) => {
     // SOMAR REGISTROS DO MÊS
     // ========================================
 
-    const resumo = db
+    const resumo = await db
       .prepare(
         `
                 SELECT
@@ -767,7 +779,7 @@ app.get("/api/me/resumo-mensal", (req, res) => {
 // BUSCAR REGISTROS DA FUNCIONÁRIA
 // ========================================
 
-app.get("/api/registros", (req, res) => {
+app.get("/api/registros", async (req, res) => {
   if (!req.session.usuarioId) {
     return res.status(401).json({
       sucesso: false,
@@ -776,7 +788,7 @@ app.get("/api/registros", (req, res) => {
   }
 
   try {
-    const registros = db
+    const registros = await db
       .prepare(
         `
                 SELECT
@@ -821,7 +833,7 @@ app.get("/api/registros", (req, res) => {
 // ADMIN - CRIAR / ATUALIZAR META MENSAL
 // ========================================
 
-app.post("/api/admin/metas", verificarAdmin, (req, res) => {
+app.post("/api/admin/metas", verificarAdmin, async (req, res) => {
   const { usuarioId, mes, ano, meta } = req.body;
 
   // Verifica se todos os campos foram enviados
@@ -874,7 +886,7 @@ app.post("/api/admin/metas", verificarAdmin, (req, res) => {
 
   try {
     // Confirma que a funcionária existe
-    const funcionaria = db
+    const funcionaria = await db
       .prepare(
         `
                 SELECT id
@@ -893,7 +905,7 @@ app.post("/api/admin/metas", verificarAdmin, (req, res) => {
     }
 
     // Cria a meta ou atualiza caso já exista
-    db.prepare(
+    await db.prepare(
       `
             INSERT INTO metas_mensais (
                 usuario_id,
@@ -927,9 +939,9 @@ app.post("/api/admin/metas", verificarAdmin, (req, res) => {
 // ADMIN - BUSCAR FUNCIONÁRIAS
 // ========================================
 
-app.get("/api/admin/funcionarias", verificarAdmin, (req, res) => {
+app.get("/api/admin/funcionarias", verificarAdmin, async (req, res) => {
   try {
-    const funcionarias = db
+    const funcionarias = await db
       .prepare(
         `
                 SELECT
@@ -962,7 +974,7 @@ app.get("/api/admin/funcionarias", verificarAdmin, (req, res) => {
 // ADMIN - RESUMO MENSAL DAS FUNCIONÁRIAS
 // ========================================
 
-app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
+app.get("/api/admin/resumo-mensal", verificarAdmin, async (req, res) => {
   const { mes, ano } = req.query;
 
   const mesNumero = Number(mes);
@@ -989,7 +1001,7 @@ app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
     // Exemplo: "2026-09"
     const periodo = `${anoNumero}-${mesFormatado}`;
 
-    const resumo = db
+    const resumo = await db
       .prepare(
         `
           SELECT
@@ -1073,9 +1085,9 @@ app.get("/api/admin/resumo-mensal", verificarAdmin, (req, res) => {
 // ADMIN - BUSCAR TODOS OS REGISTROS
 // ========================================
 
-app.get("/api/admin/registros", verificarAdmin, (req, res) => {
+app.get("/api/admin/registros", verificarAdmin, async (req, res) => {
   try {
-    const registros = db
+    const registros = await db
       .prepare(
         `
           SELECT
@@ -1127,7 +1139,7 @@ app.get("/api/admin/registros", verificarAdmin, (req, res) => {
 // RANKING MENSAL DE VENDAS
 // ========================================
 
-app.get("/api/ranking", (req, res) => {
+app.get("/api/ranking", async (req, res) => {
   // Apenas usuários logados podem consultar
   if (!req.session.usuarioId) {
     return res.status(401).json({
@@ -1157,7 +1169,7 @@ app.get("/api/ranking", (req, res) => {
   try {
     const periodo = `${ano}-${String(mes).padStart(2, "0")}`;
 
-    const ranking = db
+    const ranking = await db
       .prepare(
         `
       SELECT
@@ -1200,7 +1212,7 @@ app.get("/api/ranking", (req, res) => {
 // LOGOUT
 // ========================================
 
-app.post("/api/logout", (req, res) => {
+app.post("/api/logout", async (req, res) => {
   req.session.destroy((erro) => {
     if (erro) {
       console.error(erro);
@@ -1220,7 +1232,8 @@ app.post("/api/logout", (req, res) => {
 // ========================================
 // INICIAR SERVIDOR
 // ========================================
-if (require.main === module) {
+async function iniciarServidor() {
+  await db.initialize();
   console.log(
     app.router.stack.filter((item) => item.route).map((item) => item.route.path),
   );
@@ -1234,18 +1247,27 @@ if (require.main === module) {
     if (encerrando) return;
     encerrando = true;
     console.log(`Recebido ${sinal}; encerrando servidor.`);
-    server.close((erro) => {
+    server.close(async (erro) => {
       if (erro) {
         console.error("Erro ao encerrar servidor:", erro);
         process.exitCode = 1;
       }
       sessionStore.stopInterval();
-      db.close();
+      await db.close();
     });
   };
 
   process.once("SIGINT", () => encerrarServidor("SIGINT"));
   process.once("SIGTERM", () => encerrarServidor("SIGTERM"));
+}
+
+if (require.main === module) {
+  iniciarServidor().catch(async (error) => {
+    console.error("Não foi possível iniciar o servidor:", error.message);
+    sessionStore.stopInterval();
+    await db.close();
+    process.exitCode = 1;
+  });
 }
 
 module.exports = app;

@@ -22,7 +22,8 @@ async function criarAdmin() {
 
   const db = require("../database");
   try {
-    const existente = db
+    await db.initialize();
+    const existente = await db
       .prepare("SELECT id, tipo FROM usuarios WHERE email = ?")
       .get(email);
 
@@ -36,13 +37,13 @@ async function criarAdmin() {
     }
 
     const senhaHash = await bcrypt.hash(senha, 12);
-    db.prepare(
+    await db.prepare(
       "INSERT INTO usuarios (nome, email, senha_hash, tipo) VALUES (?, ?, ?, 'admin')",
     ).run(nome, email, senhaHash);
 
     console.log("Conta administradora criada.");
   } finally {
-    db.close();
+    await db.close();
   }
 }
 
