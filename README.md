@@ -1,65 +1,36 @@
 # Sistema de Vendas
 
-Aplicação web em Node.js, Express e PostgreSQL (com SQLite disponível durante a transição) para registrar vendas e acompanhar metas.
-
-## Requisitos
-
-- Node.js 20 ou superior
-- npm
+Aplicação web em Node.js, Express e PostgreSQL para registrar vendas e acompanhar metas. Usuários, vendas, metas e sessões são armazenados exclusivamente no PostgreSQL. As tabelas e índices são criados automaticamente na inicialização.
 
 ## Configuração local
 
-1. Instale as dependências com `npm install`.
-2. Copie `.env.example` para `.env` e defina `SESSION_SECRET` (pelo menos 32 caracteres) e `CODIGO_CADASTRO` (pelo menos 16 caracteres).
-3. Inicie o servidor com `npm start` e abra `http://localhost:3000`.
-4. Para criar a primeira conta administradora, defina temporariamente `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` no `.env`, então execute `npm run create-admin`. A senha precisa ter pelo menos 12 caracteres. Remova essas variáveis após a criação.
+1. Instale Node.js 20 ou superior e as dependências com `npm install`.
+2. Crie um banco PostgreSQL e um usuário com permissão para criar tabelas e gravar dados nesse banco.
+3. Copie `.env.example` para `.env`. Defina `DATABASE_URL` com a conexão real, por exemplo `postgresql://usuario:senha@localhost:5432/vendas`. Caracteres especiais do usuário e senha devem ser codificados para URL.
+4. Defina `SESSION_SECRET` (pelo menos 32 caracteres) e `CODIGO_CADASTRO` (pelo menos 16 caracteres). Nunca publique o `.env`.
+5. Execute `npm start` e abra http://localhost:3000. Sem uma `DATABASE_URL` válida ou sem conexão com o banco, o servidor não inicia.
+6. Para criar a primeira conta administradora, defina temporariamente `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` e execute `npm run create-admin`. A senha precisa ter de 12 a 128 caracteres. Remova as variáveis após a criação.
 
-O banco local fica em `db.sqlite` por padrão. É possível definir `DATABASE_PATH` para usar outro arquivo. Não publique o `.env` nem o banco local.
+## Produção e Render
 
-## Preparar produção
+Configure `NODE_ENV=production`, `DATABASE_URL`, `SESSION_SECRET` e `CODIGO_CADASTRO` no painel de ambiente do provedor. A URL deve apontar para o banco que contém os dados do sistema. Não é necessário disco local para dados ou sessões.
 
-- Defina `NODE_ENV=production`, `PORT`, `SESSION_SECRET` forte, `CODIGO_CADASTRO` aleatório e `DATABASE_PATH` em um volume persistente. Cadastre cada variável diretamente no painel de segredos do provedor; nunca coloque segredos no repositório.
-- Gere segredos novos para produção. Não reutilize os valores do ambiente de desenvolvimento.
-- A aplicação espera que HTTPS seja terminado pelo provedor/reverse proxy. No Render, a aplicação reconhece `RENDER=true` e usa um proxy confiável automaticamente quando `TRUST_PROXY_HOPS` não está definido. Uma configuração explícita, inclusive `0`, tem prioridade. Em outros provedores, defina `TRUST_PROXY_HOPS` com o número exato de proxies confiáveis entre a internet e o Node (normalmente `1` em uma hospedagem com um único proxy). Deixe `0` se o Node receber conexões diretamente; não confie em cabeçalhos de proxy sem saber a topologia.
-- SQLite e sessões locais suportam uma única instância da aplicação. Use disco persistente e uma única instância; múltiplas instâncias/servidores requerem banco e armazenamento de sessão compartilhados.
-- Configure o monitor de saúde do provedor para `GET /healthz`.
-- Execute `npm run create-admin` uma vez contra o mesmo `DATABASE_PATH` persistente da aplicação, usando variáveis temporárias `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD`; remova a senha do ambiente após executar.
-- Antes de publicar, rode `npm test` e `npm run build`.
+No Render, conecte o repositório como Blueprint usando `render.yaml`. Informe `DATABASE_URL` quando solicitado: utilize a **Internal Database URL** do PostgreSQL na mesma região do serviço web. O Blueprint gera os segredos e configura `TRUST_PROXY_HOPS=1`; ele não cria nem importa um banco. Consulte a [referência do Blueprint](https://render.com/docs/blueprint-spec) e a [documentação de conexão PostgreSQL](https://render.com/docs/postgresql-creating-connecting).
 
-## Hospedar no Render
+Se o serviço já existe sem Blueprint, configure `DATABASE_URL` em **Environment** e faça o deploy. O monitor de saúde deve usar `GET /healthz`.
 
-1. Envie este repositório ao GitHub e, no Render, escolha **New > Blueprint**, conectando o repositório. O Render encontrará `render.yaml` na raiz.
-2. Revise o Blueprint e confirme a criação do serviço web. Ele usa o plano Starter porque SQLite precisa de disco persistente; o banco será salvo em `/var/data/db.sqlite`.
-3. Aguarde o primeiro deploy ficar saudável em `/healthz`. O Blueprint gera `SESSION_SECRET` e `CODIGO_CADASTRO` como segredos do serviço e configura `TRUST_PROXY_HOPS=1` para o proxy do Render.
-4. Crie a conta admin uma única vez usando o Shell do serviço no Render: defina temporariamente `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` no ambiente/shell e execute `npm run create-admin`. O comando usa `DATABASE_PATH` do serviço, portanto grava no disco persistente. Remova as variáveis temporárias após o comando.
-5. Não crie outra instância do serviço e não remova o disco associado, pois o SQLite e as sessões são locais a esse disco.
+A aplicação espera HTTPS terminado pelo proxy do provedor. No Render, `RENDER=true` habilita um proxy confiável quando `TRUST_PROXY_HOPS` não está definido. Em outros provedores, configure o número de proxies confiáveis entre a internet e o Node; use `0` para conexões diretas.
 
-O plano Starter e o disco persistente são pagos. Confira os preços atuais do Render antes de confirmar. Não use o plano gratuito para este banco: sistema de arquivos efêmero pode perder os dados.
+Para conexão externa com TLS, use as opções indicadas pelo provedor na URL, mantendo a validação do certificado.
 
-## Testes
+## Primeiro administrador sem Shell
 
-Execute `npm test`. Os testes usam um banco SQLite temporário e não alteram o banco de desenvolvimento.
+Em um banco novo, defina `BOOTSTRAP_ADMIN=true`, `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` no serviço e faça o deploy. A inicialização cria a conta antes de atender requisições. Uma conta administradora existente mantém sua senha; um e-mail pertencente a uma funcionária não é promovido automaticamente. Depois de confirmar o login, remova essas quatro variáveis e faça novo deploy.
 
-## PostgreSQL e migração dos dados existentes
+## Dados existentes
 
-A aplicação usa PostgreSQL quando `DATABASE_URL` está definida; sem essa variável, continua usando SQLite. Usuários, vendas, metas e sessões passam a ser armazenados no PostgreSQL. As tabelas são criadas na inicialização.
+Esta versão não inclui importador de bancos locais antigos. Se houver dados de uma versão anterior que ainda não estejam no PostgreSQL, preserve um backup e transfira os dados antes de colocar esta versão em produção. Configurar uma URL de banco vazio não transfere usuários, vendas ou metas automaticamente.
 
-1. Crie um Postgres no Render na mesma região do serviço. A conexão interna é a opção indicada entre os serviços do Render: https://render.com/docs/postgresql-creating-connecting. Configure a URL somente no painel de segredos, nunca no Git.
-2. Publique primeiro o código com suporte PostgreSQL **sem alterar `DATABASE_URL` no serviço web**. Ele continuará usando SQLite. Mantenha o disco antigo.
-3. Interrompa novas gravações no sistema antigo durante toda a transferência e troca. Gere uma cópia consistente do SQLite de produção usando a API `backup` do SQLite ou `sqlite3 .backup`; não copie apenas o arquivo principal enquanto houver WAL ativo. Guarde essa cópia para recuperação.
-4. No Shell do serviço antigo, configure `SQLITE_SOURCE_PATH` com o caminho da cópia e `DATABASE_URL` com a URL interna do novo Postgres **apenas no ambiente desse Shell**. Execute `npm run migrate:postgres`. A simulação tenta inserir os dados e desfaz a transação ao final. Confira as contagens de usuários, registros e metas.
-5. Execute `npm run migrate:postgres -- --apply` para confirmar a importação. O destino deve estar vazio. IDs e hashes de senha são preservados; a importação ajusta as sequências, confere contagens e usa uma transação. Em caso de erro, os dados inseridos são desfeitos. A simulação cria a estrutura das tabelas, mas não mantém dados importados.
-6. Somente após a importação, defina `DATABASE_URL` no painel Environment do serviço web e faça o deploy. Verifique `/healthz`, login, registros, ranking e metas antes de liberar gravações. Os usuários precisam entrar novamente; sessões antigas não são copiadas.
-7. Preserve o disco e o backup SQLite até confirmar os dados e o funcionamento. Depois da troca, voltar ao SQLite sem reconciliar novas vendas perderia as gravações feitas no PostgreSQL.
+## Verificação
 
-Para uma instalação nova e sem dados antigos, basta definir `DATABASE_URL` e executar `npm run create-admin` com as variáveis temporárias do administrador. O `render.yaml` existente continua preservando o disco SQLite; ele não faz a troca automaticamente.
-
-Não é necessário um disco local para o PostgreSQL: o armazenamento é gerenciado pelo serviço de banco. Se usar conexão externa que exija TLS, use a configuração SSL indicada pelo provedor na URL, mantendo a validação do certificado. Não desative a verificação de certificados.
-
-Os testes PostgreSQL da API usam `pg-mem`, um emulador, e não substituem a validação da importação e das transações no banco PostgreSQL real antes da troca.
-
-## PostgreSQL vazio no Render sem Shell
-
-Para começar com um banco novo, configure no serviço web `DATABASE_URL` com a Internal Database URL do PostgreSQL, na mesma região. Defina também `BOOTSTRAP_ADMIN=true`, `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` (de 12 a 128 caracteres). Mantenha `NODE_ENV=production`, `SESSION_SECRET` e `CODIGO_CADASTRO` válidos. Salve e faça o deploy.
-
-A inicialização cria as tabelas e a conta administradora antes de atender requisições. Uma conta administradora existente não tem a senha alterada; se o e-mail pertencer a uma funcionária, a inicialização falha sem promover a conta. Após confirmar o primeiro login, remova `BOOTSTRAP_ADMIN`, `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` do ambiente e faça novo deploy. O sistema continua usando a conta salva no PostgreSQL. Esse procedimento não importa dados do SQLite e não apaga seu arquivo antigo.
+Execute `npm test` e `npm run build` antes do deploy. Os testes usam `pg-mem`, um emulador PostgreSQL isolado, e não alteram o banco configurado em `DATABASE_URL`. A conexão, o TLS e o comportamento no PostgreSQL real devem ser conferidos no ambiente de destino.

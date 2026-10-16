@@ -5,7 +5,7 @@ const path = require("node:path");
 const db = require("./database");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
-const SqliteStore = require("better-sqlite3-session-store")(session);
+const PostgresSessionStore = require("./lib/postgres-session-store");
 const verificarAdmin = require("./middleware/verificar-admin");
 const {
   normalizarEmail,
@@ -19,20 +19,6 @@ const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-
-class SessionStore extends SqliteStore {
-  startInterval() {
-    this.expirationTimer = setInterval(
-      this.clearExpiredSessions.bind(this),
-      this.expired.intervalMs,
-    );
-    this.expirationTimer.unref();
-  }
-
-  stopInterval() {
-    clearInterval(this.expirationTimer);
-  }
-}
 
 if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
   throw new Error("PORT deve ser um número entre 1 e 65535.");
@@ -101,15 +87,7 @@ app.get("/healthz", async (req, res) => {
 
 app.use(express.json());
 
-const sessionStore = db.dialect === "postgres"
-  ? new (require("./lib/postgres-session-store"))(db)
-  : new SessionStore({
-  client: db,
-  expired: {
-    clear: true,
-    intervalMs: 15 * 60 * 1000,
-  },
-});
+const sessionStore = new PostgresSessionStore(db);
 
 app.use(
   session({
@@ -228,7 +206,7 @@ app.post("/api/cadastro", cadastroLimiter, async (req, res) => {
       mensagem: "Usuário cadastrado com sucesso!",
     });
   } catch (erro) {
-    if (["SQLITE_CONSTRAINT_UNIQUE", "23505"].includes(erro.code)) {
+    if (erro.code === "23505") {
       return res.status(409).json({
         sucesso: false,
         mensagem: "Este e-mail já está cadastrado.",
@@ -587,7 +565,7 @@ app.post("/api/registros", async (req, res) => {
   } catch (erro) {
     console.error(erro);
 
-    if (["SQLITE_CONSTRAINT_UNIQUE", "23505"].includes(erro.code)) {
+    if (erro.code === "23505") {
       return res.status(409).json({
         sucesso: false,
         mensagem: "Este e-mail já está cadastrado.",

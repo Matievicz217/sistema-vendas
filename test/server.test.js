@@ -1,18 +1,14 @@
 const { after, before, describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { execFileSync, spawnSync } = require("node:child_process");
-const fs = require("node:fs");
-const os = require("node:os");
+const { spawnSync } = require("node:child_process");
 const path = require("node:path");
 
-const pastaTemporaria = fs.mkdtempSync(path.join(os.tmpdir(), "sistema-vendas-"));
 process.env.NODE_ENV = "test";
 process.env.SESSION_SECRET = "test-session-secret-with-at-least-32-characters";
 process.env.CODIGO_CADASTRO = "codigo-de-teste";
-process.env.DATABASE_PATH = path.join(pastaTemporaria, "api.sqlite");
 
+const db = require("./helpers/database.cjs")();
 const app = require("../server");
-const db = require("../database");
 const {
   normalizarEmail,
   textoValido,
@@ -25,6 +21,7 @@ let servidor;
 let baseUrl;
 
 before(async () => {
+  await db.initialize();
   servidor = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => servidor.once("listening", resolve));
   baseUrl = `http://127.0.0.1:${servidor.address().port}`;
@@ -34,8 +31,7 @@ after(async () => {
   await new Promise((resolve, reject) => {
     servidor.close((erro) => (erro ? reject(erro) : resolve()));
   });
-  db.close();
-  fs.rmSync(pastaTemporaria, { recursive: true, force: true });
+  await db.close();
 });
 
 describe("validação de entradas", () => {
@@ -126,32 +122,18 @@ describe("API", () => {
     assert.equal(registroComContagemFracionada.status, 400);
   });
 
-  it("cria admin somente com configuração explícita e de forma idempotente", () => {
-    const dbAdmin = path.join(pastaTemporaria, "admin.sqlite");
-    const env = {
-      ...process.env,
-      DATABASE_PATH: dbAdmin,
-      ADMIN_NAME: "Admin de Teste",
-      ADMIN_EMAIL: "ADMIN@EXEMPLO.COM",
-      ADMIN_PASSWORD: "senha-admin-de-teste-segura",
-    };
-    const script = path.join(__dirname, "..", "scripts", "create-admin.js");
-    const umaExecucao = execFileSync(process.execPath, [script], { env, encoding: "utf8" });
-    const segundaExecucao = execFileSync(process.execPath, [script], { env, encoding: "utf8" });
-
-    assert.match(umaExecucao, /criada/);
-    assert.match(segundaExecucao, /já existe/);
-
-    const adminDb = require("better-sqlite3")(dbAdmin);
-    const admin = adminDb.prepare("SELECT nome, email, tipo, senha_hash FROM usuarios").get();
-    assert.equal(admin.email, "admin@exemplo.com");
-    assert.equal(admin.tipo, "admin");
-    assert.match(admin.senha_hash, /^\$2[aby]\$/);
-    adminDb.close();
+  it("cria admin somente com configuração explícita e de forma idempotente", async () => {
+    const createAdmin = require('../lib/create-admin');
+    const env = { ADMIN_NAME: 'Admin de Teste', ADMIN_EMAIL: 'ADMIN@EXEMPLO.COM', ADMIN_PASSWORD: 'senha-admin-de-teste-segura' };
+    await createAdmin(db, env);
+    await createAdmin(db, env);
+    const admins = await db.prepare("SELECT * FROM usuarios WHERE email = ?").all('admin@exemplo.com');
+    assert.equal(admins.length, 1);
+    assert.equal(admins[0].tipo, 'admin');
+    assert.equal(await require('bcrypt').compare(env.ADMIN_PASSWORD, admins[0].senha_hash), true);
   });
 
   it("recusa iniciar em produção sem segredos obrigatórios", () => {
-    const dbProduction = path.join(pastaTemporaria, "production.sqlite");
     const processo = spawnSync(
       process.execPath,
       ["-e", "require('./server')"],
@@ -162,7 +144,7 @@ describe("API", () => {
           NODE_ENV: "production",
           SESSION_SECRET: "",
           CODIGO_CADASTRO: "",
-          DATABASE_PATH: dbProduction,
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test",
         },
         encoding: "utf8",
       },
