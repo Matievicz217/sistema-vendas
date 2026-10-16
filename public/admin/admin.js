@@ -206,16 +206,10 @@ async function carregarResumoMensal() {
 
                 <!-- FUNCIONÁRIA -->
 
-                <td class="px-4 py-4">
-
-                    <div class="font-semibold text-[#647f77]">
+                <td class="px-4 py-4 text-center align-middle">
+                    <div class="font-semibold text-[#237347]">
                         ${escaparHTML(funcionaria.nome_funcionaria)}
                     </div>
-
-                    <div class="text-xs text-gray-500 mt-1">
-                        ${escaparHTML(funcionaria.email_funcionaria)}
-                    </div>
-
                 </td>
 
 
