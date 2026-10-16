@@ -197,8 +197,8 @@ async function carregarResumoMensal() {
       const linha = document.createElement("tr");
 
       linha.className = `
-                bg-white
-                hover:bg-[#d5e3df]
+                bg-[#e3eee8]
+                hover:bg-[#d0e3d7]
                 transition
             `;
 
