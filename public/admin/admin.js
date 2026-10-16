@@ -197,8 +197,8 @@ async function carregarResumoMensal() {
       const linha = document.createElement("tr");
 
       linha.className = `
-                bg-[#e3eee8]
-                hover:bg-[#d0e3d7]
+                bg-white
+                hover:bg-[#d5e3df]
                 transition
             `;
 
@@ -208,7 +208,7 @@ async function carregarResumoMensal() {
 
                 <td class="px-4 py-4">
 
-                    <div class="font-semibold text-white">
+                    <div class="font-semibold text-[#647f77]">
                         ${escaparHTML(funcionaria.nome_funcionaria)}
                     </div>
 
