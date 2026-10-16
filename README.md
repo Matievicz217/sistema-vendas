@@ -34,3 +34,17 @@ Esta versão não inclui importador de bancos locais antigos. Se houver dados de
 ## Verificação
 
 Execute `npm test` e `npm run build` antes do deploy. Os testes usam `pg-mem`, um emulador PostgreSQL isolado, e não alteram o banco configurado em `DATABASE_URL`. A conexão, o TLS e o comportamento no PostgreSQL real devem ser conferidos no ambiente de destino.
+
+## Esqueci minha senha
+
+O login inclui um link para solicitar recuperação por e-mail. O link recebido permite criar uma nova senha, vence em 30 minutos e só funciona uma vez. Uma nova solicitação substitui o link anterior, com intervalo mínimo de um minuto por conta. Após a troca, as sessões existentes são encerradas.
+
+Configure no painel **Environment** do serviço web no Render:
+
+- `RESEND_API_KEY`: chave de envio criada no Resend.
+- `EMAIL_FROM`: remetente autorizado, por exemplo `Dermosens <acesso@seudominio.com.br>`. Para enviar a outras pessoas, configure e verifique seu domínio no Resend.
+- `APP_URL`: endereço público HTTPS do sistema, como `https://seu-sistema.onrender.com`, sem caminho de login. Se vazio, utiliza `RENDER_EXTERNAL_URL` no Render. Em desenvolvimento, informe `http://localhost:3000`.
+
+As credenciais ficam somente no servidor. Sem a configuração, o sistema continua funcionando, mas a recuperação informa que está indisponível. A tabela de recuperação é criada automaticamente no PostgreSQL ao iniciar.
+
+Consulte a [API de envio do Resend](https://resend.com/docs/api-reference/emails/send-email) e a [verificação de domínios](https://resend.com/docs/dashboard/domains/introduction). Depois de configurar e fazer o deploy, solicite uma recuperação para uma conta sua e confirme a entrega, a troca da senha e a recusa do link reutilizado. Os testes automatizados simulam o envio; eles não enviam e-mails reais.

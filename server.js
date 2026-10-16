@@ -86,6 +86,7 @@ app.get("/healthz", async (req, res) => {
 });
 
 app.use(express.json());
+require("./lib/password-reset").mountPasswordReset(app, db);
 
 const sessionStore = new PostgresSessionStore(db);
 
