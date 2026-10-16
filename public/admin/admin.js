@@ -258,7 +258,7 @@ async function carregarResumoMensal() {
 
                 <!-- PORCENTAGEM -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
 
                     <span
                         class="
@@ -281,40 +281,40 @@ async function carregarResumoMensal() {
 
                 <!-- VENDAS -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.numero_vendas}
                 </td>
 
 
                 <!-- CONTATOS -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.contatos}
                 </td>
 
 
                 <!-- RETORNO DE CONTATOS -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.retorno_contatos}
                 </td>
 
                 <!-- PROSPECÇÕES -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.prospeccao}
                 </td>
 
 
                 <!-- CLIENTES NOVOS -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.clientes_novos}
                 </td>
 
                 <!-- BALDE -->
 
-                <td class="px-4 py-4 text-right">
+                <td class="px-5 py-4 text-center align-middle">
                     ${funcionaria.balde ?? 0}
                 </td>
 
