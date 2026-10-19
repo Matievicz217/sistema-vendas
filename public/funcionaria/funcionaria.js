@@ -67,13 +67,13 @@ async function carregarRegistros() {
         registro.prospeccao, registro.clientes_novos, registro.balde];
       valores.forEach((valor) => {
         const celula = linha.insertCell();
-        celula.className = "py-3 px-4";
+        celula.className = "py-5 px-4";
         celula.textContent = valor;
       });
       const botao = document.createElement("button");
       botao.type = "button";
       botao.textContent = "Editar";
-      botao.className = "px-5 py-2.5 border border-[#cbd7d3] rounded-lg cursor-pointer";
+      botao.className = "px-5 py-2.5 bg-[#819b94] hover:bg-[#6f8982] active:bg-[#607a73] text-white rounded-lg text-sm font-medium tracking-wide transition cursor-pointer";
       botao.setAttribute("aria-label", `Editar registro de ${valores[0]}`);
       botao.addEventListener("click", () => {
         if (btnSalvar.disabled) return;
@@ -89,7 +89,9 @@ async function carregarRegistros() {
         formRegistro.scrollIntoView({ behavior: "smooth", block: "start" });
         $("#realizada").focus({ preventScroll: true });
       });
-      linha.insertCell().appendChild(botao);
+      const acoes = linha.insertCell();
+      acoes.className = "py-5 px-4";
+      acoes.appendChild(botao);
     });
   } catch (erro) {
     tabelaRegistros.replaceChildren();
