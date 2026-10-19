@@ -32,6 +32,11 @@
 }
 
 .app-confirm {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-height: 90dvh;
+  overflow-y: auto;
   width: min(92vw, 26rem);
   border: 1px solid #d8e1de;
   border-radius: 1rem;
