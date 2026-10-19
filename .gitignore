@@ -1,13 +1,6 @@
 # Dependências do Node
 node_modules/
 
-# Banco de dados local
-db.sqlite
-*.sqlite
-*.sqlite3
-db.sqlite-shm
-db.sqlite-wal
-
 # Variáveis de ambiente
 .env
 .env.local
