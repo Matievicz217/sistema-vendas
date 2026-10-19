@@ -26,6 +26,76 @@ const resumoBalde = $("#resumoBalde");
 const metaDiariaNecessaria = $("#metaDiariaNecessaria");
 const diasUteisRestantes = $("#diasUteisRestantes");
 const tabelaRanking = $("#tabelaRanking");
+const tabelaRegistros = $("#tabelaRegistros");
+const btnCancelarEdicao = $("#btnCancelarEdicao");
+let editandoRegistro = false;
+
+function encerrarEdicao() {
+  editandoRegistro = false;
+  formRegistro.reset();
+  $("#data").disabled = false;
+  colocarDataAtual();
+  btnCancelarEdicao.hidden = true;
+  btnSalvar.textContent = "Salvar registro";
+}
+
+btnCancelarEdicao.addEventListener("click", encerrarEdicao);
+
+async function carregarRegistros() {
+  tabelaRegistros.replaceChildren();
+  const exibirMensagem = (mensagem) => {
+    const linha = tabelaRegistros.insertRow();
+    const celula = linha.insertCell();
+    celula.colSpan = 9;
+    celula.className = "py-5 text-center";
+    celula.textContent = mensagem;
+  };
+  exibirMensagem("Carregando registros...");
+  try {
+    const resposta = await fetch("/api/registros", { cache: "no-store" });
+    if (!resposta.ok) throw new Error("Erro ao carregar registros.");
+    const dados = await resposta.json();
+    const periodo = `${anoFiltro.value}-${String(mesFiltro.value).padStart(2, "0")}`;
+    const registros = dados.registros.filter((registro) => registro.data.slice(0, 7) === periodo);
+    tabelaRegistros.replaceChildren();
+    if (!registros.length) exibirMensagem("Nenhum registro neste mês.");
+    registros.forEach((registro) => {
+      const linha = tabelaRegistros.insertRow();
+      linha.className = "border-b border-[#eef3f1]";
+      const valores = [registro.data.split("-").reverse().join("/"), formatarDinheiro(registro.realizada),
+        registro.numero_vendas, registro.contatos, registro.retorno_contatos,
+        registro.prospeccao, registro.clientes_novos, registro.balde];
+      valores.forEach((valor) => {
+        const celula = linha.insertCell();
+        celula.className = "py-3 px-4";
+        celula.textContent = valor;
+      });
+      const botao = document.createElement("button");
+      botao.type = "button";
+      botao.textContent = "Editar";
+      botao.className = "px-5 py-2.5 border border-[#cbd7d3] rounded-lg cursor-pointer";
+      botao.setAttribute("aria-label", `Editar registro de ${valores[0]}`);
+      botao.addEventListener("click", () => {
+        if (btnSalvar.disabled) return;
+        const campos = { data: "data", realizada: "realizada", numeroVendas: "numero_vendas",
+          contatos: "contatos", retornoContatos: "retorno_contatos", prospeccao: "prospeccao",
+          clientesNovos: "clientes_novos", balde: "balde" };
+        Object.entries(campos).forEach(([campo, chave]) => { $(`#${campo}`).value = registro[chave]; });
+        editandoRegistro = true;
+        $("#data").disabled = true;
+        btnSalvar.textContent = "Salvar alterações";
+        btnCancelarEdicao.hidden = false;
+        mostrarFeedback(`Editando o registro de ${valores[0]}. Altere os valores e salve.`);
+        formRegistro.scrollIntoView({ behavior: "smooth", block: "start" });
+        $("#realizada").focus({ preventScroll: true });
+      });
+      linha.insertCell().appendChild(botao);
+    });
+  } catch (erro) {
+    tabelaRegistros.replaceChildren();
+    exibirMensagem("Não foi possível carregar os registros. Clique em Atualizar para tentar novamente.");
+  }
+}
 
 if (
   !formRegistro ||
@@ -359,6 +429,7 @@ async function carregarResumoMensal() {
 
     resumoBalde.textContent = resumo.balde || 0;
     await carregarRanking();
+    await carregarRegistros();
   } catch (erro) {
     console.error("Erro ao carregar resumo mensal:", erro);
 
@@ -438,6 +509,7 @@ formRegistro.addEventListener("submit", async (event) => {
 
   try {
     btnSalvar.disabled = true;
+    btnCancelarEdicao.disabled = true;
 
     btnSalvar.textContent = "Salvando...";
 
@@ -465,9 +537,7 @@ formRegistro.addEventListener("submit", async (event) => {
     // LIMPAR FORMULÁRIO
     // ========================================
 
-    formRegistro.reset();
-
-    colocarDataAtual();
+    encerrarEdicao();
 
     // ========================================
     // ATUALIZAR ACOMPANHAMENTO
@@ -494,7 +564,8 @@ formRegistro.addEventListener("submit", async (event) => {
   } finally {
     btnSalvar.disabled = false;
 
-    btnSalvar.textContent = "Salvar registro";
+    btnCancelarEdicao.disabled = false;
+    btnSalvar.textContent = editandoRegistro ? "Salvar alterações" : "Salvar registro";
   }
 });
 

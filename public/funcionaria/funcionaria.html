@@ -364,6 +364,7 @@
                     Informe os resultados obtidos no dia.
                 </p>
             </div>
+            <button type="button" id="btnCancelarEdicao" hidden class="px-5 py-2.5 border border-[#cbd7d3] rounded-lg text-sm cursor-pointer mb-6">Cancelar edição</button>
             <form id="formRegistro" novalidate>
                 <!-- ========================================
                      DATA
@@ -624,6 +625,24 @@
                     </button>
                 </div>
             </form>
+        </section>
+        <section class="mt-8 bg-white border border-[#d8e1de] rounded-2xl p-6 shadow-sm" aria-labelledby="tituloRegistros">
+            <h2 id="tituloRegistros" class="text-xl font-medium mb-2">Meus registros</h2>
+            <p class="text-sm text-[#74817d] mb-6">Lançamentos do mês selecionado. Clique em Editar para corrigir os resultados.</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="border-b border-[#d8e1de]">
+                        <tr>
+                            <th class="py-3 px-4">Data</th><th class="py-3 px-4">Realizado</th>
+                            <th class="py-3 px-4">Vendas</th><th class="py-3 px-4">Contatos</th>
+                            <th class="py-3 px-4">Retornos</th><th class="py-3 px-4">Prospecções</th>
+                            <th class="py-3 px-4">Clientes novos</th><th class="py-3 px-4">Balde</th>
+                            <th class="py-3 px-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaRegistros"></tbody>
+                </table>
+            </div>
         </section>
     </main>
     <script src="/js/ui.js"></script>
