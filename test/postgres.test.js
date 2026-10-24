@@ -57,6 +57,19 @@ it('PostgreSQL: cadastro, login, sessão e registros diários', async () => {
     const response = await fetch(base+path,{headers:{Cookie:adminCookie}});
     assert.equal(response.status,200);
   }
+  for (const data of ['2026-10-02', '2026-10-03', '2026-10-04', '2026-09-30']) {
+    assert.equal((await post('/api/registros', {...values, data}, cookie)).status, 200);
+  }
+  const recentes = await fetch(base+'/api/registros?periodo=2026-10&limite=3', {headers:{Cookie:cookie}});
+  assert.equal(recentes.status, 200);
+  const ultimos = (await recentes.json()).registros;
+  assert.equal(ultimos.length, 3);
+  assert.ok(ultimos.every(registro => registro.data.startsWith('2026-10')));
+  assert.deepEqual(ultimos.map(registro => registro.data), [...ultimos.map(registro => registro.data)].sort().reverse());
+  const historico = await fetch(base+'/api/registros?periodo=2026-10', {headers:{Cookie:cookie}});
+  assert.equal((await historico.json()).registros.length, 4);
+  const invalido = await fetch(base+'/api/registros?periodo=2026-13&limite=3', {headers:{Cookie:cookie}});
+  assert.equal(invalido.status, 400);
   const logout = await post('/api/logout', {}, cookie); assert.equal(logout.status,200);
   assert.equal((await fetch(base+'/api/me', {headers:{Cookie:cookie}})).status,401);
 });

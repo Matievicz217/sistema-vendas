@@ -27,6 +27,14 @@ const metaDiariaNecessaria = $("#metaDiariaNecessaria");
 const diasUteisRestantes = $("#diasUteisRestantes");
 const tabelaRanking = $("#tabelaRanking");
 const tabelaRegistros = $("#tabelaRegistros");
+const btnHistorico = $("#btnHistorico");
+const descricaoRegistros = $("#descricaoRegistros");
+let exibindoHistorico = false;
+let periodoRegistros = "";
+btnHistorico.addEventListener("click", async () => {
+  exibindoHistorico = !exibindoHistorico;
+  await carregarRegistros();
+});
 const btnCancelarEdicao = $("#btnCancelarEdicao");
 let editandoRegistro = false;
 
@@ -42,6 +50,14 @@ function encerrarEdicao() {
 btnCancelarEdicao.addEventListener("click", encerrarEdicao);
 
 async function carregarRegistros() {
+  const periodo = `${anoFiltro.value}-${String(mesFiltro.value).padStart(2, "0")}`;
+  if (periodoRegistros !== periodo) exibindoHistorico = false;
+  periodoRegistros = periodo;
+  btnHistorico.disabled = true;
+  btnHistorico.textContent = exibindoHistorico ? "Mostrar só os 3 recentes" : "Ver histórico do mês";
+  descricaoRegistros.textContent = exibindoHistorico
+    ? "Todos os registros do mês selecionado. Clique em Editar para corrigir os resultados."
+    : "Exibindo os 3 registros mais recentes do mês selecionado. Todos os registros continuam salvos.";
   tabelaRegistros.replaceChildren();
   const exibirMensagem = (mensagem) => {
     const linha = tabelaRegistros.insertRow();
@@ -52,11 +68,12 @@ async function carregarRegistros() {
   };
   exibirMensagem("Carregando registros...");
   try {
-    const resposta = await fetch("/api/registros", { cache: "no-store" });
+    const filtros = new URLSearchParams({ periodo });
+    if (!exibindoHistorico) filtros.set("limite", "3");
+    const resposta = await fetch(`/api/registros?${filtros}`, { cache: "no-store" });
     if (!resposta.ok) throw new Error("Erro ao carregar registros.");
     const dados = await resposta.json();
-    const periodo = `${anoFiltro.value}-${String(mesFiltro.value).padStart(2, "0")}`;
-    const registros = dados.registros.filter((registro) => registro.data.slice(0, 7) === periodo);
+    const registros = dados.registros;
     tabelaRegistros.replaceChildren();
     if (!registros.length) exibirMensagem("Nenhum registro neste mês.");
     registros.forEach((registro) => {
@@ -96,6 +113,8 @@ async function carregarRegistros() {
   } catch (erro) {
     tabelaRegistros.replaceChildren();
     exibirMensagem("Não foi possível carregar os registros. Clique em Atualizar para tentar novamente.");
+  } finally {
+    btnHistorico.disabled = false;
   }
 }
 

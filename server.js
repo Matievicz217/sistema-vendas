@@ -766,6 +766,17 @@ app.get("/api/registros", async (req, res) => {
     });
   }
 
+  const { periodo, limite } = req.query;
+  if (
+    (periodo !== undefined && (typeof periodo !== "string" || !/^\d{4}-(0[1-9]|1[0-2])$/.test(periodo))) ||
+    (limite !== undefined && limite !== "3")
+  ) {
+    return res.status(400).json({ sucesso: false, mensagem: "Filtro de registros inválido." });
+  }
+  const parametros = [req.session.usuarioId];
+  if (periodo) parametros.push(`${periodo}-01`, `${periodo}-31`);
+  if (limite) parametros.push(3);
+
   try {
     const registros = await db
       .prepare(
@@ -788,11 +799,13 @@ app.get("/api/registros", async (req, res) => {
                 FROM registros
 
                 WHERE usuario_id = ?
+                ${periodo ? "AND data >= ? AND data <= ?" : ""}
 
                 ORDER BY data DESC
+                ${limite ? "LIMIT ?" : ""}
             `,
       )
-      .all(req.session.usuarioId);
+      .all(...parametros);
 
     res.json({
       sucesso: true,
